@@ -1,0 +1,12 @@
+2015-11-14 20:34:32  [ main:0 ] - [ DEBUG ]  log4j debug
+  2015-11-14 20:34:32  [ main:2 ] - [ INFO ]  log4j info
+  2015-11-14 20:34:32  [ main:2 ] - [ WARN ]  log4j warn
+  2015-11-14 20:34:32  [ main:3 ] - [ ERROR ]  log4j error
+  2015-11-14 20:34:32  [ main:4 ] - [ FATAL ]  log4j fatal
+  2015-11-14 20:36:59  [ main:0 ] - [ DEBUG ]   debug 
+  2015-11-14 20:36:59  [ main:2 ] - [ ERROR ]   error 
+  2015-11-14 20:38:05  [ main:0 ] - [ DEBUG ]   debug 
+  2015-11-14 20:38:05  [ main:2 ] - [ ERROR ]   error 
+  2015-11-14 20:39:40  [ main:0 ] - [ DEBUG ]   debug 
+  2015-11-14 20:39:40  [ main:2 ] - [ ERROR ]   error 
+  

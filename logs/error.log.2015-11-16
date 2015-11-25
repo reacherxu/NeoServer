@@ -1,0 +1,34 @@
+2015-11-16 14:14:34  [ main:3 ] - [ ERROR ]   error 
+2015-11-16 14:34:41  [ main:1 ] - [ ERROR ]   error 
+2015-11-16 14:47:53  [ main:1 ] - [ ERROR ]  数据库操作异常
+java.sql.SQLException: Error executing query start m=node({1}),n=node({2}) CREATE m-[r:Related_to]->n
+ with params {2=0, 1=0}
+	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:255)
+	at org.neo4j.jdbc.Neo4jPreparedStatement.executeUpdate(Neo4jPreparedStatement.java:62)
+	at com.neo4j.BaseDao.update(BaseDao.java:219)
+	at com.neo4j.BaseDao.createRelationshipTo(BaseDao.java:273)
+	at com.neo4j.BaseDao.main(BaseDao.java:47)
+Caused by: java.lang.RuntimeException: Error executing cypher statement(s) [{code=Neo.ClientError.Statement.EntityNotFound, message=Node with id 0}]
+	at org.neo4j.jdbc.rest.StreamingParser.handleErrors(StreamingParser.java:246)
+	at org.neo4j.jdbc.rest.StreamingParser.skipTo(StreamingParser.java:223)
+	at org.neo4j.jdbc.rest.StreamingParser.nextResult(StreamingParser.java:96)
+	at org.neo4j.jdbc.rest.StreamingParser$2.hasNext(StreamingParser.java:187)
+	at org.neo4j.jdbc.rest.TransactionalQueryExecutor.executeQuery(TransactionalQueryExecutor.java:178)
+	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:250)
+	... 4 more
+2015-11-16 19:47:38  [ main:19155 ] - [ ERROR ]  数据库操作异常
+java.sql.SQLException: execute called on closed connection.
+	at org.neo4j.jdbc.Neo4jConnection.checkClosed(Neo4jConnection.java:260)
+	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:246)
+	at org.neo4j.jdbc.Neo4jPreparedStatement.executeQuery(Neo4jPreparedStatement.java:48)
+	at com.test.BaseDao.query(BaseDao.java:202)
+	at com.test.BaseDao.creatNode(BaseDao.java:266)
+	at com.test.BaseDao.main(BaseDao.java:60)
+2015-11-16 19:47:38  [ main:19165 ] - [ ERROR ]  关闭Connection失败
+java.sql.SQLException: close called on closed connection.
+	at org.neo4j.jdbc.Neo4jConnection.checkClosed(Neo4jConnection.java:260)
+	at org.neo4j.jdbc.Neo4jConnection.close(Neo4jConnection.java:156)
+	at com.test.BaseDao.close(BaseDao.java:128)
+	at com.test.BaseDao.query(BaseDao.java:220)
+	at com.test.BaseDao.creatNode(BaseDao.java:266)
+	at com.test.BaseDao.main(BaseDao.java:60)

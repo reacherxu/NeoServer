@@ -1,0 +1,36 @@
+2015-11-20 22:15:34  [ main:19364 ] - [ ERROR ]  数据库操作异常
+java.sql.SQLException: Error executing query create (n:Node {version:'0.1-SNAPSHOT',created_time:'2015-11-20 22:15:25',ip:'114.212.83.134',name:{1},children_num:{2}}),(n2:Log {name:{1}}) (n)-[:Log_for]->(n2) return ID(n)
+ with params {2=2, 1=A2}
+	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:255)
+	at org.neo4j.jdbc.Neo4jPreparedStatement.executeQuery(Neo4jPreparedStatement.java:48)
+	at com.neo4j.BaseDao.query(BaseDao.java:215)
+	at com.neo4j.BaseDao.creatNode(BaseDao.java:280)
+	at com.neo4j.BaseDao.main(BaseDao.java:80)
+Caused by: java.lang.RuntimeException: Error executing cypher statement(s) [{code=Neo.ClientError.Statement.InvalidSyntax, message=Invalid input '(': expected whitespace, comment, a relationship pattern, ',', LOAD CSV, START, MATCH, UNWIND, MERGE, CREATE, SET, DELETE, REMOVE, FOREACH, WITH, RETURN, UNION, ';' or end of input (line 1, column 143 (offset: 142))
+"create (n:Node {version:'0.1-SNAPSHOT',created_time:'2015-11-20 22:15:25',ip:'114.212.83.134',name:{1},children_num:{2}}),(n2:Log {name:{1}}) (n)-[:Log_for]->(n2) return ID(n)"
+                                                                                                                                               ^}]
+	at org.neo4j.jdbc.rest.StreamingParser.handleErrors(StreamingParser.java:246)
+	at org.neo4j.jdbc.rest.StreamingParser.skipTo(StreamingParser.java:223)
+	at org.neo4j.jdbc.rest.StreamingParser.nextResult(StreamingParser.java:96)
+	at org.neo4j.jdbc.rest.StreamingParser$2.hasNext(StreamingParser.java:187)
+	at org.neo4j.jdbc.rest.TransactionalQueryExecutor.executeQuery(TransactionalQueryExecutor.java:178)
+	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:250)
+	... 4 more
+2015-11-20 22:18:54  [ main:19148 ] - [ ERROR ]  数据库操作异常
+java.sql.SQLException: Error executing query create (n:Node {version:'0.1-SNAPSHOT',created_time:'2015-11-20 22:18:45',ip:'114.212.83.134',name:{1},children_num:{2}}),(n2:Log {name:{3}}) (n)-[:Log_for]->(n2) return ID(n)
+ with params {3=A2, 2=2, 1=A2}
+	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:255)
+	at org.neo4j.jdbc.Neo4jPreparedStatement.executeQuery(Neo4jPreparedStatement.java:48)
+	at com.neo4j.BaseDao.query(BaseDao.java:215)
+	at com.neo4j.BaseDao.creatNode(BaseDao.java:280)
+	at com.neo4j.BaseDao.main(BaseDao.java:80)
+Caused by: java.lang.RuntimeException: Error executing cypher statement(s) [{code=Neo.ClientError.Statement.InvalidSyntax, message=Invalid input '(': expected whitespace, comment, a relationship pattern, ',', LOAD CSV, START, MATCH, UNWIND, MERGE, CREATE, SET, DELETE, REMOVE, FOREACH, WITH, RETURN, UNION, ';' or end of input (line 1, column 143 (offset: 142))
+"create (n:Node {version:'0.1-SNAPSHOT',created_time:'2015-11-20 22:18:45',ip:'114.212.83.134',name:{1},children_num:{2}}),(n2:Log {name:{3}}) (n)-[:Log_for]->(n2) return ID(n)"
+                                                                                                                                               ^}]
+	at org.neo4j.jdbc.rest.StreamingParser.handleErrors(StreamingParser.java:246)
+	at org.neo4j.jdbc.rest.StreamingParser.skipTo(StreamingParser.java:223)
+	at org.neo4j.jdbc.rest.StreamingParser.nextResult(StreamingParser.java:96)
+	at org.neo4j.jdbc.rest.StreamingParser$2.hasNext(StreamingParser.java:187)
+	at org.neo4j.jdbc.rest.TransactionalQueryExecutor.executeQuery(TransactionalQueryExecutor.java:178)
+	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:250)
+	... 4 more
