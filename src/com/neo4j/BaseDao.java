@@ -15,8 +15,7 @@ import org.apache.log4j.PropertyConfigurator;
 import org.neo4j.jdbc.Driver;
 import org.neo4j.jdbc.Neo4jConnection;
 
-import com.neo4j.Util;
-import com.type.generalized.Str;
+import com.type.datatype.ExpressString;
 
 public class BaseDao {
 	// 使用log4j记录日志
@@ -78,7 +77,7 @@ public class BaseDao {
 			System.out.println(ins.getChildren(nodeA));
 			System.out.println(ins.getChildrenNum(nodeA));*/
 
-		List<Str> list = ins.getStr();
+		List<ExpressString> list = ins.getExpressString();
 		System.out.println(list);
 
 		ins.logout();
@@ -298,10 +297,10 @@ public class BaseDao {
 	}
 
 	
-	public Str getName(int id) {
+	public String getName(int id) {
 		String sql = "start n=node({1}) return n.name as name";
 		Map<String, Object> rs = query(sql,id);
-		return (Str) rs.get("name");
+		return (String) rs.get("name");
 	}
 	
 	/**
@@ -342,8 +341,8 @@ public class BaseDao {
 	 * @return
 	 */
 	//TODO  一个节点对应两个node(本身和Log)
-	public List<Str> getStr() {
-		List<Str> res = new ArrayList<Str>();
+	public List<ExpressString> getExpressString() {
+		List<ExpressString> res = new ArrayList<ExpressString>();
 		
 		//返回string_type对应的id
 		String sql = "start n=node(*) match (n:Node) where n.name='string_type' return ID(n) as id";
@@ -354,7 +353,7 @@ public class BaseDao {
 			//每个string_type创建Str
 			sql = "start n=node({1}),m=node({2}) return n.name as width,m.name as fixed";
 			Map<String, Object> map = query(sql,nodeID+6,nodeID+8);
-			res.add(new Str(nodeID, Integer.parseInt((String)map.get("width")),map.get("fixed").equals("FIXED")?true:false));
+			res.add(new ExpressString(nodeID, Integer.parseInt((String)map.get("width")),map.get("fixed").equals("FIXED")?true:false));
 		}
 		
 		return res;
