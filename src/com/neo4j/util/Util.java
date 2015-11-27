@@ -1,4 +1,4 @@
-package com.neo4j;
+package com.neo4j.util;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

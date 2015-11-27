@@ -17,13 +17,13 @@ public class TestNeo {
 	public static void main(String[] args) {
 		try {
 			Properties properties = new Properties();
-			properties.put("user", "neo4j");
-			properties.put("password", "reacher");
+			properties.put("user", "aa");
+			properties.put("password", "aa");
 			Connection con = DriverManager.getConnection("jdbc:neo4j://172.26.13.122:7474/",properties);
 
 			
 //			String query = "MATCH (:Movie {title:{1}})<-[:ACTED_IN]-(a:Person) RETURN a.name as actor";
-			String query = "start n = node(*) where n.sex='male' return n";
+			String query = "start n = node(*) where n.name='width' return n";
 			PreparedStatement stmt = con.prepareStatement(query);
 //		    stmt.setString(1,"The Matrix");
 

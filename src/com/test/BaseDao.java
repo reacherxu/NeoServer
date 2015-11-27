@@ -15,7 +15,7 @@ import org.apache.log4j.PropertyConfigurator;
 import org.neo4j.jdbc.Driver;
 import org.neo4j.jdbc.Neo4jConnection;
 
-import com.neo4j.Util;
+import com.neo4j.util.Util;
 
 public class BaseDao {
 	// 使用log4j记录日志
