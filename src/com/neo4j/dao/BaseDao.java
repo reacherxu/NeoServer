@@ -52,15 +52,15 @@ public class BaseDao {
 			System.out.println(ins.getChildren(nodeA));
 			System.out.println(ins.getChildrenNum(nodeA));*/
 
-		List<ExpressString> list = ins.getExpressString();
-		System.out.println(list);
-
+//		List<ExpressString> list = ins.getExpressString();
+//		System.out.println(list);
+		ins.setLocation(83, 20,21,12,13);
 		ins.logout();
 
 	}
 	
 	
-	private void logout() {
+	public void logout() {
 		neoConn.logout();
 	}
 
@@ -157,5 +157,27 @@ public class BaseDao {
 		return res;
 	}
 	
+	/**
+	 * 设置节点位置信息
+	 * @param id
+	 */
+	//TODO  更新log信息
+	public void setLocation(int id,Object... obj) {
+		String sql = "start n=node("+id+") set n.location_a={1},n.location_b={2}," +
+				"n.location_c={3},n.location_d={4}";
+		writeLog(id+1,Util.getIP(),Util.getCurrentTime()," revised the location information ");
+		neoConn.update(sql, obj);
+	}
 	
+	/**
+	 * 写日志信息
+	 * @param id	日志节点
+	 * @param ip
+	 * @param time
+	 * @param operation	操作内容
+	 */
+	private void writeLog(int id,String ip,String time,String operation) {
+		String sql = "start n=node("+id+") set n.log_"+System.currentTimeMillis()+"='client " + ip + operation + " at "+time+"'";
+		neoConn.update(sql, ip, time, operation);
+	}
 }

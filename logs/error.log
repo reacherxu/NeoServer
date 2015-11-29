@@ -1,5 +1,38 @@
-2015-11-27 17:03:26  [ main:0 ] - [ ERROR ]   error 
-2015-11-27 17:03:56  [ main:0 ] - [ ERROR ]   error 
-2015-11-27 17:04:47  [ main:0 ] - [ ERROR ]   error 
-2015-11-27 17:05:07  [ main:0 ] - [ ERROR ]   error 
-2015-11-27 17:06:00  [ main:2 ] - [ ERROR ]   error 
+2015-11-29 16:37:08  [ main:18669 ] - [ ERROR ]  数据库操作异常
+java.sql.SQLException: Error executing query start n=node(84) set n.2015-11-29 16:36:59='client 114.212.83.134revised the location information'
+ with params {3=revised the location information, 2=2015-11-29 16:36:59, 1=114.212.83.134}
+	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:255)
+	at org.neo4j.jdbc.Neo4jPreparedStatement.executeUpdate(Neo4jPreparedStatement.java:62)
+	at com.neo4j.connection.NeoConnection.update(NeoConnection.java:219)
+	at com.neo4j.dao.BaseDao.writeLog(BaseDao.java:181)
+	at com.neo4j.dao.BaseDao.setLocation(BaseDao.java:168)
+	at com.neo4j.dao.BaseDao.main(BaseDao.java:57)
+Caused by: java.lang.RuntimeException: Error executing cypher statement(s) [{code=Neo.ClientError.Statement.InvalidSyntax, message=Invalid input '2': expected whitespace or a property key name (line 1, column 24 (offset: 23))
+"start n=node(84) set n.2015-11-29 16:36:59='client 114.212.83.134revised the location information'"
+                        ^}]
+	at org.neo4j.jdbc.rest.StreamingParser.handleErrors(StreamingParser.java:246)
+	at org.neo4j.jdbc.rest.StreamingParser.skipTo(StreamingParser.java:223)
+	at org.neo4j.jdbc.rest.StreamingParser.nextResult(StreamingParser.java:96)
+	at org.neo4j.jdbc.rest.StreamingParser$2.hasNext(StreamingParser.java:187)
+	at org.neo4j.jdbc.rest.TransactionalQueryExecutor.executeQuery(TransactionalQueryExecutor.java:178)
+	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:250)
+	... 5 more
+2015-11-29 16:39:13  [ main:18613 ] - [ ERROR ]  数据库操作异常
+java.sql.SQLException: Error executing query start n=node(84) set n.1448786344063='client 114.212.83.134revised the location information at 2015-11-29 16:39:04'
+ with params {3=revised the location information, 2=2015-11-29 16:39:04, 1=114.212.83.134}
+	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:255)
+	at org.neo4j.jdbc.Neo4jPreparedStatement.executeUpdate(Neo4jPreparedStatement.java:62)
+	at com.neo4j.connection.NeoConnection.update(NeoConnection.java:219)
+	at com.neo4j.dao.BaseDao.writeLog(BaseDao.java:181)
+	at com.neo4j.dao.BaseDao.setLocation(BaseDao.java:168)
+	at com.neo4j.dao.BaseDao.main(BaseDao.java:57)
+Caused by: java.lang.RuntimeException: Error executing cypher statement(s) [{code=Neo.ClientError.Statement.InvalidSyntax, message=Invalid input '1': expected whitespace or a property key name (line 1, column 24 (offset: 23))
+"start n=node(84) set n.1448786344063='client 114.212.83.134revised the location information at 2015-11-29 16:39:04'"
+                        ^}]
+	at org.neo4j.jdbc.rest.StreamingParser.handleErrors(StreamingParser.java:246)
+	at org.neo4j.jdbc.rest.StreamingParser.skipTo(StreamingParser.java:223)
+	at org.neo4j.jdbc.rest.StreamingParser.nextResult(StreamingParser.java:96)
+	at org.neo4j.jdbc.rest.StreamingParser$2.hasNext(StreamingParser.java:187)
+	at org.neo4j.jdbc.rest.TransactionalQueryExecutor.executeQuery(TransactionalQueryExecutor.java:178)
+	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:250)
+	... 5 more
