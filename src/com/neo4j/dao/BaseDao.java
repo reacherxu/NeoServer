@@ -52,9 +52,9 @@ public class BaseDao {
 			System.out.println(ins.getChildren(nodeA));
 			System.out.println(ins.getChildrenNum(nodeA));*/
 
-//		List<ExpressString> list = ins.getExpressString();
-//		System.out.println(list);
-		ins.setLocation(83, 20,21,12,13);
+		List<ExpressString> list = ins.getExpressString();
+		System.out.println(list);
+//		ins.setLocation(83, 20,21,12,13);
 		ins.logout();
 
 	}
@@ -71,15 +71,17 @@ public class BaseDao {
 	 * @return	返回创建的节点id
 	 */
 	public int creatNode(String name,int children_num) {
-		//TODO　　封装节点
 		String sql = "create (n:" + Label.Node + 
 				" {version:'" + VERSION + "',created_time:'" + Util.getCurrentTime()
 				+ "',ip:'" + Util.getIP() + "',name:{1},children_num:{2}}),(n2:" + Label.Log +" {name:{1}})," 
 				+ "(n)-[:Log_for]->(n2) return ID(n)";
 
 		Map<String, Object> rs = neoConn.query(sql,name,children_num);
-		return (Integer) rs.get("ID(n)");
+		int nodeID = (Integer) rs.get("ID(n)");
+				
+		writeLog(nodeID+1,Util.getIP(),Util.getCurrentTime()," created the node:" + name);
 		
+		return nodeID;
 	}
 	
 	/**
@@ -138,19 +140,20 @@ public class BaseDao {
 	 * 进行图遍历，查询所有的ExpressString
 	 * @return
 	 */
-	//TODO  一个节点对应两个node(本身和Log)
 	public List<ExpressString> getExpressString() {
 		List<ExpressString> res = new ArrayList<ExpressString>();
 		
-		//返回string_type对应的id
+		/* 返回string_type对应的id */
 		String sql = "start n=node(*) match (n:Node) where n.name='string_type' return ID(n) as id";
 		List<Map<String, Object>> nodeList = neoConn.queryList(sql);
 		for(int i=0; i<nodeList.size(); i++) {
 			int nodeID = (Integer) nodeList.get(i).get("id");
 			
-			//每个string_type创建Str
+			/* 每个string_type创建ExpressString */
 			sql = "start n=node({1}),m=node({2}) return n.name as width,m.name as fixed";
-			Map<String, Object> map = neoConn.query(sql,nodeID+6,nodeID+8);
+			
+			/* 一个节点对应两个node(本身和Log) */
+			Map<String, Object> map = neoConn.query(sql,nodeID+6*2,nodeID+8*2);
 			res.add(new ExpressString(nodeID, Integer.parseInt((String)map.get("width")),map.get("fixed").equals("FIXED")?true:false));
 		}
 		
@@ -161,12 +164,12 @@ public class BaseDao {
 	 * 设置节点位置信息
 	 * @param id
 	 */
-	//TODO  更新log信息
 	public void setLocation(int id,Object... obj) {
 		String sql = "start n=node("+id+") set n.location_a={1},n.location_b={2}," +
 				"n.location_c={3},n.location_d={4}";
-		writeLog(id+1,Util.getIP(),Util.getCurrentTime()," revised the location information ");
 		neoConn.update(sql, obj);
+		
+		writeLog(id+1,Util.getIP(),Util.getCurrentTime()," revised the location information ");
 	}
 	
 	/**
