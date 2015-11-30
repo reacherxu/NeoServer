@@ -48,6 +48,7 @@ public class NeoConnection {
 		connection.getConnection();
 		connection.logout();
 	}
+	
 	/**
 	 * 获取数据库连接
 	 * @return

@@ -9,6 +9,9 @@ import com.neo4j.util.Util;
 import com.type.datatype.ExpressString;
 
 public class BaseDao {
+	/* string_type 的结构 */
+	private static final int STRING_TYPE = 2;
+	private static final int STRING_TYPE_WIDTH_FIXED = 4;
 	
 	private NeoConnection neoConn ;
 	
@@ -54,6 +57,7 @@ public class BaseDao {
 
 		List<ExpressString> list = ins.getExpressString();
 		System.out.println(list);
+		
 //		ins.setLocation(83, 20,21,12,13);
 		ins.logout();
 
@@ -126,6 +130,17 @@ public class BaseDao {
 	}
 	
 	/**
+	 * 返回指定节点的直接子节点个数
+	 * @param id
+	 * @return
+	 */
+	public int getDirectChildrenNum(int id) {
+		String sql = "start n=node({1}) match n-[]->(m:" + Label.Node + ") return ID(m) as id";
+		List<Map<String, Object>> result = neoConn.queryList(sql,id);
+		return result.size();
+	}
+	
+	/**
 	 * 返回指定节点的全部子节点个数
 	 * @param id
 	 * @return
@@ -142,22 +157,54 @@ public class BaseDao {
 	 */
 	public List<ExpressString> getExpressString() {
 		List<ExpressString> res = new ArrayList<ExpressString>();
+		Integer val = null;
+		Boolean fixed = false;
 		
 		/* 返回string_type对应的id */
 		String sql = "start n=node(*) match (n:Node) where n.name='string_type' return ID(n) as id";
 		List<Map<String, Object>> nodeList = neoConn.queryList(sql);
+		
+		/* 每个string_type创建ExpressString */
 		for(int i=0; i<nodeList.size(); i++) {
-			int nodeID = (Integer) nodeList.get(i).get("id");
+			int string_type = (Integer) nodeList.get(i).get("id");
 			
-			/* 每个string_type创建ExpressString */
-			sql = "start n=node({1}),m=node({2}) return n.name as width,m.name as fixed";
+			/* 判断 数值属性是否存在 */
+			if( getDirectChildrenNum(string_type) == STRING_TYPE ) {
+				
+				int width_spec = getIdByName(string_type,"width_spec");
+				
+				/*　判断 fixed属性是否存在 */
+				if( getDirectChildrenNum(width_spec) == STRING_TYPE_WIDTH_FIXED ) {
+					fixed = true;
+				}
+				
+				int width = getIdByName(width_spec,"width");
+				
+				/* 寻找width的叶子节点 ,添加数值属性 */
+				sql = "start n=node({1}) match (n:Node)-[r:Related_to*0..]->(m:Node) return m.name as name";
+				List<Map<String, Object>> widthNodes = neoConn.queryList(sql,width);
+				val = Integer.parseInt(widthNodes.get(widthNodes.size()-1).get("name").toString());
+			}
 			
-			/* 一个节点对应两个node(本身和Log) */
-			Map<String, Object> map = neoConn.query(sql,nodeID+6*2,nodeID+8*2);
-			res.add(new ExpressString(nodeID, Integer.parseInt((String)map.get("width")),map.get("fixed").equals("FIXED")?true:false));
+			res.add(new ExpressString(string_type, val, fixed));
 		}
 		
 		return res;
+	}
+	
+	
+	/**
+	 * 返回某节点 名字为name的节点id
+	 * @param id
+	 * @param name
+	 * @return
+	 */
+	public int getIdByName(int id,String name) {
+		String sql = "start n=node({1}) match (n:Node)-[r*0..]->(m:Node) where m.name={2} return ID(m) as id";
+		
+		Map<String, Object> map = neoConn.query(sql,id,name);
+		
+		return (Integer) map.get("id");
 	}
 	
 	/**
@@ -171,6 +218,8 @@ public class BaseDao {
 		
 		writeLog(id+1,Util.getIP(),Util.getCurrentTime()," revised the location information ");
 	}
+	
+	
 	
 	/**
 	 * 写日志信息
