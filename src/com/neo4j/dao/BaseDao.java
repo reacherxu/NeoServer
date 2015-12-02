@@ -11,6 +11,7 @@ import com.type.datatype.ExpressString;
 public class BaseDao {
 	/* string_type 的结构 */
 	private static final int STRING_TYPE = 2;
+	
 	private static final int STRING_TYPE_WIDTH_FIXED = 4;
 	
 	private NeoConnection neoConn ;
@@ -38,7 +39,7 @@ public class BaseDao {
 			System.out.println("------------------------");
 			System.out.println(list);*/
 
-		/*int nodeA = ins.creatNode("D1",2);
+	/*	int nodeA = ins.creatNode("D1",2);
 			int nodeB1 = ins.creatNode("E1", 3);
 			int nodeB2 = ins.creatNode("E2", 0);
 			ins.createRelationshipTo(nodeA, nodeB1);
@@ -53,12 +54,17 @@ public class BaseDao {
 
 			System.out.println(ins.getDirectChildren(nodeA));
 			System.out.println(ins.getChildren(nodeA));
-			System.out.println(ins.getChildrenNum(nodeA));*/
+			System.out.println(ins.getChildrenNum(nodeA));
 
 		List<ExpressString> list = ins.getExpressString();
-		System.out.println(list);
+		System.out.println(list);*/
 		
 //		ins.setLocation(83, 20,21,12,13);
+//		List<Double> p =  ins.getLocation(195);
+//		System.out.println(p);
+//		ins.detachDelete(191);
+		
+		ins.setProperty(197, "ignore", false);
 		ins.logout();
 
 	}
@@ -68,6 +74,20 @@ public class BaseDao {
 		neoConn.logout();
 	}
 
+	/*-------------------------添加节点信息--------------------------------------------*/
+	
+	/**
+	 * 写日志信息
+	 * @param id	日志节点
+	 * @param ip
+	 * @param time
+	 * @param operation	操作内容
+	 */
+	private void writeLog(int id,String ip,String time,String operation) {
+		String sql = "start n=node("+id+") set n.log_"+System.currentTimeMillis()+"='client " + ip + operation + " at "+time+"'";
+		neoConn.update(sql, ip, time, operation);
+	}
+	
 	/**
 	 * 创建节点
 	 * @param name	创建的节点名称
@@ -100,6 +120,67 @@ public class BaseDao {
 		return rows;
 	}
 
+	/*-------------------------删除节点信息--------------------------------------------*/
+	
+	/**
+	 * 级联删除节点，包括自身
+	 * @param id
+	 * @return	返回受影响的行数
+	 */
+	public int detachDelete(int id) {
+		String sql = "start n=node({1}) match (n)-[*0..]->(m) detach delete m";
+		int rows = neoConn.update(sql,id);
+		return rows;
+	}
+	
+	/*-------------------------修改节点信息--------------------------------------------*/
+	
+	/**
+	 * 设置节点属性  或   添加节点属性
+	 * @param id	节点id
+	 * @param name	属性名
+	 * @param value	属性值
+	 */
+	public void setProperty(int id, Object name, Object value) {
+		String sql = "start n=node({1}) set n." + name.toString() + "=" + value.toString();
+		neoConn.update(sql, id);
+		
+		writeLog(id+1,Util.getIP(),Util.getCurrentTime()," revised the property information,set " + name + ":" + value);
+	}
+	
+	/**
+	 * 设置节点位置信息
+	 * @param id
+	 */
+	public void setLocation(int id,Object... obj) {
+		String sql = "start n=node("+id+") set n.location_a={1},n.location_b={2}," +
+				"n.location_c={3},n.location_d={4}";
+		neoConn.update(sql, obj);
+		
+		writeLog(id+1,Util.getIP(),Util.getCurrentTime()," revised the location information ");
+	}
+	
+	/*-------------------------查询节点信息--------------------------------------------*/
+	
+	/**
+	 * 获取节点位置信息
+	 * @param id
+	 * @return
+	 */
+	public List<Double> getLocation(int id) {
+		List<Double> position = new ArrayList<Double>();
+		
+		String sql = "start n=node({1}) return n.location_a as location_a,n.location_b as location_b," +
+				"n.location_c as location_c,n.location_d as location_d";
+		Map<String, Object> result = neoConn.query(sql,id);
+		
+		position.add( Double.parseDouble(result.get("location_a").toString()) );
+		position.add( Double.parseDouble(result.get("location_b").toString()) );
+		position.add( Double.parseDouble(result.get("location_c").toString()) );
+		position.add( Double.parseDouble(result.get("location_d").toString()) );
+		
+		return position;
+	}
 	
 	public String getName(int id) {
 		String sql = "start n=node({1}) return n.name as name";
@@ -207,29 +288,5 @@ public class BaseDao {
 		return (Integer) map.get("id");
 	}
 	
-	/**
-	 * 设置节点位置信息
-	 * @param id
-	 */
-	public void setLocation(int id,Object... obj) {
-		String sql = "start n=node("+id+") set n.location_a={1},n.location_b={2}," +
-				"n.location_c={3},n.location_d={4}";
-		neoConn.update(sql, obj);
-		
-		writeLog(id+1,Util.getIP(),Util.getCurrentTime()," revised the location information ");
-	}
 	
-	
-	
-	/**
-	 * 写日志信息
-	 * @param id	日志节点
-	 * @param ip
-	 * @param time
-	 * @param operation	操作内容
-	 */
-	private void writeLog(int id,String ip,String time,String operation) {
-		String sql = "start n=node("+id+") set n.log_"+System.currentTimeMillis()+"='client " + ip + operation + " at "+time+"'";
-		neoConn.update(sql, ip, time, operation);
-	}
 }

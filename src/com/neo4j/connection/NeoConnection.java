@@ -108,6 +108,9 @@ public class NeoConnection {
 		}
 	}
 	
+	/**
+	 * 关闭连接
+	 */
 	public void logout() {
 		this.close(null, null, this.getConn());
 	}
