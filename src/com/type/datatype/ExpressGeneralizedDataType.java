@@ -7,6 +7,9 @@ public abstract class ExpressGeneralizedDataType implements IRectangleCoordinate
 	/* Each node's id */
 	private final Integer id;
 	
+	/* Each node's position*/
+	protected Integer x1, y1, x2, y2;
+	
 	public ExpressGeneralizedDataType(Integer id) {
 		this.id = id;
 	}
