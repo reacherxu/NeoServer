@@ -67,7 +67,7 @@ public class BaseDao {
 //		List<ExpressString> strList = ins.getAllExpressString();
 //		System.out.println(strList);
 		
-		System.out.println(ins.getExpressEntity(133));
+		System.out.println(ins.getAllExpressEntity());
 //		System.out.println(ins.getExpressInstance(133));
 //		System.out.println(ins.getSimpleDataTypeInstance(149));
 //		System.out.println(ins.getVariables(149));
@@ -247,7 +247,29 @@ public class BaseDao {
 		return result.size();
 	}
 	
-	//TODO 只是解析entity body
+	/**
+	 * 遍历图，返回图中所有的entity
+	 * @return
+	 */
+	public List<ExpressEntity> getAllExpressEntity() {
+		List<ExpressEntity> entityList = new ArrayList<ExpressEntity>();
+		
+		/* 返回entity_decl对应的id */
+		String sql = "start n=node(*) match (n:Node) where n.name='entity_decl' return ID(n) as id";
+		List<Map<String, Object>> entities = neoConn.queryList(sql);
+		
+		for (int i = 0; i < entities.size(); i++) {
+			entityList.add( getExpressEntity((Integer)entities.get(i).get("id")) );
+		}
+		
+		return entityList;
+	}
+	
+	/**
+	 * 根据指定entity_decl节点，解析entity
+	 * @param entity_decl
+	 * @return	Class ExpressEntity
+	 */
 	public ExpressEntity getExpressEntity(Integer entity_decl) {
 		String name = null;
 		List<Map<GeneralizedInstance,List<String>>> entityBody = new ArrayList<Map<GeneralizedInstance,List<String>>>();
@@ -393,7 +415,7 @@ public class BaseDao {
 	 * @param real_type
 	 * @return
 	 */
-	private ExpressReal getExpressReal(Integer real_type) {
+	public ExpressReal getExpressReal(Integer real_type) {
 		//TODO　看有精度的时候是怎么样的　
 		return new ExpressReal(real_type);
 	}
@@ -419,7 +441,7 @@ public class BaseDao {
 	 * @param explicit_attr
 	 * @return
 	 */
-	public List<GeneralizedInstance> getSimpleDataTypeInstance(Integer explicit_attr) {
+	private List<GeneralizedInstance> getSimpleDataTypeInstance(Integer explicit_attr) {
 		List<GeneralizedInstance> simpleIns = new ArrayList<GeneralizedInstance>();
 		
 		int parameter_type = getIdByName(explicit_attr, "parameter_type").get(0);
@@ -457,7 +479,7 @@ public class BaseDao {
 	 * @param explicit_attr
 	 * @return
 	 */
-	public List<Map<String,Object>> getVariables(Integer explicit_attr) {
+	private List<Map<String,Object>> getVariables(Integer explicit_attr) {
 		List<Map<String,Object>> variableNames = new ArrayList<Map<String,Object>>();
 		
 		/* 可能有多个attribute_decl */
