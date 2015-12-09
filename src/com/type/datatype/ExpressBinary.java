@@ -2,8 +2,8 @@ package com.type.datatype;
 
 public class ExpressBinary extends ExpressSimpleDataType {
 
-	Integer width = null;
-	Boolean isFixed = false;
+	private Integer width = null;
+	private Boolean isFixed = false;
 
 	public ExpressBinary(Integer id,Integer width) {
 		super(id);

@@ -82,9 +82,9 @@ public class ExpressEntityDao extends BaseDao {
 //		List<ExpressString> strList = ins.getAllExpressString();
 //		System.out.println(strList);
 		
-		System.out.println(ins.getAllExpressEntity());
+//		System.out.println(ins.getAllExpressEntity());
 //		System.out.println(ins.getExpressRealInstance());
-//		System.out.println(ins.getExpressEntity(133));
+		System.out.println(ins.getExpressEntity(54));
 //		System.out.println(ins.getSimpleDataTypeInstance(149));
 //		System.out.println(ins.getVariables(149));
 //		List<ExpressReal> realList = ins.getExpressReal();

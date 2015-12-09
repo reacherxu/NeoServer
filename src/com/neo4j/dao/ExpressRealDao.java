@@ -9,6 +9,9 @@ import com.type.instance.GeneralizedInstance;
 import com.type.instance.RealInstance;
 
 public class ExpressRealDao extends BaseDao {
+
+	private static final int REAL_TYPE = 4;
+	
 	/**
 	 * 进行图遍历，查询所有的ExpressReal
 	 * @return
@@ -36,16 +39,27 @@ public class ExpressRealDao extends BaseDao {
 	 * @return
 	 */
 	public ExpressReal getExpressReal(Integer real_type) {
-		//TODO　看有精度的时候是怎么样的　
-		return new ExpressReal(real_type);
+		ExpressReal expReal = null;
+		Integer precision = null;
+		
+		/* 判断 精度属性是否存在 */
+		if( getDirectChildrenNum(real_type) == REAL_TYPE ) {
+			Integer precision_spec = getIdByName(real_type, "precision_spec").get(0);
+			
+			String sql = "start n=node({1}) match (n:Node)-[r:Related_to*0..]->(m:Node) return m.name as name";
+			List<Map<String, Object>> precNodes = this.getNeoConn().queryList(sql,precision_spec);
+			precision = Integer.parseInt(precNodes.get(precNodes.size()-1).get("name").toString());
+		}
+		expReal = new ExpressReal(real_type,precision);
+		
+		return expReal;
 	}
 	
-	//TODO　any use?
 	/**
 	 * 遍历图查询所有的RealInstance
 	 * @return
 	 */
-	public List<RealInstance> getExpressRealInstance() {
+	public List<RealInstance> getAllExpressRealInstances() {
 		List<RealInstance> realInstances = new ArrayList<RealInstance>();
 		
 		/* 返回explicit_attr对应的id */
@@ -56,25 +70,28 @@ public class ExpressRealDao extends BaseDao {
 		for (int i = 0; i < explicit_attrs.size(); i++) {
 			List<GeneralizedInstance> realInstance = getSimpleDataTypeInstance( (Integer)explicit_attrs.get(i).get("id") );
 			for (int j = 0; j < realInstance.size() ; j++) {
-				realInstances.add( (RealInstance)realInstance.get(i)  );
+				realInstances.add( (RealInstance)realInstance.get(j)  );
 			}
 		}
 		
 		return realInstances;
 	}
 	
+	/**
+	 * 根据指定的explicit_attr节点，解析real instance
+	 * @param explicit_attr
+	 * @return
+	 */
+	public List<GeneralizedInstance> getExpressRealInstance(Integer explicit_attr) {
+		return getSimpleDataTypeInstance( explicit_attr );
+	}
 	
 	public static void main(String[] args) {
 		ExpressRealDao ins = new ExpressRealDao();
 
 		
-//		System.out.println(ins.getAllExpressEntity());
-//		System.out.println(ins.getExpressRealInstance());
-//		System.out.println(ins.getExpressEntity(133));
-//		System.out.println(ins.getSimpleDataTypeInstance(149));
-//		System.out.println(ins.getVariables(149));
-		List<ExpressReal> realList = ins.getAllExpressReal();
-		System.out.println(realList);
+		List<GeneralizedInstance> expReal = ins.getExpressRealInstance(129);
+		System.out.println(expReal);
 //		ins.setLocation(83, 20,21,12,13);
 //		List<Double> p =  ins.getLocation(195);
 //		System.out.println(p);

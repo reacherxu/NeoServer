@@ -6,8 +6,10 @@ import java.util.Map;
 
 import com.neo4j.connection.NeoConnection;
 import com.neo4j.util.Util;
+import com.type.datatype.ExpressBinary;
 import com.type.datatype.ExpressReal;
 import com.type.datatype.ExpressString;
+import com.type.instance.BinaryInstance;
 import com.type.instance.GeneralizedInstance;
 import com.type.instance.RealInstance;
 import com.type.instance.StringInstance;
@@ -260,35 +262,57 @@ public class BaseDao {
 		List<GeneralizedInstance> simpleIns = new ArrayList<GeneralizedInstance>();
 		
 		int parameter_type = getIdByName(explicit_attr, "parameter_type").get(0);
-		int simple_types = getIdByName(parameter_type,"simple_types").get(0);
-		String simpleDataType = (String)getDirectChildren(simple_types).get(0).get("name");
 		
-		/* 封装成基本实例类型 */
-		if( simpleDataType.equals("string_type") ) {
-			int string_type = getIdByName(simple_types, "string_type").get(0);
-			
-			ExpressStringDao stringDao = new ExpressStringDao();
-			ExpressString tmpStr = stringDao.getExpressString(string_type);
+		//TODO　　出现自定义类型
+		if( getDirectChildren(parameter_type).get(0).get("name").equals("simple_types") ) {
+			int simple_types = getIdByName(parameter_type,"simple_types").get(0);
+			String simpleDataType = (String)getDirectChildren(simple_types).get(0).get("name");
 
-			List<Map<String,Object>> tmpIns = getVariables(explicit_attr);
-			/* 可以申明多个实例 */
-			for (int i = 0; i < tmpIns.size(); i++) {
-				simpleIns.add( new StringInstance( (Integer)tmpIns.get(i).get("id"), (String)tmpIns.get(i).get("name"), tmpStr) );
+			/* 封装成基本实例类型 */
+			/* string_type */
+			if( simpleDataType.equals("string_type") ) {
+				int string_type = getIdByName(simple_types, "string_type").get(0);
+
+				ExpressStringDao stringDao = new ExpressStringDao();
+				ExpressString tmpStr = stringDao.getExpressString(string_type);
+
+				List<Map<String,Object>> tmpIns = getVariables(explicit_attr);
+				/* 可以申明多个实例 */
+				for (int i = 0; i < tmpIns.size(); i++) {
+					simpleIns.add( new StringInstance( (Integer)tmpIns.get(i).get("id"), (String)tmpIns.get(i).get("name"), tmpStr) );
+				}
+
+			} 
+			/* binary_type */
+			else if(simpleDataType.equals("binary_type")) {
+				int binary_type = getIdByName(simple_types, "binary_type").get(0);
+
+				ExpressBinaryDao binaryDao = new ExpressBinaryDao();
+				ExpressBinary tmpBinary = binaryDao.getExpressBinary(binary_type);
+
+				List<Map<String,Object>> tmpIns = getVariables(explicit_attr);
+				/* 可以申明多个实例 */
+				for (int i = 0; i < tmpIns.size(); i++) {
+					simpleIns.add( new BinaryInstance( (Integer)tmpIns.get(i).get("id"), (String)tmpIns.get(i).get("name"), tmpBinary) );
+				}
+
+			} 
+			/* real_type */
+			else if( simpleDataType.equals("real_type") ) {
+				int real_type = getIdByName(simple_types, "real_type").get(0);
+				
+				ExpressRealDao realDao = new ExpressRealDao();
+				ExpressReal tmpReal = realDao.getExpressReal(real_type);
+
+				List<Map<String,Object>> tmpIns = getVariables(explicit_attr);
+				/* 可以申明多个实例 */
+				for (int i = 0; i < tmpIns.size(); i++) {
+					simpleIns.add( new RealInstance( (Integer)tmpIns.get(i).get("id"), (String)tmpIns.get(i).get("name"), tmpReal) );
+				}
+			} else {
+				//TODO	其他数据类型
 			}
-			
-		} else if( simpleDataType.equals("real_type") ) {
-			ExpressRealDao realDao = new ExpressRealDao();
-			ExpressReal tmpReal = realDao.getExpressReal(simple_types);
-		
-			List<Map<String,Object>> tmpIns = getVariables(explicit_attr);
-			 /* 可以申明多个实例 */
-			for (int i = 0; i < tmpIns.size(); i++) {
-				simpleIns.add( new RealInstance( (Integer)tmpIns.get(i).get("id"), (String)tmpIns.get(i).get("name"), tmpReal) );
-			}
-		} else {
-			//TODO	其他数据类型
 		}
-		
 		return simpleIns;
 	}
 	
