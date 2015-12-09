@@ -34,6 +34,24 @@ public class NeoConnection {
 		PropertyConfigurator.configure("log4j.properties");
 	}
 	
+	/* 单例模式 */
+	private static NeoConnection instance = null;
+	
+	private NeoConnection() {}
+	
+	/**
+	 * 一个NeoConnection只对应一个连接
+	 * @return
+	 */
+	public static NeoConnection getNeoConnection() {
+		/* 注意：不管有多少个Dao,neoConnect操作只执行一次,不会出现多次连接数据库的操作 */
+		if( instance == null ) {
+			instance = new NeoConnection();
+			instance.neoConnect();
+		}
+		return instance;
+	}
+	
 	public Neo4jConnection getConn() {
 		return conn;
 	}
@@ -44,8 +62,8 @@ public class NeoConnection {
 	
 	
 	public static void main(String[] args) {
-		NeoConnection connection = new NeoConnection();
-		connection.getConnection();
+		NeoConnection connection = NeoConnection.getNeoConnection();
+		connection.neoConnect();
 		connection.logout();
 	}
 	
@@ -53,7 +71,7 @@ public class NeoConnection {
 	 * 获取数据库连接
 	 * @return
 	 */
-	public Neo4jConnection getConnection() {
+	public Neo4jConnection neoConnect() {
 //		Neo4jConnection conn = null;
 		final Driver driver = new Driver();
 		final Properties props = new Properties();

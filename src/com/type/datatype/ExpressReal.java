@@ -16,6 +16,14 @@ public class ExpressReal extends ExpressSimpleDataType {
 		this.precision = precision;
 	}
 
+	public Integer getPrecision() {
+		return precision;
+	}
+
+	public void setPrecision(Integer precision) {
+		this.precision = precision;
+	}
+
 	@Override
 	public String toString() {
 		return "ExpressReal [precision=" + precision + "]";

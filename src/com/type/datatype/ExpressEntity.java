@@ -1,6 +1,6 @@
 package com.type.datatype;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +10,7 @@ public class ExpressEntity extends ExpressGeneralizedDataType {
 
 	private String name;
 	
-	private List<Map<GeneralizedInstance,List<String>>> list = new ArrayList<Map<GeneralizedInstance,List<String>>>();
+	private Map<GeneralizedInstance,List<String>> map = new HashMap<GeneralizedInstance,List<String>>();
 
 	public ExpressEntity(Integer id, String name) {
 		super(id);
@@ -18,11 +18,11 @@ public class ExpressEntity extends ExpressGeneralizedDataType {
 	}
 
 
-	public ExpressEntity(Integer id,String name, List<Map<GeneralizedInstance,List<String>>> list) {
+	public ExpressEntity(Integer id,String name, Map<GeneralizedInstance,List<String>> map) {
 		super(id);
 		this.name = name;
-		if (list != null) {
-			this.list = list;
+		if (map != null) {
+			this.map = map;
 		}
 	}
 
@@ -34,17 +34,20 @@ public class ExpressEntity extends ExpressGeneralizedDataType {
 		this.name = name;
 	}
 
-	public List<Map<GeneralizedInstance,List<String>>> getList() {
-		return list;
+
+	public Map<GeneralizedInstance, List<String>> getMap() {
+		return map;
 	}
 
-	public void setList(List<Map<GeneralizedInstance,List<String>>> list) {
-		this.list = list;
+
+	public void setMap(Map<GeneralizedInstance, List<String>> map) {
+		this.map = map;
 	}
+
 
 	@Override
 	public String toString() {
-		return "ExpressEntity [name=" + name + ", body=" + list.toString() + "]";
+		return "ExpressEntity [name=" + name + ", body=" + map.toString() + "]";
 	}
 
 

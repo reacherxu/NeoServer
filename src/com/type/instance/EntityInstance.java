@@ -12,8 +12,8 @@ public class EntityInstance extends GeneralizedInstance {
 		super(id, name, dataType);
 	}
 	
-	public List<Map<GeneralizedInstance,List<String>>> getAttributes() {
-		return ((ExpressEntity) dataType).getList();
+	public Map<GeneralizedInstance,List<String>> getAttributes() {
+		return ((ExpressEntity) dataType).getMap();
 	}
 
 	//TODO 

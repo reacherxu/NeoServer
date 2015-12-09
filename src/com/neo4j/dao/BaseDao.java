@@ -1,13 +1,11 @@
 package com.neo4j.dao;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.neo4j.connection.NeoConnection;
 import com.neo4j.util.Util;
-import com.type.datatype.ExpressEntity;
 import com.type.datatype.ExpressReal;
 import com.type.datatype.ExpressString;
 import com.type.instance.GeneralizedInstance;
@@ -15,12 +13,8 @@ import com.type.instance.RealInstance;
 import com.type.instance.StringInstance;
 
 public class BaseDao {
-	/* string_type 的结构 */
-	private static final int STRING_TYPE = 2;
 	
-	private static final int STRING_TYPE_WIDTH_FIXED = 4;
-	
-	private NeoConnection neoConn ;
+	public NeoConnection neoConn ;
 	
 	//数据的版本信息
 	private final String VERSION = "0.1-SNAPSHOT";
@@ -31,15 +25,23 @@ public class BaseDao {
 
 	/*
 	 * 构造函数
-	 * 初始化Connection
 	 */
 	public BaseDao() {
-		neoConn = new NeoConnection();
-		neoConn.getConnection();
+		neoConn = NeoConnection.getNeoConnection();
 	}
 
+	
+	public NeoConnection getNeoConn() {
+		return neoConn;
+	}
+
+
+	public void setNeoConn(NeoConnection neoConn) {
+		this.neoConn = neoConn;
+	}
+	
 	public static void main(String[] args) {
-		BaseDao ins = new BaseDao();
+//		BaseDao ins = new ExpressEntityDao();
 		/*String sql = "MATCH (:Movie {title:{1}})<-[:ACTED_IN]-(a:Person) RETURN a.name as actor";
 			List<Map<String, Object>> list = ins.queryList(sql,"The Matrix");
 			System.out.println("------------------------");
@@ -67,7 +69,8 @@ public class BaseDao {
 //		List<ExpressString> strList = ins.getAllExpressString();
 //		System.out.println(strList);
 		
-		System.out.println(ins.getAllExpressEntity());
+//		System.out.println(ins.getAllExpressEntity());
+//		System.out.println(ins.getExpressRealInstance());
 //		System.out.println(ins.getExpressInstance(133));
 //		System.out.println(ins.getSimpleDataTypeInstance(149));
 //		System.out.println(ins.getVariables(149));
@@ -79,7 +82,7 @@ public class BaseDao {
 //		ins.detachDelete(191);
 		
 //		ins.setProperty(197, "ignore", false);
-		ins.logout();
+//		ins.logout();
 
 	}
 	
@@ -247,201 +250,13 @@ public class BaseDao {
 		return result.size();
 	}
 	
-	/**
-	 * 遍历图，返回图中所有的entity
-	 * @return
-	 */
-	public List<ExpressEntity> getAllExpressEntity() {
-		List<ExpressEntity> entityList = new ArrayList<ExpressEntity>();
-		
-		/* 返回entity_decl对应的id */
-		String sql = "start n=node(*) match (n:Node) where n.name='entity_decl' return ID(n) as id";
-		List<Map<String, Object>> entities = neoConn.queryList(sql);
-		
-		for (int i = 0; i < entities.size(); i++) {
-			entityList.add( getExpressEntity((Integer)entities.get(i).get("id")) );
-		}
-		
-		return entityList;
-	}
 	
-	/**
-	 * 根据指定entity_decl节点，解析entity
-	 * @param entity_decl
-	 * @return	Class ExpressEntity
-	 */
-	public ExpressEntity getExpressEntity(Integer entity_decl) {
-		String name = null;
-		List<Map<GeneralizedInstance,List<String>>> entityBody = new ArrayList<Map<GeneralizedInstance,List<String>>>();
-		
-		/* 获取entity name */
-		int entity_head = getIdByName(entity_decl, "entity_head").get(0);
-		int entity_id = getIdByName(entity_head, "entity_id").get(0);
-		name = (String) getDirectChildren(entity_id).get(0).get("name");
-		
-		/* 获取entity 中的变量申明 */
-		List<GeneralizedInstance> entity = getExpressInstance(entity_decl);
-		for (int i = 0; i < entity.size(); i++) {
-			Map<GeneralizedInstance,List<String>> tmpMap = new HashMap<GeneralizedInstance,List<String>>();
-			tmpMap.put(entity.get(i), null);
-			entityBody.add(tmpMap);
-		}
-		
-		return new ExpressEntity(entity_decl, name, entityBody);
-	}
-		
-	/**
-	 * 进行图遍历，查询所有的ExpressString
-	 * @return
-	 */
-	public List<ExpressString> getAllExpressString() {
-		List<ExpressString> res = new ArrayList<ExpressString>();
-		
-		/* 返回string_type对应的id */
-		String sql = "start n=node(*) match (n:Node) where n.name='string_type' return ID(n) as id";
-		List<Map<String, Object>> nodeList = neoConn.queryList(sql);
-		
-		/* 每个string_type创建ExpressString */
-		for(int i=0; i<nodeList.size(); i++) {
-			int string_type = (Integer) nodeList.get(i).get("id");
-			
-			res.add(getExpressString(string_type));
-		}
-		
-		return res;
-	}
-	
-	/**
-	 * 根据指定的string节点，解析string
-	 * @param string_type
-	 * @return
-	 */
-	public ExpressString getExpressString(Integer string_type) {
-		ExpressString expStr = null;
-		Integer val = null;
-		Boolean fixed = false;
-		
-
-		/* 判断 数值属性是否存在 */
-		if( getDirectChildrenNum(string_type) == STRING_TYPE ) {
-
-			int width_spec = getIdByName(string_type,"width_spec").get(0);
-
-			/*　判断 fixed属性是否存在 */
-			if( getDirectChildrenNum(width_spec) == STRING_TYPE_WIDTH_FIXED ) {
-				fixed = true;
-			}
-
-			int width = getIdByName(width_spec,"width").get(0);
-
-			/* 寻找width的叶子节点 ,添加数值属性 */
-			String sql = "start n=node({1}) match (n:Node)-[r:Related_to*0..]->(m:Node) return m.name as name";
-			List<Map<String, Object>> widthNodes = neoConn.queryList(sql,width);
-			val = Integer.parseInt(widthNodes.get(widthNodes.size()-1).get("name").toString());
-			
-			expStr = new ExpressString(string_type, val, fixed);
-		}
-
-		return expStr;
-	}
-	
-	/**
-	 * 遍历图并寻找StringInstance
-	 * @return
-	 */
-	public List<StringInstance> getExpressStringInstance() {
-		List<StringInstance> strInstances = new ArrayList<StringInstance>();
-		
-		/* 返回explicit_attr对应的id */
-		String sql = "start n=node(*) match (n:Node) where n.name='explicit_attr' return ID(n) as id";
-		List<Map<String, Object>> explicit_attrs = neoConn.queryList(sql);
-		
-		/* 解析每一个explicit_attr下的实例 */
-		for (int i = 0; i < explicit_attrs.size(); i++) {
-			List<GeneralizedInstance> strInstance = getSimpleDataTypeInstance( (Integer)explicit_attrs.get(i).get("id") );
-			for (int j = 0; j < strInstance.size() ; j++) {
-				strInstances.add( (StringInstance)strInstance.get(i)  );
-			}
-		}
-		
-		return strInstances;
-	}
-	
-	/**
-	 * 寻找指定Entity中 所有的Instance
-	 * @return
-	 */
-	public List<GeneralizedInstance> getExpressInstance(Integer entity_decl) {
-		List<GeneralizedInstance> instances = new ArrayList<GeneralizedInstance>();
-		
-		/* 返回explicit_attr对应的id */
-		String sql = "start n=node({1}) match (n:Node)-[*1..]->(m:Node) where m.name='explicit_attr' return ID(m) as id";
-		List<Map<String, Object>> explicit_attrs = neoConn.queryList(sql,entity_decl);
-		
-		/* 解析每一个explicit_attr下的实例 */
-		for (int i = 0; i < explicit_attrs.size(); i++) {
-			List<GeneralizedInstance> tmpInstance = getSimpleDataTypeInstance( (Integer)explicit_attrs.get(i).get("id") );
-			for (int j = 0; j < tmpInstance.size() ; j++) {
-				instances.add( tmpInstance.get(j)  );
-			}
-		}
-		
-		return instances;
-	}
-	
-	/**
-	 * 进行图遍历，查询所有的ExpressReal
-	 * @return
-	 */
-	public List<ExpressReal> getAllExpressReal() {
-		List<ExpressReal> res = new ArrayList<ExpressReal>();
-		
-		/* 返回real_type对应的id */
-		String sql = "start n=node(*) match (n:Node) where n.name='real_type' return ID(n) as id";
-		List<Map<String, Object>> nodeList = neoConn.queryList(sql);
-		
-		/* 每个real_type创建ExpressReal */
-		for(int i=0; i<nodeList.size(); i++) {
-			int real_type = (Integer) nodeList.get(i).get("id");
-			
-			res.add(getExpressReal(real_type));
-		}
-		
-		return res;
-	}
-
-	/**
-	 * 获取ExpressReal
-	 * @param real_type
-	 * @return
-	 */
-	public ExpressReal getExpressReal(Integer real_type) {
-		//TODO　看有精度的时候是怎么样的　
-		return new ExpressReal(real_type);
-	}
-	
-	//TODO　any use?
-	public List<RealInstance> getExpressRealInstance() {
-		List<RealInstance> realInstances = new ArrayList<RealInstance>();
-		
-		/* 返回explicit_attr对应的id */
-		String sql = "start n=node(*) match (n:Node) where n.name='explicit_attr' return ID(n) as id";
-		List<Map<String, Object>> explicit_attrs = neoConn.queryList(sql);
-		
-		/* 解析每一个explicit_attr下的实例 */
-		for (int i = 0; i < explicit_attrs.size(); i++) {
-			//TODO
-		}
-		
-		return realInstances;
-	}
-
 	/**
 	 * 获得 某个explicit_attr下的基本数据类型实例
 	 * @param explicit_attr
 	 * @return
 	 */
-	private List<GeneralizedInstance> getSimpleDataTypeInstance(Integer explicit_attr) {
+	public List<GeneralizedInstance> getSimpleDataTypeInstance(Integer explicit_attr) {
 		List<GeneralizedInstance> simpleIns = new ArrayList<GeneralizedInstance>();
 		
 		int parameter_type = getIdByName(explicit_attr, "parameter_type").get(0);
@@ -451,7 +266,9 @@ public class BaseDao {
 		/* 封装成基本实例类型 */
 		if( simpleDataType.equals("string_type") ) {
 			int string_type = getIdByName(simple_types, "string_type").get(0);
-			ExpressString tmpStr = getExpressString(string_type);
+			
+			ExpressStringDao stringDao = new ExpressStringDao();
+			ExpressString tmpStr = stringDao.getExpressString(string_type);
 
 			List<Map<String,Object>> tmpIns = getVariables(explicit_attr);
 			/* 可以申明多个实例 */
@@ -460,8 +277,9 @@ public class BaseDao {
 			}
 			
 		} else if( simpleDataType.equals("real_type") ) {
-			ExpressReal tmpReal = getExpressReal(simple_types);
-
+			ExpressRealDao realDao = new ExpressRealDao();
+			ExpressReal tmpReal = realDao.getExpressReal(simple_types);
+		
 			List<Map<String,Object>> tmpIns = getVariables(explicit_attr);
 			 /* 可以申明多个实例 */
 			for (int i = 0; i < tmpIns.size(); i++) {
@@ -474,6 +292,9 @@ public class BaseDao {
 		return simpleIns;
 	}
 	
+	
+
+
 	/**
 	 * 获取实例变量名称
 	 * @param explicit_attr
