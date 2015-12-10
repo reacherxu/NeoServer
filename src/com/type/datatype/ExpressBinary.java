@@ -34,6 +34,6 @@ public class ExpressBinary extends ExpressSimpleDataType {
 
 	@Override
 	public String toString() {
-		return "Binary [width=" + width + ", isFixed=" + isFixed + "]";
+		return "ExpressBinary [width=" + width + ", isFixed=" + isFixed + "]";
 	}
 }

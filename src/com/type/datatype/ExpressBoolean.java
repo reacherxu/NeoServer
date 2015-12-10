@@ -6,4 +6,8 @@ public class ExpressBoolean extends ExpressSimpleDataType {
 		super(id);
 	}
 
+	@Override
+	public String toString() {
+		return "ExpressBoolean ";
+	}
 }

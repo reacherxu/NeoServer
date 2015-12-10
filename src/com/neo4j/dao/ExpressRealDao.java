@@ -89,9 +89,10 @@ public class ExpressRealDao extends BaseDao {
 	public static void main(String[] args) {
 		ExpressRealDao ins = new ExpressRealDao();
 
-		
-		List<GeneralizedInstance> expReal = ins.getExpressRealInstance(129);
+		ExpressReal expReal = ins.getExpressReal(136);
 		System.out.println(expReal);
+//		List<GeneralizedInstance> expRealIns = ins.getExpressRealInstance(129);
+//		System.out.println(expRealIns);
 //		ins.setLocation(83, 20,21,12,13);
 //		List<Double> p =  ins.getLocation(195);
 //		System.out.println(p);

@@ -7,10 +7,18 @@ import java.util.Map;
 import com.neo4j.connection.NeoConnection;
 import com.neo4j.util.Util;
 import com.type.datatype.ExpressBinary;
+import com.type.datatype.ExpressBoolean;
+import com.type.datatype.ExpressInteger;
+import com.type.datatype.ExpressLogical;
+import com.type.datatype.ExpressNumber;
 import com.type.datatype.ExpressReal;
 import com.type.datatype.ExpressString;
 import com.type.instance.BinaryInstance;
+import com.type.instance.BooleanInstance;
 import com.type.instance.GeneralizedInstance;
+import com.type.instance.IntegerInstance;
+import com.type.instance.LogicalInstance;
+import com.type.instance.NumberInstance;
 import com.type.instance.RealInstance;
 import com.type.instance.StringInstance;
 
@@ -309,8 +317,57 @@ public class BaseDao {
 				for (int i = 0; i < tmpIns.size(); i++) {
 					simpleIns.add( new RealInstance( (Integer)tmpIns.get(i).get("id"), (String)tmpIns.get(i).get("name"), tmpReal) );
 				}
-			} else {
-				//TODO	其他数据类型
+			} 
+			/* boolean_type */
+			else if( simpleDataType.equals("boolean_type") ) {
+				int boolean_type = getIdByName(simple_types, "boolean_type").get(0);
+
+				ExpressBooleanDao boolDao = new ExpressBooleanDao();
+				ExpressBoolean tmpBool = boolDao.getExpressBoolean(boolean_type);
+
+				List<Map<String,Object>> tmpIns = getVariables(explicit_attr);
+				/* 可以申明多个实例 */
+				for (int i = 0; i < tmpIns.size(); i++) {
+					simpleIns.add( new BooleanInstance( (Integer)tmpIns.get(i).get("id"), (String)tmpIns.get(i).get("name"), tmpBool) );
+				}
+			}
+			/* logical_type */
+			else if( simpleDataType.equals("logical_type") ) {
+				int logical_type = getIdByName(simple_types, "logical_type").get(0);
+
+				ExpressLogicalDao logicalDao = new ExpressLogicalDao();
+				ExpressLogical tmpLogical = logicalDao.getExpressLogical(logical_type);
+
+				List<Map<String,Object>> tmpIns = getVariables(explicit_attr);
+				/* 可以申明多个实例 */
+				for (int i = 0; i < tmpIns.size(); i++) {
+					simpleIns.add( new LogicalInstance( (Integer)tmpIns.get(i).get("id"), (String)tmpIns.get(i).get("name"), tmpLogical) );
+				}
+			}
+			/* number_type */
+			else if( simpleDataType.equals("number_type") ) {
+				int number_type = getIdByName(simple_types, "number_type").get(0);
+
+				ExpressNumberDao numberDao = new ExpressNumberDao();
+				ExpressNumber tmpNumber = numberDao.getExpressNumber(number_type);
+
+				List<Map<String,Object>> tmpIns = getVariables(explicit_attr);
+				/* 可以申明多个实例 */
+				for (int i = 0; i < tmpIns.size(); i++) {
+					simpleIns.add( new NumberInstance( (Integer)tmpIns.get(i).get("id"), (String)tmpIns.get(i).get("name"), tmpNumber) );
+				}
+			}
+			else {
+				int integer_type = getIdByName(simple_types, "integer_type").get(0);
+
+				ExpressIntegerDao intDao = new ExpressIntegerDao();
+				ExpressInteger tmpInt = intDao.getExpressInteger(integer_type);
+
+				List<Map<String,Object>> tmpIns = getVariables(explicit_attr);
+				/* 可以申明多个实例 */
+				for (int i = 0; i < tmpIns.size(); i++) {
+					simpleIns.add( new IntegerInstance( (Integer)tmpIns.get(i).get("id"), (String)tmpIns.get(i).get("name"), tmpInt) );
+				}
 			}
 		}
 		return simpleIns;
