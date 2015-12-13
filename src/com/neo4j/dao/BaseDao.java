@@ -101,10 +101,13 @@ public class BaseDao {
 //		Point p1= new Point(1,2);
 //		Point p2= new Point(3,4);
 //		dao.setLocation(205, p1,p2);
-		Point[] p = dao.getLocation(205);
-		for (int i = 0; i < p.length; i++) {
-			System.out.println(p[i]);
-		}
+//		Point[] p = dao.getLocation(205);
+//		for (int i = 0; i < p.length; i++) {
+//			System.out.println(p[i]);
+//		}
+		System.out.println(dao.getIdByName(188, "OPTIONAL"));
+		
+		
 		
 		dao.logout();
 	}
