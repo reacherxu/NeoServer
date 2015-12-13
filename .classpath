@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.7.0_15"/>
 	<classpathentry kind="lib" path="jar/jersey-client-1.9.1.jar"/>
 	<classpathentry kind="lib" path="jar/jersey-core-1.4.jar"/>
 	<classpathentry kind="lib" path="jar/javax.ws.rs-api-2.0.jar"/>
@@ -14,5 +13,6 @@
 	<classpathentry kind="lib" path="jar/xom-1.0d10.jar"/>
 	<classpathentry kind="lib" path="jar/neo4j-jdbc-2.0.1-SNAPSHOT-jar-with-dependencies.jar"/>
 	<classpathentry kind="lib" path="jar/log4j-1.2.17.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

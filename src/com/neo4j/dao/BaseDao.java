@@ -95,6 +95,18 @@ public class BaseDao {
 //		ins.setProperty(197, "ignore", false);
 //		ins.logout();
 
+		
+		BaseDao dao = new BaseDao();
+		
+//		Point p1= new Point(1,2);
+//		Point p2= new Point(3,4);
+//		dao.setLocation(205, p1,p2);
+		Point[] p = dao.getLocation(205);
+		for (int i = 0; i < p.length; i++) {
+			System.out.println(p[i]);
+		}
+		
+		dao.logout();
 	}
 	
 	
@@ -187,7 +199,7 @@ public class BaseDao {
 		}
 		
 		String sql = "start n=node("+id+") set n.location={1}";
-		neoConn.update(sql, location);
+		neoConn.update(sql, location.toString());
 		
 		writeLog(id+1,Util.getIP(),Util.getCurrentTime()," revised the location information ");
 	}
@@ -207,7 +219,7 @@ public class BaseDao {
 		Point[] location = new Point[locStr.length];
 		for (int i = 0; i < location.length; i++) {
 			String[] pos = locStr[i].split(",",2);
-			location[i] = new Point(Integer.parseInt(pos[0]),Integer.parseInt(pos[1]));
+			location[i] = new Point((int)Double.parseDouble(pos[0].toString()),(int)Double.parseDouble(pos[1].toString()));
 		}
 		
 		return location;
@@ -220,12 +232,12 @@ public class BaseDao {
 	}
 	
 	/**
-	 * 返回指定节点的直接子节点
+	 * 返回指定节点的直接子节点的id和name
 	 * @param id
 	 * @return
 	 */
 	public List<Map<String, Object>> getDirectChildren(int id) {
-		String sql = "start n=node({1}) match n-[]->(m:" + Label.Node + ") return ID(m) as id,m.name as name";
+		String sql = "start n=node({1}) match n-[]->(m:" + Label.Node + ") return ID(m) as id,m.name as name order by ID(m)";
 		List<Map<String, Object>> result = neoConn.queryList(sql,id);
 		return result;
 	}
@@ -237,7 +249,7 @@ public class BaseDao {
 	 * @return
 	 */
 	public List<Map<String, Object>> getChildren(int id) {
-		String sql = "start n=node({1}) match n-[*1..]->(m:" + Label.Node + ") return ID(m) as id";
+		String sql = "start n=node({1}) match n-[*1..]->(m:" + Label.Node + ") return ID(m) as id order by ID(m)";
 		List<Map<String, Object>> result = neoConn.queryList(sql,id);
 		return result;
 	}
@@ -260,7 +272,7 @@ public class BaseDao {
 	 * @return
 	 */
 	public int getChildrenNum(int id) {
-		String sql = "start n=node({1}) match n-[*1..]->(m:" + Label.Node + ") return ID(m) as id";
+		String sql = "start n=node({1}) match n-[*1..]->(m:" + Label.Node + ") return ID(m) as id ";
 		List<Map<String, Object>> result = neoConn.queryList(sql,id);
 		return result.size();
 	}
