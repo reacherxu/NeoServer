@@ -1,5 +1,6 @@
 package com.type.datatype;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,8 @@ import com.type.instance.GeneralizedInstance;
 public class ExpressEntity extends ExpressGeneralizedDataType {
 
 	private String name;
+	private Boolean isAbstract;
+	List<ExpressEntity> superTypes = new ArrayList<ExpressEntity>();
 	
 	private Map<GeneralizedInstance,List<String>> map = new HashMap<GeneralizedInstance,List<String>>();
 
@@ -25,6 +28,27 @@ public class ExpressEntity extends ExpressGeneralizedDataType {
 			this.map = map;
 		}
 	}
+
+	
+	public List<ExpressEntity> getSuperTypes() {
+		return superTypes;
+	}
+
+
+	public void setSuperTypes(List<ExpressEntity> superTypes) {
+		this.superTypes = superTypes;
+	}
+
+
+	public Boolean getIsAbstract() {
+		return isAbstract;
+	}
+
+
+	public void setIsAbstract(Boolean isAbstract) {
+		this.isAbstract = isAbstract;
+	}
+
 
 	public String getName() {
 		return name;

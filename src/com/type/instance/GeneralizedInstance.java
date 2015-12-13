@@ -1,13 +1,16 @@
 package com.type.instance;
 
+import java.awt.Point;
+import java.util.List;
+
 import com.type.datatype.ExpressGeneralizedDataType;
 
 
 public abstract class GeneralizedInstance {
 	/* Each node's id */
 	private final Integer id;
-	/* Each node's position */
-	protected Double x1, y1, x2, y2;
+	/* Each line's position */
+	protected List<Point> points;
 
 	public String name = null;
 	public ExpressGeneralizedDataType dataType = null;

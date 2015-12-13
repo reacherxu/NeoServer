@@ -1,5 +1,6 @@
 package com.neo4j.dao;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -179,10 +180,14 @@ public class BaseDao {
 	 * 设置节点位置信息
 	 * @param id
 	 */
-	public void setLocation(int id,Object... obj) {
-		String sql = "start n=node("+id+") set n.location_a={1},n.location_b={2}," +
-				"n.location_c={3},n.location_d={4}";
-		neoConn.update(sql, obj);
+	public void setLocation(int id,Point... points) {
+		StringBuffer location = new StringBuffer("");
+		for (int i = 0; i < points.length; i++) {
+			location.append(points[i].getX() + "," + points[i].getY() + ";");
+		}
+		
+		String sql = "start n=node("+id+") set n.location={1}";
+		neoConn.update(sql, location);
 		
 		writeLog(id+1,Util.getIP(),Util.getCurrentTime()," revised the location information ");
 	}
@@ -194,19 +199,18 @@ public class BaseDao {
 	 * @param id
 	 * @return
 	 */
-	public List<Double> getLocation(int id) {
-		List<Double> position = new ArrayList<Double>();
-		
-		String sql = "start n=node({1}) return n.location_a as location_a,n.location_b as location_b," +
-				"n.location_c as location_c,n.location_d as location_d";
+	public Point[] getLocation(int id) {
+		String sql = "start n=node({1}) return n.location as location";
 		Map<String, Object> result = neoConn.query(sql,id);
 		
-		position.add( Double.parseDouble(result.get("location_a").toString()) );
-		position.add( Double.parseDouble(result.get("location_b").toString()) );
-		position.add( Double.parseDouble(result.get("location_c").toString()) );
-		position.add( Double.parseDouble(result.get("location_d").toString()) );
+		String locStr[] = result.get("location").toString().split(";");
+		Point[] location = new Point[locStr.length];
+		for (int i = 0; i < location.length; i++) {
+			String[] pos = locStr[i].split(",",2);
+			location[i] = new Point(Integer.parseInt(pos[0]),Integer.parseInt(pos[1]));
+		}
 		
-		return position;
+		return location;
 	}
 	
 	public String getName(int id) {
@@ -228,6 +232,7 @@ public class BaseDao {
 	
 	/**
 	 * 返回指定节点的全部子节点
+	 * order by ID(m)  --->指定是否要排序
 	 * @param id
 	 * @return
 	 */

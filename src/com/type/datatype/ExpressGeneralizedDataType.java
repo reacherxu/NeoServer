@@ -1,5 +1,7 @@
 package com.type.datatype;
 
+import java.awt.Point;
+
 import com.type.interfaces.IRectangleCoordinate;
 
 public abstract class ExpressGeneralizedDataType implements IRectangleCoordinate {
@@ -8,7 +10,7 @@ public abstract class ExpressGeneralizedDataType implements IRectangleCoordinate
 	private final Integer id;
 	
 	/* Each node's position*/
-	protected Integer x1, y1, x2, y2;
+	protected Point p1,p2;
 	
 	public ExpressGeneralizedDataType(Integer id) {
 		this.id = id;
