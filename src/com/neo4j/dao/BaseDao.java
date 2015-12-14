@@ -98,6 +98,7 @@ public class BaseDao {
 		
 		BaseDao dao = new BaseDao();
 		
+		System.out.println(dao.getRoot());
 //		Point p1= new Point(1,2);
 //		Point p2= new Point(3,4);
 //		dao.setLocation(205, p1,p2);
@@ -105,7 +106,7 @@ public class BaseDao {
 //		for (int i = 0; i < p.length; i++) {
 //			System.out.println(p[i]);
 //		}
-		System.out.println(dao.getIdByName(188, "OPTIONAL"));
+//		System.out.println(dao.getIdByName(188, "OPTIONAL"));
 		
 		
 		
@@ -234,6 +235,12 @@ public class BaseDao {
 		return (String) rs.get("name");
 	}
 	
+	
+	public Integer getRoot() {
+		String sql = "start n=node(*) match (n:Node) where n.name='syntax' return ID(n) as id";
+		Map<String, Object> rs = neoConn.query(sql);
+		return (Integer) rs.get("id");
+	}
 	/**
 	 * 返回指定节点的直接子节点的id和name
 	 * @param id
@@ -291,7 +298,6 @@ public class BaseDao {
 		
 		int parameter_type = getIdByName(explicit_attr, "parameter_type").get(0);
 		
-		//TODO　　出现自定义类型
 		if( getDirectChildren(parameter_type).get(0).get("name").equals("simple_types") ) {
 			int simple_types = getIdByName(parameter_type,"simple_types").get(0);
 			String simpleDataType = (String)getDirectChildren(simple_types).get(0).get("name");
@@ -393,6 +399,34 @@ public class BaseDao {
 		return simpleIns;
 	}
 	
+	/**
+	 * 获得 某个explicit_attr下的generalized_type实例
+	 * @param explicit_attr
+	 * @return
+	 */
+	public List<GeneralizedInstance> getGeneralizedTypeInstance(Integer explicit_attr) {
+		List<GeneralizedInstance> generalizedIns = new ArrayList<GeneralizedInstance>();
+
+		int parameter_type = getIdByName(explicit_attr, "parameter_type").get(0);
+		
+		/* generalized_types | named_types | simple_types */
+		if( getDirectChildren(parameter_type).get(0).get("name").equals("generalized_types")) {
+			Integer generalized_types = getIdByName(parameter_type, "generalized_types").get(0);
+			
+			//TODO aggregate_type | general_aggregation_types | generic_entity_type | generic_type;
+			if( getDirectChildren(generalized_types).get(0).get("name").equals("general_aggregation_types") ) {
+				Integer general_aggregation_types = getIdByName(generalized_types, "general_aggregation_types").get(0);
+				
+				//TODO general_array_type | general_bag_type | general_list_type | general_set_type;
+				if( getDirectChildren(general_aggregation_types).get(0).get("name").equals("general_set_type")) {
+					//TODO 
+				}
+			}
+		}
+		
+		return generalizedIns;
+	}
+	
 	
 
 
@@ -424,7 +458,8 @@ public class BaseDao {
 	 * @return
 	 */
 	public List<Integer> getIdByName(int id,String name) {
-		String sql = "start n=node({1}) match (n:Node)-[r*0..]->(m:Node) where m.name={2} return ID(m) as id";
+		/* order by 确保得到的子节点是最近的 */
+		String sql = "start n=node({1}) match (n:Node)-[r*0..]->(m:Node) where m.name={2} return ID(m) as id order by ID(m)";
 		
 		List<Map<String, Object>> nameList = neoConn.queryList(sql,id,name);
 		

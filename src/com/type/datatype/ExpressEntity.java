@@ -11,7 +11,7 @@ public class ExpressEntity extends ExpressGeneralizedDataType {
 
 	private String name;
 	private Boolean isAbstract;
-	List<ExpressEntity> superTypes = new ArrayList<ExpressEntity>();
+	List<String> superTypes = new ArrayList<String>();
 	
 	private Map<GeneralizedInstance,List<String>> map = new HashMap<GeneralizedInstance,List<String>>();
 
@@ -30,12 +30,12 @@ public class ExpressEntity extends ExpressGeneralizedDataType {
 	}
 
 	
-	public List<ExpressEntity> getSuperTypes() {
+	public List<String> getSuperTypes() {
 		return superTypes;
 	}
 
 
-	public void setSuperTypes(List<ExpressEntity> superTypes) {
+	public void setSuperTypes(List<String> superTypes) {
 		this.superTypes = superTypes;
 	}
 
@@ -73,7 +73,7 @@ public class ExpressEntity extends ExpressGeneralizedDataType {
 	public String toString() {
 		for(Map.Entry<GeneralizedInstance,List<String>> entry : map.entrySet())
 			System.out.println(entry.getKey());
-		return "ExpressEntity [name=" + name + ", body=" + map.toString() + "]";
+		return "ExpressEntity [name=" + name + ", body=" + map.toString() + "\n " + superTypes + "]";
 	}
 
 

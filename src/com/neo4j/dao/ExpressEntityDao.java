@@ -35,6 +35,7 @@ public class ExpressEntityDao extends BaseDao {
 	 * @return	Class ExpressEntity
 	 */
 	public ExpressEntity getExpressEntity(Integer entity_decl) {
+		ExpressEntity expressEntity = null;
 		String name = null;
 		Map<GeneralizedInstance,List<String>> entityBody = null;
 		
@@ -43,14 +44,45 @@ public class ExpressEntityDao extends BaseDao {
 		int entity_id = getIdByName(entity_head, "entity_id").get(0);
 		name = (String) getDirectChildren(entity_id).get(0).get("name");
 		
+		/* 获取entity父类列表 */
+		List<String> baseList = getBase(entity_decl);
+		
 		/* 获取entity 中的变量申明 */
 		entityBody = getExpressInstance(entity_decl);
 		
-		return new ExpressEntity(entity_decl, name, entityBody);
+		/* 设置entity属性 */
+		expressEntity = new ExpressEntity(entity_decl, name, entityBody);
+		expressEntity.setSuperTypes(baseList);
+		
+		return expressEntity;
 	}
 		
 	
-	
+	/**
+	 * 根据entity_decl获取父类列表
+	 * @param entity_decl
+	 */
+	//TODO　　是否要放到BaseDao当中去，实现为public
+	private List<String> getBase(Integer entity_decl) {
+		List<String> bases = new ArrayList<String>();
+		
+		/* 返回subsuper对应的id */
+		Integer entity_head = getIdByName(entity_decl, "entity_head").get(0);
+		Integer subsuper = getIdByName(entity_head, "subsuper").get(0);
+		
+		//TODO supertype_constraint
+		if( getIdByName(subsuper, "subtype_declaration").size() != 0 ) {
+			Integer subtype_declaration = getIdByName(subsuper, "subtype_declaration").get(0);
+			List<Integer> entity_refs = getIdByName(subtype_declaration, "entity_ref");
+			/* 添加所有的父类 */
+			for (int i = 0; i < entity_refs.size(); i++) {
+				String sql = "start n=node({1}) match (n:Node)-[r*2..2]->(m:Node) return m.name as name";
+				bases.add( (String)this.getNeoConn().query(sql,entity_refs.get(i)).get("name") );
+			}
+		}
+		return bases;
+	}
+
 	/**
 	 * 寻找指定Entity中 所有的Instance
 	 * @return
@@ -92,6 +124,7 @@ public class ExpressEntityDao extends BaseDao {
 		
 //		System.out.println(ins.getAllExpressEntity());
 //		System.out.println(ins.getExpressRealInstance());
+		//104   578   640
 		System.out.println(ins.getExpressEntity(104));
 //		System.out.println(ins.getSimpleDataTypeInstance(149));
 //		System.out.println(ins.getVariables(149));
