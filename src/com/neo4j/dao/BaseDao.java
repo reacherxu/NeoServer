@@ -13,6 +13,7 @@ import com.type.datatype.ExpressInteger;
 import com.type.datatype.ExpressLogical;
 import com.type.datatype.ExpressNumber;
 import com.type.datatype.ExpressReal;
+import com.type.datatype.ExpressSet;
 import com.type.datatype.ExpressString;
 import com.type.instance.BinaryInstance;
 import com.type.instance.BooleanInstance;
@@ -29,9 +30,20 @@ public class BaseDao {
 	
 	//数据的版本信息
 	private final String VERSION = "0.1-SNAPSHOT";
-	//TODO 节点类型
+	
 	public enum Label {
-		Node,Log,User
+		/**
+		 * 正常的树节点
+		 */
+		Node,
+		/**
+		 * 用于记录每个节点上操作的日志节点
+		 */
+		Log,
+		/**
+		 * 用户操作，暂时无用
+		 */
+		User
 	}
 
 	/*
@@ -40,8 +52,12 @@ public class BaseDao {
 	public BaseDao() {
 		neoConn = NeoConnection.getNeoConnection();
 	}
-
 	
+
+	public String getVERSION() {
+		return VERSION;
+	}
+
 	public NeoConnection getNeoConn() {
 		return neoConn;
 	}
@@ -52,24 +68,26 @@ public class BaseDao {
 	}
 	
 	public static void main(String[] args) {
-//		BaseDao ins = new ExpressEntityDao();
+		//"114.212.83.134:7474"  "172.26.13.122:7474"
+		BaseDao ins = new BaseDao();
+		System.out.println(ins.getDirectChildrenNum(12));
 		/*String sql = "MATCH (:Movie {title:{1}})<-[:ACTED_IN]-(a:Person) RETURN a.name as actor";
 			List<Map<String, Object>> list = ins.queryList(sql,"The Matrix");
 			System.out.println("------------------------");
 			System.out.println(list);*/
 
-	/*	int nodeA = ins.creatNode("D1",2);
-			int nodeB1 = ins.creatNode("E1", 3);
-			int nodeB2 = ins.creatNode("E2", 0);
-			ins.createRelationshipTo(nodeA, nodeB1);
-			ins.createRelationshipTo(nodeA, nodeB2);
+		/*int nodeA = ins.creatNode("D1",2);
+		int nodeB1 = ins.creatNode("E1", 3);
+		int nodeB2 = ins.creatNode("E2", 0);
+		ins.createRelationshipTo(nodeA, nodeB1);
+		ins.createRelationshipTo(nodeA, nodeB2);
 
-			int nodeC1 = ins.creatNode("F1", 0);
-			int nodeC2 = ins.creatNode("F2", 0);
-			int nodeC3 = ins.creatNode("F3", 0);
-			ins.createRelationshipTo(nodeB1, nodeC1);
-			ins.createRelationshipTo(nodeB1, nodeC2);
-			ins.createRelationshipTo(nodeB1, nodeC3);*/
+		int nodeC1 = ins.creatNode("F1", 0);
+		int nodeC2 = ins.creatNode("F2", 0);
+		int nodeC3 = ins.creatNode("F3", 0);
+		ins.createRelationshipTo(nodeB1, nodeC1);
+		ins.createRelationshipTo(nodeB1, nodeC2);
+		ins.createRelationshipTo(nodeB1, nodeC3);*/
 
 //			System.out.println(ins.getDirectChildren(149));
 //			System.out.println(ins.getChildren(nodeA));
@@ -96,9 +114,9 @@ public class BaseDao {
 //		ins.logout();
 
 		
-		BaseDao dao = new BaseDao();
-		
-		System.out.println(dao.getRoot());
+//		BaseDao dao = new BaseDao();
+//		
+//		System.out.println(dao.getRoot());
 //		Point p1= new Point(1,2);
 //		Point p2= new Point(3,4);
 //		dao.setLocation(205, p1,p2);
@@ -110,7 +128,7 @@ public class BaseDao {
 		
 		
 		
-		dao.logout();
+		ins.logout();
 	}
 	
 	
@@ -419,8 +437,16 @@ public class BaseDao {
 				
 				//TODO general_array_type | general_bag_type | general_list_type | general_set_type;
 				if( getDirectChildren(general_aggregation_types).get(0).get("name").equals("general_set_type")) {
-					//TODO 
-				}
+					Integer general_set_type = getIdByName(general_aggregation_types,"general_set_type").get(0);
+
+					ExpressSetDao setDao = new ExpressSetDao();
+					ExpressSet tmpInt = setDao.getExpressSet(general_set_type);
+					
+					//TODO
+				} 
+				/*else if() {
+					
+				}*/
 			}
 		}
 		
@@ -432,6 +458,7 @@ public class BaseDao {
 
 	/**
 	 * 获取实例变量名称
+	 * simple_types and derived_attr
 	 * @param explicit_attr
 	 * @return
 	 */

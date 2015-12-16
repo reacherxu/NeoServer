@@ -71,9 +71,7 @@ public class ExpressEntity extends ExpressGeneralizedDataType {
 
 	@Override
 	public String toString() {
-		for(Map.Entry<GeneralizedInstance,List<String>> entry : map.entrySet())
-			System.out.println(entry.getKey());
-		return "ExpressEntity [name=" + name + ", body=" + map.toString() + "\n " + superTypes + "]";
+		return "ExpressEntity [name=" + name + ", body=" + map.toString() + "\t,superTypes= " + superTypes + "]";
 	}
 
 

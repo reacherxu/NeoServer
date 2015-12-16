@@ -46,7 +46,6 @@ public class ExpressStringDao extends BaseDao {
 		Integer val = null;
 		Boolean fixed = false;
 		
-
 		/* 判断 数值属性是否存在 */
 		if( getDirectChildrenNum(string_type) == STRING_TYPE ) {
 

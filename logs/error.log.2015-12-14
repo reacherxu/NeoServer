@@ -1,0 +1,54 @@
+2015-12-02 20:43:25  [ main:18676 ] - [ ERROR ]  数据库操作异常
+java.sql.SQLException: Error executing query start n=node({1}) set n.{2}={3}
+ with params {3=true, 2=uppercase, 1=197}
+	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:255)
+	at org.neo4j.jdbc.Neo4jPreparedStatement.executeUpdate(Neo4jPreparedStatement.java:62)
+	at com.neo4j.connection.NeoConnection.update(NeoConnection.java:223)
+	at com.neo4j.dao.BaseDao.setProperty(BaseDao.java:141)
+	at com.neo4j.dao.BaseDao.main(BaseDao.java:67)
+Caused by: java.lang.RuntimeException: Error executing cypher statement(s) [{code=Neo.ClientError.Statement.InvalidSyntax, message=Invalid input '{': expected whitespace or a property key name (line 1, column 25 (offset: 24))
+"start n=node({1}) set n.{2}={3}"
+                         ^}]
+	at org.neo4j.jdbc.rest.StreamingParser.handleErrors(StreamingParser.java:246)
+	at org.neo4j.jdbc.rest.StreamingParser.skipTo(StreamingParser.java:223)
+	at org.neo4j.jdbc.rest.StreamingParser.nextResult(StreamingParser.java:96)
+	at org.neo4j.jdbc.rest.StreamingParser$2.hasNext(StreamingParser.java:187)
+	at org.neo4j.jdbc.rest.TransactionalQueryExecutor.executeQuery(TransactionalQueryExecutor.java:178)
+	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:250)
+	... 4 more
+2015-12-13 21:10:15  [ main:2020 ] - [ ERROR ]  数据库操作异常
+java.sql.SQLException: Error executing query start n=node(205) set n.location={1}
+ with params {1=1.0,2.0;3.0,4.0;}
+	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:255)
+	at org.neo4j.jdbc.Neo4jPreparedStatement.executeUpdate(Neo4jPreparedStatement.java:62)
+	at com.neo4j.connection.NeoConnection.update(NeoConnection.java:241)
+	at com.neo4j.dao.BaseDao.setLocation(BaseDao.java:198)
+	at com.neo4j.dao.BaseDao.main(BaseDao.java:103)
+Caused by: java.lang.IllegalArgumentException: Could not serialize value 1 1.0,2.0;3.0,4.0;
+	at org.neo4j.jdbc.rest.JsonUtils.serialize(JsonUtils.java:51)
+	at org.neo4j.jdbc.rest.Statement.toJson(Statement.java:26)
+	at org.neo4j.jdbc.rest.Statement.toJson(Statement.java:43)
+	at org.neo4j.jdbc.rest.TransactionalQueryExecutor.post(TransactionalQueryExecutor.java:93)
+	at org.neo4j.jdbc.rest.TransactionalQueryExecutor.commit(TransactionalQueryExecutor.java:119)
+	at org.neo4j.jdbc.rest.TransactionalQueryExecutor.executeQueries(TransactionalQueryExecutor.java:170)
+	at org.neo4j.jdbc.rest.TransactionalQueryExecutor.executeQuery(TransactionalQueryExecutor.java:177)
+	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:250)
+	... 4 more
+2015-12-13 21:11:09  [ main:1102 ] - [ ERROR ]  数据库操作异常
+java.sql.SQLException: Error executing query start n=node(205) set n.location='{1}'
+ with params {1=1.0,2.0;3.0,4.0;}
+	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:255)
+	at org.neo4j.jdbc.Neo4jPreparedStatement.executeUpdate(Neo4jPreparedStatement.java:62)
+	at com.neo4j.connection.NeoConnection.update(NeoConnection.java:241)
+	at com.neo4j.dao.BaseDao.setLocation(BaseDao.java:198)
+	at com.neo4j.dao.BaseDao.main(BaseDao.java:103)
+Caused by: java.lang.IllegalArgumentException: Could not serialize value 1 1.0,2.0;3.0,4.0;
+	at org.neo4j.jdbc.rest.JsonUtils.serialize(JsonUtils.java:51)
+	at org.neo4j.jdbc.rest.Statement.toJson(Statement.java:26)
+	at org.neo4j.jdbc.rest.Statement.toJson(Statement.java:43)
+	at org.neo4j.jdbc.rest.TransactionalQueryExecutor.post(TransactionalQueryExecutor.java:93)
+	at org.neo4j.jdbc.rest.TransactionalQueryExecutor.commit(TransactionalQueryExecutor.java:119)
+	at org.neo4j.jdbc.rest.TransactionalQueryExecutor.executeQueries(TransactionalQueryExecutor.java:170)
+	at org.neo4j.jdbc.rest.TransactionalQueryExecutor.executeQuery(TransactionalQueryExecutor.java:177)
+	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:250)
+	... 4 more

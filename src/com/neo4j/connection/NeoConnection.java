@@ -21,8 +21,8 @@ public class NeoConnection {
 
 	// 使用log4j记录日志
 	private static Logger logger = Logger.getLogger(BaseDao.class);
-	// 连接路径
-	private static final String URL = "jdbc:neo4j://172.26.13.122:7474";
+	// 连接路径      114.212.83.134
+	private static final String URL = "jdbc:neo4j://114.212.83.134:7474";
 	// neo4j用户名
 	private static final String USERNAME = "neo4j";
 	// neo4j密码
@@ -60,7 +60,7 @@ public class NeoConnection {
 		this.conn = conn;
 	}
 	
-	
+
 	public static void main(String[] args) {
 		NeoConnection connection = NeoConnection.getNeoConnection();
 		connection.neoConnect();

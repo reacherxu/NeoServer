@@ -1,14 +1,19 @@
 package com.type.datatype;
 
+
 public class ExpressDefined extends ExpressGeneralizedDataType {
 
-	ExpressGeneralizedDataType dataType = null;
-	String dataName = null;
-
-	public ExpressDefined(Integer id,ExpressGeneralizedDataType dataType, String dataName) {
+	private ExpressGeneralizedDataType dataType = null;
+	private String dataTypeName = null;
+	
+	public ExpressDefined(Integer id) {
+		super(id);
+	}
+	
+	public ExpressDefined(Integer id,ExpressGeneralizedDataType dataType,String dataTypeName) {
 		super(id);
 		this.dataType = dataType;
-		this.dataName = dataName;
+		this.dataTypeName = dataTypeName;
 	}
 
 	public ExpressGeneralizedDataType getDataType() {
@@ -19,17 +24,13 @@ public class ExpressDefined extends ExpressGeneralizedDataType {
 		this.dataType = dataType;
 	}
 
-	public String getDataName() {
-		return dataName;
+	public String getDataTypeName() {
+		return dataTypeName;
 	}
 
-	public void setDataName(String dataName) {
-		this.dataName = dataName;
+	public void setDataTypeName(String dataTypeName) {
+		this.dataTypeName = dataTypeName;
 	}
-
-	@Override
-	public String toString() {
-		return "ExpressDefined [dataType=" + dataType + ", dataName=" + dataName + "]";
-	}
+	
 
 }

@@ -7,6 +7,12 @@ public class ExpressBag extends ExpressAggregation {
 		bound1 = 0;
 		bound2 = null;
 	}
+	
+	public ExpressBag(Integer id,Integer bound1,Integer bound2) {
+		super(id);
+		setBound1(bound1);
+		setBound2(bound2);
+	}
 
 	@Override
 	public void setBound1(Integer bound1) {

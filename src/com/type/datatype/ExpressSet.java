@@ -2,16 +2,18 @@ package com.type.datatype;
 
 public class ExpressSet extends ExpressAggregation {
 
-	public ExpressSet(Integer id) {
+	public ExpressSet(Integer id,ExpressGeneralizedDataType dataType) {
 		super(id);
 		bound1 = 0;
 		bound2 = null;
+		this.dataType = dataType;
 	}
 
-	public ExpressSet(Integer id,Integer bound1, Integer bound2) {
+	public ExpressSet(Integer id,Integer bound1, Integer bound2,ExpressGeneralizedDataType dataType) {
 		super(id);
 		setBound1(bound1);
 		setBound2(bound2);
+		setDataType(dataType);
 	}
 
 	@Override
@@ -33,6 +35,11 @@ public class ExpressSet extends ExpressAggregation {
 		else if (bound2 >= bound1) {
 			this.bound2 = bound1;
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return "ExpressSet [bound1=" + bound1 + ", bound2=" + bound2 + ", dataType=" + dataType + "]";
 	}
 
 }

@@ -30,6 +30,23 @@ public class ExpressEntityDao extends BaseDao {
 	}
 	
 	/**
+	 * 根据entity的名字返回对应的entity
+	 * 若图中无entity，返回null
+	 * @param name
+	 * @return
+	 */
+	public ExpressEntity getEntityByName(String name) {
+		List<ExpressEntity> entityList = getAllExpressEntity();
+		for (int i = 0; i < entityList.size(); i++) {
+			if( entityList.get(i).getName().equals(name) ) {
+				return entityList.get(i);
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
 	 * 根据指定entity_decl节点，解析entity
 	 * @param entity_decl
 	 * @return	Class ExpressEntity
@@ -67,9 +84,13 @@ public class ExpressEntityDao extends BaseDao {
 		List<String> bases = new ArrayList<String>();
 		
 		/* 返回subsuper对应的id */
+		Integer subsuper = null;
 		Integer entity_head = getIdByName(entity_decl, "entity_head").get(0);
-		Integer subsuper = getIdByName(entity_head, "subsuper").get(0);
-		
+		if( getIdByName(entity_head, "subsuper").size() == 0)
+			return bases;
+		else
+			subsuper = getIdByName(entity_head, "subsuper").get(0);
+
 		//TODO supertype_constraint
 		if( getIdByName(subsuper, "subtype_declaration").size() != 0 ) {
 			Integer subtype_declaration = getIdByName(subsuper, "subtype_declaration").get(0);
@@ -117,6 +138,7 @@ public class ExpressEntityDao extends BaseDao {
 	
 	public static void main(String[] args) {
 		ExpressEntityDao ins = new ExpressEntityDao();
+		
 //		ExpressString str = ins.getExpressString(191);
 //		System.out.println(str);
 //		List<ExpressString> strList = ins.getAllExpressString();
@@ -124,8 +146,12 @@ public class ExpressEntityDao extends BaseDao {
 		
 //		System.out.println(ins.getAllExpressEntity());
 //		System.out.println(ins.getExpressRealInstance());
-		//104   578   640
-		System.out.println(ins.getExpressEntity(104));
+		
+		List<ExpressEntity> list = ins.getAllExpressEntity();
+		for (int i = 0; i < list.size(); i++) {
+			System.out.println(list.get(i));
+		}
+		
 //		System.out.println(ins.getSimpleDataTypeInstance(149));
 //		System.out.println(ins.getVariables(149));
 //		List<ExpressReal> realList = ins.getExpressReal();
