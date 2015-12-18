@@ -9,6 +9,7 @@ import com.neo4j.connection.NeoConnection;
 import com.neo4j.util.Util;
 import com.type.datatype.ExpressBinary;
 import com.type.datatype.ExpressBoolean;
+import com.type.datatype.ExpressEntity;
 import com.type.datatype.ExpressInteger;
 import com.type.datatype.ExpressLogical;
 import com.type.datatype.ExpressNumber;
@@ -454,7 +455,36 @@ public class BaseDao {
 	}
 	
 	
-
+	/**
+	 * 获得 某个explicit_attr下的named_type实例
+	 * @param explicit_attr
+	 * @return
+	 */
+	public List<GeneralizedInstance> getNamedTypeInstance(Integer explicit_attr) {
+		List<GeneralizedInstance> namedIns = new ArrayList<GeneralizedInstance>();
+		String refName = null;
+		
+		int parameter_type = getIdByName(explicit_attr, "parameter_type").get(0);
+		
+		if( getDirectChildren(parameter_type).get(0).get("name").equals("named_types") ) {
+			/* 寻找named_types的叶子节点 ,添加属性 */
+			//TODO　　区分是entity_ref | type_ref
+			String sql = "start n=node({1}) match (n:Node)-[r:Related_to*0..]->(m:Node) return m.name as name";
+			List<Map<String, Object>> refNodes = this.getNeoConn().queryList(sql,parameter_type);
+			refName = refNodes.get(refNodes.size()-1).get("name").toString();
+			//TODO 不知道是否是entity
+			ExpressEntityDao entityDao = new ExpressEntityDao();
+			ExpressEntity refType =  entityDao.getEntityByName(refName);
+			
+			List<Map<String,Object>> tmpIns = getVariables(explicit_attr);
+			/* 可以申明多个实例 */
+			for (int i = 0; i < tmpIns.size(); i++) {
+//				namedIns.add( new GeneralizedInstance( (Integer)tmpIns.get(i).get("id"), (String)tmpIns.get(i).get("name"), refType) );
+			}
+		}
+		
+		return namedIns;
+	}
 
 	/**
 	 * 获取实例变量名称

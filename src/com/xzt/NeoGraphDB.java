@@ -62,7 +62,6 @@ public class NeoGraphDB {
 
 	}
 	
-	//TODO   cypher查询待看
 	public String findByParam(String param) {
 		String cypherUri = SERVER_ROOT_URI + "cypher"; 
 
@@ -86,7 +85,6 @@ public class NeoGraphDB {
 	    return resultStr; 
 	}
 	
-	//TODO　
 	public void findSingersInBands(URI startNode)
 			throws URISyntaxException {
 		// TraversalDescription turns into JSON to send to the Server

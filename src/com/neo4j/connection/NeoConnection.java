@@ -27,7 +27,7 @@ public class NeoConnection {
 	private static final String USERNAME = "neo4j";
 	// neo4j密码
 	private static final String PASSWORD = "reacher";
-	//TODO  Neo4j 连接 ，是否要做连接池
+	
 	private Neo4jConnection conn = null;
 	
 	static {

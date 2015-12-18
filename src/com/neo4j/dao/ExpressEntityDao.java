@@ -119,7 +119,13 @@ public class ExpressEntityDao extends BaseDao {
 		for (int i = 0; i < explicit_attrs.size(); i++) {
 			Integer explicit_attr = (Integer)explicit_attrs.get(i).get("id");
 			
+			/* 分为generalized_types | named_types | simple_types   */
 			List<GeneralizedInstance> tmpInstance = getSimpleDataTypeInstance( explicit_attr );
+			//TODO
+//			tmpInstance.addAll(getGeneralizedTypeInstance(explicit_attr));
+			//TODO
+			tmpInstance.addAll(getNamedTypeInstance(explicit_attr));
+			
 			//TODO　add attribute optional (大小写敏感)
 			if( getIdByName(explicit_attr,"OPTIONAL").size() != 0 )
 				for (int j = 0; j < tmpInstance.size() ; j++) {
@@ -136,6 +142,8 @@ public class ExpressEntityDao extends BaseDao {
 		return instances;
 	}
 	
+	
+
 	public static void main(String[] args) {
 		ExpressEntityDao ins = new ExpressEntityDao();
 		
