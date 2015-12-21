@@ -4,27 +4,26 @@ import java.util.List;
 import java.util.Map;
 
 import com.type.datatype.ExpressGeneralizedDataType;
-import com.type.datatype.ExpressBag;
+import com.type.datatype.ExpressArray;
 
-public class ExpressBagDao extends BaseDao {
-	private static final int GENERAL_BAG_TYPE = 4;
+public class ExpressArrayDao extends BaseDao {
 	
 	/**
-	 * 根据指定的general_bag_type节点，解析bag
-	 * @param general_bag_type
+	 * 根据指定的general_array_type节点，解析array
+	 * @param general_array_type
 	 * @return
 	 */
-	public ExpressBag getExpressBag(Integer general_bag_type) {
+	public ExpressArray getExpressArray(Integer general_array_type) {
 		Integer bound1 = 0;
 		Integer bound2 = null;
-		ExpressBag expBag = null;
+		ExpressArray expArray = null ;
 		ExpressGeneralizedDataType dataType = null;
 		
 		/* 判断 bound属性是否存在 */
-		if( getDirectChildrenNum(general_bag_type) == GENERAL_BAG_TYPE ) {
-
-			int bound_spec = getIdByName(general_bag_type,"bound_spec").get(0);
-			int parameter_type = getIdByName(general_bag_type, "parameter_type").get(0);
+		if( hasDirectChild(general_array_type,"bound_spec") ) {
+			
+			int bound_spec = getIdByName(general_array_type,"bound_spec").get(0);
+			int parameter_type = getIdByName(general_array_type, "parameter_type").get(0);
 			
 			int bound_1 = getIdByName(bound_spec, "bound_1").get(0);
 			int bound_2 = getIdByName(bound_spec, "bound_2").get(0);
@@ -45,15 +44,23 @@ public class ExpressBagDao extends BaseDao {
 			//TODO  named_types : entity_ref | type_ref;
 			if(type.equals("simple_types")) 
 				dataType = getSimpleDataType(type_id);
+			
 		}
-		expBag = new ExpressBag(general_bag_type, bound1, bound2, dataType);
+		expArray = new ExpressArray(general_array_type, bound1, bound2, dataType);
 		
-		return expBag;
+		/* 判断是否有optional unique属性 */
+		if(hasDirectChild(general_array_type,"OPTIONAL"))
+			expArray.setIsOptional(true);
+		if(hasDirectChild(general_array_type,"UNIQUE"))
+			expArray.setIsUnique(true);
+		
+		return expArray;
 	}
 	
+
 	public static void main(String[] args) {
-		ExpressBagDao bagDao = new ExpressBagDao();
-		System.out.println(bagDao.getExpressBag(618));
+		ExpressArrayDao arrayDao = new ExpressArrayDao();
+		System.out.println(arrayDao.getExpressArray(450));
 	}
 
 }

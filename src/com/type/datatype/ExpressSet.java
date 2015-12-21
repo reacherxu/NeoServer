@@ -29,14 +29,9 @@ public class ExpressSet extends ExpressAggregation {
 
 	@Override
 	public void setBound2(Integer bound2) {
-		if (bound2 == null) {
-			this.bound2 = bound2;
-		}
-		else if (bound2 >= bound1) {
-			this.bound2 = bound1;
-		}
+		this.bound2 = bound2;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "ExpressSet [bound1=" + bound1 + ", bound2=" + bound2 + ", dataType=" + dataType + "]";

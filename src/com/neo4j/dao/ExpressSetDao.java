@@ -38,13 +38,14 @@ public class ExpressSetDao extends BaseDao {
 			String tmpBound = bound2Nodes.get(bound2Nodes.size()-1).get("name").toString();
 			bound2 = tmpBound.equals("?") ? null : Integer.parseInt(tmpBound);
 			
-			/* 寻找set类型的叶子节点 ,添加属性 */
-			List<Map<String, Object>> type = this.getNeoConn().queryList(sql,parameter_type);
-			String value = type.get(type.size()-1).get("name").toString();
-			//TODO What if set of String ,but no declaration of String 
-			//TODO  other cases : entity_ref | type_ref;
-			ExpressEntityDao entityDao = new ExpressEntityDao();
-			dataType = entityDao.getEntityByName(value);
+			/* 寻找set类型的叶子节点 ,添加属性 parameter_type : generalized_types | named_types | simple_types; */
+			String type = (String) getDirectChildren(parameter_type).get(0).get("name");
+			Integer type_id = (Integer) getDirectChildren(parameter_type).get(0).get("id");
+			
+			//TODO  named_types : entity_ref | type_ref;
+			if(type.equals("simple_types")) 
+				dataType = getSimpleDataType(type_id);
+			
 		}
 		expSet = new ExpressSet(general_set_type, bound1, bound2, dataType);
 		
@@ -53,7 +54,7 @@ public class ExpressSetDao extends BaseDao {
 	
 	public static void main(String[] args) {
 		ExpressSetDao setDao = new ExpressSetDao();
-		System.out.println(setDao.getExpressSet(330));
+		System.out.println(setDao.getExpressSet(698));
 	}
 
 }

@@ -122,9 +122,9 @@ public class ExpressEntityDao extends BaseDao {
 			/* 分为generalized_types | named_types | simple_types   */
 			List<GeneralizedInstance> tmpInstance = getSimpleDataTypeInstance( explicit_attr );
 			//TODO
-//			tmpInstance.addAll(getGeneralizedTypeInstance(explicit_attr));
+			tmpInstance.addAll(getGeneralizedTypeInstance(explicit_attr));
 			//TODO
-			tmpInstance.addAll(getNamedTypeInstance(explicit_attr));
+//			tmpInstance.addAll(getNamedTypeInstance(explicit_attr));
 			
 			//TODO　add attribute optional (大小写敏感)
 			if( getIdByName(explicit_attr,"OPTIONAL").size() != 0 )

@@ -9,6 +9,13 @@ public class ExpressList extends ExpressAggregation {
 		bound1 = 0;
 		bound2 = null;
 	}
+	
+	public ExpressList(Integer id,Integer bound1, Integer bound2,ExpressGeneralizedDataType dataType) {
+		super(id);
+		setBound1(bound1);
+		setBound2(bound2);
+		setDataType(dataType);
+	}
 
 	@Override
 	public void setBound1(Integer bound1) {
@@ -18,7 +25,6 @@ public class ExpressList extends ExpressAggregation {
 				bound2 = bound1;
 			}
 		}
-
 	}
 
 	@Override
@@ -38,6 +44,12 @@ public class ExpressList extends ExpressAggregation {
 
 	public void setIsUnique(Boolean isUnique) {
 		this.isUnique = isUnique;
+	}
+	
+	@Override
+	public String toString() {
+		return "ExpressList [bound1=" + bound1 + ", bound2=" + bound2 +
+				", isUnique=" + isUnique + ", dataType=" + dataType + "]";
 	}
 
 }

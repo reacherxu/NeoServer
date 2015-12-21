@@ -4,27 +4,26 @@ import java.util.List;
 import java.util.Map;
 
 import com.type.datatype.ExpressGeneralizedDataType;
-import com.type.datatype.ExpressBag;
+import com.type.datatype.ExpressList;
 
-public class ExpressBagDao extends BaseDao {
-	private static final int GENERAL_BAG_TYPE = 4;
+public class ExpressListDao extends BaseDao {
 	
 	/**
-	 * 根据指定的general_bag_type节点，解析bag
-	 * @param general_bag_type
+	 * 根据指定的general_list_type节点，解析list
+	 * @param general_list_type
 	 * @return
 	 */
-	public ExpressBag getExpressBag(Integer general_bag_type) {
+	public ExpressList getExpressList(Integer general_list_type) {
 		Integer bound1 = 0;
 		Integer bound2 = null;
-		ExpressBag expBag = null;
+		ExpressList expList = null ;
 		ExpressGeneralizedDataType dataType = null;
 		
 		/* 判断 bound属性是否存在 */
-		if( getDirectChildrenNum(general_bag_type) == GENERAL_BAG_TYPE ) {
-
-			int bound_spec = getIdByName(general_bag_type,"bound_spec").get(0);
-			int parameter_type = getIdByName(general_bag_type, "parameter_type").get(0);
+		if( hasDirectChild(general_list_type,"bound_spec") ) {
+			
+			int bound_spec = getIdByName(general_list_type,"bound_spec").get(0);
+			int parameter_type = getIdByName(general_list_type, "parameter_type").get(0);
 			
 			int bound_1 = getIdByName(bound_spec, "bound_1").get(0);
 			int bound_2 = getIdByName(bound_spec, "bound_2").get(0);
@@ -45,15 +44,21 @@ public class ExpressBagDao extends BaseDao {
 			//TODO  named_types : entity_ref | type_ref;
 			if(type.equals("simple_types")) 
 				dataType = getSimpleDataType(type_id);
+			
 		}
-		expBag = new ExpressBag(general_bag_type, bound1, bound2, dataType);
+		expList = new ExpressList(general_list_type, bound1, bound2, dataType);
 		
-		return expBag;
+		/* 判断是否有 unique属性 */
+		if(hasDirectChild(general_list_type,"UNIQUE"))
+			expList.setIsUnique(true);
+		
+		return expList;
 	}
 	
+
 	public static void main(String[] args) {
-		ExpressBagDao bagDao = new ExpressBagDao();
-		System.out.println(bagDao.getExpressBag(618));
+		ExpressListDao listDao = new ExpressListDao();
+		System.out.println(listDao.getExpressList(534));
 	}
 
 }

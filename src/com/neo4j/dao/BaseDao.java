@@ -10,6 +10,7 @@ import com.neo4j.util.Util;
 import com.type.datatype.ExpressBinary;
 import com.type.datatype.ExpressBoolean;
 import com.type.datatype.ExpressEntity;
+import com.type.datatype.ExpressGeneralizedDataType;
 import com.type.datatype.ExpressInteger;
 import com.type.datatype.ExpressLogical;
 import com.type.datatype.ExpressNumber;
@@ -260,6 +261,7 @@ public class BaseDao {
 		Map<String, Object> rs = neoConn.query(sql);
 		return (Integer) rs.get("id");
 	}
+	
 	/**
 	 * 返回指定节点的直接子节点的id和name
 	 * @param id
@@ -304,6 +306,82 @@ public class BaseDao {
 		String sql = "start n=node({1}) match n-[*1..]->(m:" + Label.Node + ") return ID(m) as id ";
 		List<Map<String, Object>> result = neoConn.queryList(sql,id);
 		return result.size();
+	}
+	
+	/**
+	 * 判断id节点是否有名为property的直接子节点
+	 * @param id
+	 * @param property
+	 * @return
+	 */
+	public boolean hasDirectChild(Integer id,String property) {
+		String sql = "start n=node({1}) match (n:Node)-[]->(m:Node) where m.name='" + property + "' return m.id as id";
+		List<Map<String, Object>> result = neoConn.queryList(sql,id);
+		return result.size() == 0 ? false : true;
+	}
+	
+	/**
+	 * 根据simple_types节点   解析基本数据类型
+	 * @param simple_types
+	 * @return
+	 */
+	public ExpressGeneralizedDataType getSimpleDataType(Integer simple_types) {
+		ExpressGeneralizedDataType simpleDateType = null;
+		
+		String simpleDataType = (String)getDirectChildren(simple_types).get(0).get("name");
+
+		/* 封装成基本数据类型 */
+		/* string_type */
+		if( simpleDataType.equals("string_type") ) {
+			int string_type = getIdByName(simple_types, "string_type").get(0);
+
+			ExpressStringDao stringDao = new ExpressStringDao();
+			simpleDateType = stringDao.getExpressString(string_type);
+		} 
+		/* binary_type */
+		else if(simpleDataType.equals("binary_type")) {
+			int binary_type = getIdByName(simple_types, "binary_type").get(0);
+
+			ExpressBinaryDao binaryDao = new ExpressBinaryDao();
+			simpleDateType = binaryDao.getExpressBinary(binary_type);
+		} 
+		/* real_type */
+		else if( simpleDataType.equals("real_type") ) {
+			int real_type = getIdByName(simple_types, "real_type").get(0);
+			
+			ExpressRealDao realDao = new ExpressRealDao();
+			simpleDateType = realDao.getExpressReal(real_type);
+		} 
+		/* boolean_type */
+		else if( simpleDataType.equals("boolean_type") ) {
+			int boolean_type = getIdByName(simple_types, "boolean_type").get(0);
+
+			ExpressBooleanDao boolDao = new ExpressBooleanDao();
+			simpleDateType = boolDao.getExpressBoolean(boolean_type);
+		}
+		/* logical_type */
+		else if( simpleDataType.equals("logical_type") ) {
+			int logical_type = getIdByName(simple_types, "logical_type").get(0);
+
+			ExpressLogicalDao logicalDao = new ExpressLogicalDao();
+			simpleDateType = logicalDao.getExpressLogical(logical_type);
+
+		}
+		/* number_type */
+		else if( simpleDataType.equals("number_type") ) {
+			int number_type = getIdByName(simple_types, "number_type").get(0);
+
+			ExpressNumberDao numberDao = new ExpressNumberDao();
+			simpleDateType = numberDao.getExpressNumber(number_type);
+		}
+		else {
+			int integer_type = getIdByName(simple_types, "integer_type").get(0);
+
+			ExpressIntegerDao intDao = new ExpressIntegerDao();
+			simpleDateType = intDao.getExpressInteger(integer_type);
+		}
+		
+		return simpleDateType;
 	}
 	
 	
