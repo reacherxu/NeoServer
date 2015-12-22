@@ -126,7 +126,6 @@ public class ExpressEntityDao extends BaseDao {
 			//TODO
 //			tmpInstance.addAll(getNamedTypeInstance(explicit_attr));
 			
-			//TODO　add attribute optional (大小写敏感)
 			if( getIdByName(explicit_attr,"OPTIONAL").size() != 0 )
 				for (int j = 0; j < tmpInstance.size() ; j++) {
 					List<String> tmpStr = new ArrayList<String>();

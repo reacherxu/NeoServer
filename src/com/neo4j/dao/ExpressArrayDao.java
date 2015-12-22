@@ -13,10 +13,10 @@ public class ExpressArrayDao extends BaseDao {
 	 * @param general_array_type
 	 * @return
 	 */
-	public ExpressArray getExpressArray(Integer general_array_type) {
+	public ExpressArray<ExpressGeneralizedDataType> getExpressArray(Integer general_array_type) {
 		Integer bound1 = 0;
 		Integer bound2 = null;
-		ExpressArray expArray = null ;
+		ExpressArray<ExpressGeneralizedDataType> expArray = null ;
 		ExpressGeneralizedDataType dataType = null;
 		
 		/* 判断 bound属性是否存在 */
@@ -46,7 +46,7 @@ public class ExpressArrayDao extends BaseDao {
 				dataType = getSimpleDataType(type_id);
 			
 		}
-		expArray = new ExpressArray(general_array_type, bound1, bound2, dataType);
+		expArray = new ExpressArray<ExpressGeneralizedDataType>(general_array_type, bound1, bound2, dataType);
 		
 		/* 判断是否有optional unique属性 */
 		if(hasDirectChild(general_array_type,"OPTIONAL"))

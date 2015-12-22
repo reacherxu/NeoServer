@@ -1,15 +1,16 @@
 package com.type.datatype;
 
-public class ExpressSet extends ExpressAggregation {
+public class ExpressSet<T extends ExpressGeneralizedDataType> extends ExpressAggregation<T> {
 
-	public ExpressSet(Integer id,ExpressGeneralizedDataType dataType) {
+
+	public ExpressSet(Integer id,T dataType) {
 		super(id);
 		bound1 = 0;
 		bound2 = null;
 		this.dataType = dataType;
 	}
 
-	public ExpressSet(Integer id,Integer bound1, Integer bound2,ExpressGeneralizedDataType dataType) {
+	public ExpressSet(Integer id,Integer bound1, Integer bound2,T dataType) {
 		super(id);
 		setBound1(bound1);
 		setBound2(bound2);

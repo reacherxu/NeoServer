@@ -13,10 +13,10 @@ public class ExpressListDao extends BaseDao {
 	 * @param general_list_type
 	 * @return
 	 */
-	public ExpressList getExpressList(Integer general_list_type) {
+	public ExpressList<ExpressGeneralizedDataType> getExpressList(Integer general_list_type) {
 		Integer bound1 = 0;
 		Integer bound2 = null;
-		ExpressList expList = null ;
+		ExpressList<ExpressGeneralizedDataType> expList = null ;
 		ExpressGeneralizedDataType dataType = null;
 		
 		/* 判断 bound属性是否存在 */
@@ -46,7 +46,7 @@ public class ExpressListDao extends BaseDao {
 				dataType = getSimpleDataType(type_id);
 			
 		}
-		expList = new ExpressList(general_list_type, bound1, bound2, dataType);
+		expList = new ExpressList<ExpressGeneralizedDataType>(general_list_type, bound1, bound2, dataType);
 		
 		/* 判断是否有 unique属性 */
 		if(hasDirectChild(general_list_type,"UNIQUE"))

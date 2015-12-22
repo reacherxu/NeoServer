@@ -1,6 +1,6 @@
 package com.type.datatype;
 
-public class ExpressList extends ExpressAggregation {
+public class ExpressList<T extends ExpressGeneralizedDataType> extends ExpressAggregation<T> {
 
 	Boolean isUnique = false;
 
@@ -10,7 +10,7 @@ public class ExpressList extends ExpressAggregation {
 		bound2 = null;
 	}
 	
-	public ExpressList(Integer id,Integer bound1, Integer bound2,ExpressGeneralizedDataType dataType) {
+	public ExpressList(Integer id,Integer bound1, Integer bound2,T dataType) {
 		super(id);
 		setBound1(bound1);
 		setBound2(bound2);

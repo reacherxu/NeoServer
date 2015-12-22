@@ -14,10 +14,10 @@ public class ExpressBagDao extends BaseDao {
 	 * @param general_bag_type
 	 * @return
 	 */
-	public ExpressBag getExpressBag(Integer general_bag_type) {
+	public ExpressBag<ExpressGeneralizedDataType> getExpressBag(Integer general_bag_type) {
 		Integer bound1 = 0;
 		Integer bound2 = null;
-		ExpressBag expBag = null;
+		ExpressBag<ExpressGeneralizedDataType> expBag = null;
 		ExpressGeneralizedDataType dataType = null;
 		
 		/* 判断 bound属性是否存在 */
@@ -46,7 +46,7 @@ public class ExpressBagDao extends BaseDao {
 			if(type.equals("simple_types")) 
 				dataType = getSimpleDataType(type_id);
 		}
-		expBag = new ExpressBag(general_bag_type, bound1, bound2, dataType);
+		expBag = new ExpressBag<ExpressGeneralizedDataType>(general_bag_type, bound1, bound2, dataType);
 		
 		return expBag;
 	}

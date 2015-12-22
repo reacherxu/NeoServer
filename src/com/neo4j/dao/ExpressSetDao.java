@@ -14,10 +14,10 @@ public class ExpressSetDao extends BaseDao {
 	 * @param general_set_type
 	 * @return
 	 */
-	public ExpressSet getExpressSet(Integer general_set_type) {
+	public ExpressSet<ExpressGeneralizedDataType> getExpressSet(Integer general_set_type) {
 		Integer bound1 = 0;
 		Integer bound2 = null;
-		ExpressSet expSet = null;
+		ExpressSet<ExpressGeneralizedDataType> expSet = null;
 		ExpressGeneralizedDataType dataType = null;
 		
 		/* 判断 bound属性是否存在 */
@@ -38,16 +38,18 @@ public class ExpressSetDao extends BaseDao {
 			String tmpBound = bound2Nodes.get(bound2Nodes.size()-1).get("name").toString();
 			bound2 = tmpBound.equals("?") ? null : Integer.parseInt(tmpBound);
 			
-			/* 寻找set类型的叶子节点 ,添加属性 parameter_type : generalized_types | named_types | simple_types; */
+			/* 寻找set类型的叶子节点 ,添加属性  */
 			String type = (String) getDirectChildren(parameter_type).get(0).get("name");
 			Integer type_id = (Integer) getDirectChildren(parameter_type).get(0).get("id");
 			
-			//TODO  named_types : entity_ref | type_ref;
+			//TODO parameter_type : generalized_types | named_types | simple_types;
 			if(type.equals("simple_types")) 
 				dataType = getSimpleDataType(type_id);
-			
+			//TODO  named_types : entity_ref | type_ref;
+			else if(type.equals("named_types"))
+				dataType = getNamedType(type_id);
 		}
-		expSet = new ExpressSet(general_set_type, bound1, bound2, dataType);
+		expSet = new ExpressSet<ExpressGeneralizedDataType>(general_set_type, bound1, bound2, dataType);
 		
 		return expSet;
 	}

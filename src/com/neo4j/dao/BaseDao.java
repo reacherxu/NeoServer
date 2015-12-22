@@ -519,7 +519,7 @@ public class BaseDao {
 					Integer general_set_type = getIdByName(general_aggregation_types,"general_set_type").get(0);
 
 					ExpressSetDao setDao = new ExpressSetDao();
-					ExpressSet tmpInt = setDao.getExpressSet(general_set_type);
+					ExpressSet<ExpressGeneralizedDataType> tmpInt = setDao.getExpressSet(general_set_type);
 					
 					//TODO
 				} 
@@ -532,7 +532,28 @@ public class BaseDao {
 		return generalizedIns;
 	}
 	
-	
+	/**
+	 * 解析对应的entity_ref和type_ref
+	 * @param named_types
+	 * @return
+	 */
+	public ExpressGeneralizedDataType getNamedType(Integer named_types) {
+		ExpressGeneralizedDataType dataType = null;
+		
+		String type_name = (String) getDirectChildren(named_types).get(0).get("name");
+		if(type_name.equals("entity_ref")) {
+			String sql = "start n=node({1}) match (n:Node)-[r:Related_to*0..]->(m:Node) return m.name as name";
+			List<Map<String, Object>> names = this.getNeoConn().queryList(sql,named_types);
+			String entityName = names.get(names.size()-1).get("name").toString();
+			
+			ExpressEntityDao entityDao = new ExpressEntityDao();
+			dataType = entityDao.getEntityByName(entityName);
+		} else {
+			//TODO　　type_ref
+		}
+		
+		return dataType;
+	}
 	/**
 	 * 获得 某个explicit_attr下的named_type实例
 	 * @param explicit_attr
