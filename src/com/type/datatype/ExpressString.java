@@ -5,6 +5,10 @@ public class ExpressString extends ExpressSimpleDataType {
 	private Integer width = null;
 	private Boolean isFixed = false;
 
+	public ExpressString(Integer id) {
+		super(id);
+	} 
+	
 	public ExpressString(Integer id,Integer width) {
 		super(id);
 		this.width = width;

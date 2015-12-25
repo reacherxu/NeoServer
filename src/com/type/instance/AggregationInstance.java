@@ -28,6 +28,7 @@ public abstract class AggregationInstance<T extends GeneralizedInstance, E exten
 		return this.getClass().getSimpleName() + "无此方法";
 	}
 
+	
 	// protected abstract Boolean isIndexLegal(Integer index);
 
 	protected abstract ExpressGeneralizedDataType getElementDataType();

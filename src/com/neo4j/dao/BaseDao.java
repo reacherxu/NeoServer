@@ -1,29 +1,38 @@
 package com.neo4j.dao;
 
 import java.awt.Point;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.neo4j.connection.NeoConnection;
 import com.neo4j.util.Util;
+import com.type.datatype.ExpressArray;
+import com.type.datatype.ExpressBag;
 import com.type.datatype.ExpressBinary;
 import com.type.datatype.ExpressBoolean;
 import com.type.datatype.ExpressEntity;
 import com.type.datatype.ExpressGeneralizedDataType;
 import com.type.datatype.ExpressInteger;
+import com.type.datatype.ExpressList;
 import com.type.datatype.ExpressLogical;
 import com.type.datatype.ExpressNumber;
 import com.type.datatype.ExpressReal;
 import com.type.datatype.ExpressSet;
 import com.type.datatype.ExpressString;
+import com.type.instance.ArrayInstance;
+import com.type.instance.BagInstance;
 import com.type.instance.BinaryInstance;
 import com.type.instance.BooleanInstance;
+import com.type.instance.EntityInstance;
 import com.type.instance.GeneralizedInstance;
 import com.type.instance.IntegerInstance;
+import com.type.instance.ListInstance;
 import com.type.instance.LogicalInstance;
 import com.type.instance.NumberInstance;
 import com.type.instance.RealInstance;
+import com.type.instance.SetInstance;
 import com.type.instance.StringInstance;
 
 public class BaseDao {
@@ -133,7 +142,9 @@ public class BaseDao {
 		ins.logout();
 	}
 	
-	
+	/**
+	 * 登出
+	 */
 	public void logout() {
 		neoConn.logout();
 	}
@@ -249,13 +260,21 @@ public class BaseDao {
 		return location;
 	}
 	
+	/**
+	 * 查询id节点的name
+	 * @param id
+	 * @return
+	 */
 	public String getName(int id) {
 		String sql = "start n=node({1}) return n.name as name";
 		Map<String, Object> rs = neoConn.query(sql,id);
 		return (String) rs.get("name");
 	}
 	
-	
+	/**
+	 * 查询图中根节点的id
+	 * @return
+	 */
 	public Integer getRoot() {
 		String sql = "start n=node(*) match (n:Node) where n.name='syntax' return ID(n) as id";
 		Map<String, Object> rs = neoConn.query(sql);
@@ -318,6 +337,18 @@ public class BaseDao {
 		String sql = "start n=node({1}) match (n:Node)-[]->(m:Node) where m.name='" + property + "' return m.id as id";
 		List<Map<String, Object>> result = neoConn.queryList(sql,id);
 		return result.size() == 0 ? false : true;
+	}
+	
+	/**
+	 *  寻找id的叶子节点 ,添加数值属性 
+	 * @param id
+	 * @return
+	 */
+	public String getLeaf(Integer id) {
+		
+		String sql = "start n=node({1}) match (n:Node)-[r:Related_to*0..]->(m:Node) return m.name as name";
+		List<Map<String, Object>> nodes = this.getNeoConn().queryList(sql,id);
+		return nodes.get(nodes.size()-1).get("name").toString();
 	}
 	
 	/**
@@ -510,7 +541,7 @@ public class BaseDao {
 		if( getDirectChildren(parameter_type).get(0).get("name").equals("generalized_types")) {
 			Integer generalized_types = getIdByName(parameter_type, "generalized_types").get(0);
 			
-			//TODO aggregate_type | general_aggregation_types | generic_entity_type | generic_type;
+			/* aggregate_type | general_aggregation_types | generic_entity_type | generic_type */
 			if( getDirectChildren(generalized_types).get(0).get("name").equals("general_aggregation_types") ) {
 				Integer general_aggregation_types = getIdByName(generalized_types, "general_aggregation_types").get(0);
 				
@@ -519,13 +550,50 @@ public class BaseDao {
 					Integer general_set_type = getIdByName(general_aggregation_types,"general_set_type").get(0);
 
 					ExpressSetDao setDao = new ExpressSetDao();
-					ExpressSet<ExpressGeneralizedDataType> tmpInt = setDao.getExpressSet(general_set_type);
+					ExpressSet<ExpressGeneralizedDataType> tmpSet = setDao.getExpressSet(general_set_type);
 					
-					//TODO
+					List<Map<String,Object>> tmpVars = getVariables(explicit_attr);
+					/* 可以申明多个实例 */
+					for (int i = 0; i < tmpVars.size(); i++) {
+						generalizedIns.add( new SetInstance( (Integer)tmpVars.get(i).get("id"), (String)tmpVars.get(i).get("name"), tmpSet) );
+					}
 				} 
-				/*else if() {
+				else if(getDirectChildren(general_aggregation_types).get(0).get("name").equals("general_bag_type")) {
+					Integer general_bag_type = getIdByName(general_aggregation_types,"general_bag_type").get(0);
+
+					ExpressBagDao bagDao = new ExpressBagDao();
+					ExpressBag<ExpressGeneralizedDataType> tmpBag = bagDao.getExpressBag(general_bag_type);
 					
-				}*/
+					List<Map<String,Object>> tmpVars = getVariables(explicit_attr);
+					/* 可以申明多个实例 */
+					for (int i = 0; i < tmpVars.size(); i++) {
+						generalizedIns.add( new BagInstance( (Integer)tmpVars.get(i).get("id"), (String)tmpVars.get(i).get("name"), tmpBag) );
+					}
+				}
+				else if(getDirectChildren(general_aggregation_types).get(0).get("name").equals("general_array_type")) {
+					Integer general_array_type = getIdByName(general_aggregation_types,"general_array_type").get(0);
+
+					ExpressArrayDao arrayDao = new ExpressArrayDao();
+					ExpressArray<ExpressGeneralizedDataType> tmpArray = arrayDao.getExpressArray(general_array_type);
+					
+					List<Map<String,Object>> tmpVars = getVariables(explicit_attr);
+					/* 可以申明多个实例 */
+					for (int i = 0; i < tmpVars.size(); i++) {
+						generalizedIns.add( new ArrayInstance( (Integer)tmpVars.get(i).get("id"), (String)tmpVars.get(i).get("name"), tmpArray) );
+					}
+				}
+				else {
+					Integer general_list_type = getIdByName(general_aggregation_types,"general_list_type").get(0);
+
+					ExpressListDao listDao = new ExpressListDao();
+					ExpressList<ExpressGeneralizedDataType> tmpList = listDao.getExpressList(general_list_type);
+					
+					List<Map<String,Object>> tmpVars = getVariables(explicit_attr);
+					/* 可以申明多个实例 */
+					for (int i = 0; i < tmpVars.size(); i++) {
+						generalizedIns.add( new ListInstance( (Integer)tmpVars.get(i).get("id"), (String)tmpVars.get(i).get("name"), tmpList) );
+					}
+				}
 			}
 		}
 		
@@ -546,8 +614,8 @@ public class BaseDao {
 			List<Map<String, Object>> names = this.getNeoConn().queryList(sql,named_types);
 			String entityName = names.get(names.size()-1).get("name").toString();
 			
-			ExpressEntityDao entityDao = new ExpressEntityDao();
-			dataType = entityDao.getEntityByName(entityName);
+			//TODO 暂时出现实体引用，则new一个id为-1的
+			dataType = new ExpressEntity(-1, entityName);
 		} else {
 			//TODO　　type_ref
 		}
@@ -567,19 +635,16 @@ public class BaseDao {
 		
 		if( getDirectChildren(parameter_type).get(0).get("name").equals("named_types") ) {
 			/* 寻找named_types的叶子节点 ,添加属性 */
-			//TODO　　区分是entity_ref | type_ref
-			String sql = "start n=node({1}) match (n:Node)-[r:Related_to*0..]->(m:Node) return m.name as name";
-			List<Map<String, Object>> refNodes = this.getNeoConn().queryList(sql,parameter_type);
-			refName = refNodes.get(refNodes.size()-1).get("name").toString();
-			//TODO 不知道是否是entity
-			ExpressEntityDao entityDao = new ExpressEntityDao();
-			ExpressEntity refType =  entityDao.getEntityByName(refName);
-			
+			int named_types = (Integer) getDirectChildren(parameter_type).get(0).get("id");
+			ExpressGeneralizedDataType dataType = getNamedType(named_types);
+
+			//TODO  不知道是否是entity
 			List<Map<String,Object>> tmpIns = getVariables(explicit_attr);
 			/* 可以申明多个实例 */
 			for (int i = 0; i < tmpIns.size(); i++) {
-//				namedIns.add( new GeneralizedInstance( (Integer)tmpIns.get(i).get("id"), (String)tmpIns.get(i).get("name"), refType) );
+				namedIns.add(  new EntityInstance( (Integer)tmpIns.get(i).get("id"), (String)tmpIns.get(i).get("name"), (ExpressEntity) dataType) );
 			}
+
 		}
 		
 		return namedIns;
@@ -625,6 +690,5 @@ public class BaseDao {
 		
 		return names;
 	}
-	
 	
 }

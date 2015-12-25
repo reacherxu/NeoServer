@@ -34,7 +34,7 @@ public class ExpressBag<T extends ExpressGeneralizedDataType> extends ExpressAgg
 
 	@Override
 	public String toString() {
-		return "ExpressSet [bound1=" + bound1 + ", bound2=" + bound2 + ", dataType=" + dataType + "]";
+		return "ExpressBag [bound1=" + bound1 + ", bound2=" + bound2 + ", dataType=" + dataType + "]";
 	}
 
 }

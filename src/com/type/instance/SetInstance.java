@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.type.datatype.ExpressGeneralizedDataType;
 import com.type.datatype.ExpressSet;
+import com.type.datatype.ExpressString;
 
 public class SetInstance<T extends GeneralizedInstance, E extends ExpressGeneralizedDataType> extends NoIndexedCollectionInstance<T, E> {
 
@@ -65,18 +66,18 @@ public class SetInstance<T extends GeneralizedInstance, E extends ExpressGeneral
 	}
 
 	public static void main(String args[]) {
-		/*ExpressString string = new ExpressString();
-		ExpressSet<ExpressString> dataType = new ExpressSet<ExpressString>(0, 10, string);
+		ExpressString string = new ExpressString(5);
+		ExpressSet<ExpressString> dataType = new ExpressSet<ExpressString>(15,0, 10, string);
 		SetInstance<StringInstance, ExpressString> bag = new SetInstance<StringInstance, ExpressString>(null, "array", dataType);
 		bag.add(new StringInstance(null, "a", (ExpressString) bag.getElementDataType(), "a"));
 		bag.add(new StringInstance(null, "b", (ExpressString) bag.getElementDataType(), "b"));
 		bag.add(new StringInstance(null, "c", (ExpressString) bag.getElementDataType(), "c"));
 		bag.add(new StringInstance(null, "d", (ExpressString) bag.getElementDataType(), "d"));
 
-		System.out.println(bag);*/
+		System.out.println(bag);
 	}
 
-	@Override
+	/*@Override
 	public String toString() {
 		String result = this.getClass().getSimpleName() + " " + getName() + ":\n";
 		for (T t : getList()) {
@@ -84,7 +85,7 @@ public class SetInstance<T extends GeneralizedInstance, E extends ExpressGeneral
 		}
 
 		return result.endsWith(",\n") ? result.substring(0, result.length() - 2) + "\n" : result;
-	}
+	}*/
 
 	@Override
 	protected ExpressGeneralizedDataType getElementDataType() {

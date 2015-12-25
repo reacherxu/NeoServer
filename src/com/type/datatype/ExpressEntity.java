@@ -14,6 +14,11 @@ public class ExpressEntity extends ExpressGeneralizedDataType {
 	List<String> superTypes = new ArrayList<String>();
 	
 	private Map<GeneralizedInstance,List<String>> map = new HashMap<GeneralizedInstance,List<String>>();
+	
+	/**
+	 * store unique rule name,and instances' names
+	 */
+	private Map<String,List<String>> uniqueList = new HashMap<String,List<String>>();
 
 	public ExpressEntity(Integer id, String name) {
 		super(id);
@@ -69,9 +74,22 @@ public class ExpressEntity extends ExpressGeneralizedDataType {
 	}
 
 
+	public Map<String, List<String>> getUniqueList() {
+		return uniqueList;
+	}
+
+
+	public void setUniqueList(Map<String, List<String>> uniqueList) {
+		this.uniqueList = uniqueList;
+	}
+
+
 	@Override
 	public String toString() {
-		return "ExpressEntity [name=" + name + ", body=" + map.toString() + "\t,superTypes= " + superTypes + "]";
+		StringBuffer str = new StringBuffer("ExpressEntity [name=" + name + ", body=");
+		for(Map.Entry<GeneralizedInstance,List<String>> entry : map.entrySet() ) 
+			str.append(entry.getKey() + "=" + entry.getValue() + "\n");
+		return str.append(",uniqueList= " + uniqueList + ",superTypes= " + superTypes + "]").toString() ;
 	}
 
 

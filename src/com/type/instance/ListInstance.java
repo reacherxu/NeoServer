@@ -142,7 +142,7 @@ public class ListInstance<T extends GeneralizedInstance, E extends ExpressGenera
 		System.out.println(list);*/
 	}
 
-	@Override
+	/*@Override
 	public String toString() {
 
 		String result = this.getClass().getSimpleName() + " " + getName() + ":\n";
@@ -151,7 +151,7 @@ public class ListInstance<T extends GeneralizedInstance, E extends ExpressGenera
 		}
 
 		return result.endsWith(",\n") ? result.substring(0, result.length() - 2) + "\n" : result;
-	}
+	}*/
 
 	@Override
 	protected ExpressGeneralizedDataType getElementDataType() {

@@ -74,7 +74,7 @@ public class BagInstance<T extends GeneralizedInstance, E extends ExpressGeneral
 		System.out.println(bag);*/
 	}
 
-	@Override
+	/*@Override
 	public String toString() {
 		String result = this.getClass().getSimpleName() + " " + getName() + ":\n";
 		for (T t : getList()) {
@@ -82,7 +82,7 @@ public class BagInstance<T extends GeneralizedInstance, E extends ExpressGeneral
 		}
 
 		return result.endsWith(",\n") ? result.substring(0, result.length() - 2) + "\n" : result;
-	}
+	}*/
 
 	@Override
 	protected ExpressGeneralizedDataType getElementDataType() {

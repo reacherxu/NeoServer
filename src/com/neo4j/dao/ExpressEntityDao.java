@@ -9,7 +9,7 @@ import com.type.datatype.ExpressEntity;
 import com.type.instance.GeneralizedInstance;
 
 public class ExpressEntityDao extends BaseDao {
-	private String OPTIONAL = "OPTIONAL";
+	private String OPTIONAL = "OPTIONAL:true";
 	
 	/**
 	 * 遍历图，返回图中所有的entity
@@ -47,39 +47,9 @@ public class ExpressEntityDao extends BaseDao {
 	}
 	
 	/**
-	 * 根据指定entity_decl节点，解析entity
-	 * @param entity_decl
-	 * @return	Class ExpressEntity
-	 */
-	public ExpressEntity getExpressEntity(Integer entity_decl) {
-		ExpressEntity expressEntity = null;
-		String name = null;
-		Map<GeneralizedInstance,List<String>> entityBody = null;
-		
-		/* 获取entity name */
-		int entity_head = getIdByName(entity_decl, "entity_head").get(0);
-		int entity_id = getIdByName(entity_head, "entity_id").get(0);
-		name = (String) getDirectChildren(entity_id).get(0).get("name");
-		
-		/* 获取entity父类列表 */
-		List<String> baseList = getBase(entity_decl);
-		
-		/* 获取entity 中的变量申明 */
-		entityBody = getExpressInstance(entity_decl);
-		
-		/* 设置entity属性 */
-		expressEntity = new ExpressEntity(entity_decl, name, entityBody);
-		expressEntity.setSuperTypes(baseList);
-		
-		return expressEntity;
-	}
-		
-	
-	/**
 	 * 根据entity_decl获取父类列表
 	 * @param entity_decl
 	 */
-	//TODO　　是否要放到BaseDao当中去，实现为public
 	private List<String> getBase(Integer entity_decl) {
 		List<String> bases = new ArrayList<String>();
 		
@@ -103,30 +73,100 @@ public class ExpressEntityDao extends BaseDao {
 		}
 		return bases;
 	}
-
+	
 	/**
-	 * 寻找指定Entity中 所有的Instance
+	 * 根据指定entity_decl节点，解析entity
+	 * @param entity_decl
+	 * @return	Class ExpressEntity
+	 */
+	public ExpressEntity getExpressEntity(Integer entity_decl) {
+		ExpressEntity expressEntity = null;
+		String name = null;
+		Map<GeneralizedInstance,List<String>> entityBody = null;
+		Map<String,List<String>> uniqueList = null;
+		
+		/* 获取entity name */
+		int entity_head = getIdByName(entity_decl, "entity_head").get(0);
+		int entity_id = getIdByName(entity_head, "entity_id").get(0);
+		name = (String) getDirectChildren(entity_id).get(0).get("name");
+		
+		/* 获取entity父类列表 */
+		List<String> baseList = getBase(entity_decl);
+		
+		/* 获取entity 中的变量申明 */
+		String sql = "start n=node({1}) match (n:Node)-[*1..]->(m:Node) where m.name={2} return ID(m) as id";
+		List<Map<String, Object>> explicit_attrs = this.getNeoConn().queryList(sql,entity_decl,new String("explicit_attr"));
+		List<Map<String, Object>> unique_clauses = this.getNeoConn().queryList(sql,entity_decl,new String("unique_clause"));
+		entityBody = getExpressExplicitInstance(explicit_attrs);
+		uniqueList = getExpressUniqueInstance(unique_clauses);
+		
+		/* 设置entity属性 */
+		expressEntity = new ExpressEntity(entity_decl, name, null);
+		expressEntity.setSuperTypes(baseList);
+		expressEntity.setMap(entityBody);
+		expressEntity.setUniqueList(uniqueList);
+		
+		return expressEntity;
+	}
+		
+	/**
+	 * 寻找指定Entity中 所有的unique_clauses instance
+	 * @param unique_clauses
 	 * @return
 	 */
-	public Map<GeneralizedInstance,List<String>> getExpressInstance(Integer entity_decl) {
-		Map<GeneralizedInstance,List<String>> instances = new HashMap<GeneralizedInstance,List<String>>();
+	private Map<String,List<String>> getExpressUniqueInstance(List<Map<String, Object>> unique_clauses) {
+		Map<String,List<String>> uniqueList = new HashMap<String,List<String>>();
 		
-		/* 返回explicit_attr对应的id */
-		String sql = "start n=node({1}) match (n:Node)-[*1..]->(m:Node) where m.name='explicit_attr' return ID(m) as id";
-		List<Map<String, Object>> explicit_attrs = this.getNeoConn().queryList(sql,entity_decl);
+		/* 解析每一个unique_clause下的实例  */
+		for (int i = 0; i < unique_clauses.size(); i++) {
+			Integer unique_clause = (Integer)unique_clauses.get(i).get("id");
+			
+			List<Integer> unique_rules = getIdByName(unique_clause, "unique_rule");
+			
+			/* 解析rule name和references */
+			String ruleName = null;
+			List<String> ruleVal = new ArrayList<String>();
+			for (int j = 0; j < unique_rules.size(); j++) {
+				Integer unique_rule = unique_rules.get(j);
+				
+				Integer rule_label_id = (Integer) getDirectChildren(unique_rule).get(0).get("id");
+				ruleName = (String) getDirectChildren(rule_label_id).get(0).get("name");
+				
+				List<Integer> referenced_attributes = getIdByName(unique_rule, "referenced_attribute");
+				//TODO  qualified_attribute;
+				for (int k = 0; k < referenced_attributes.size(); k++) {
+					Integer referenced_attribute = referenced_attributes.get(k);
+					ruleVal.add(getLeaf(referenced_attribute));
+				}
+			}
+			uniqueList.put(ruleName, ruleVal);
+		}
+		
+		return uniqueList;
+	}
+	
+
+	/**
+	 * 寻找指定Entity中 所有的explicit_attr instance
+	 * @return
+	 */
+	private Map<GeneralizedInstance,List<String>> getExpressExplicitInstance(List<Map<String, Object>> explicit_attrs) {
+		Map<GeneralizedInstance,List<String>> instances = new HashMap<GeneralizedInstance,List<String>>();
 		
 		/* 解析每一个explicit_attr下的实例 */
 		for (int i = 0; i < explicit_attrs.size(); i++) {
 			Integer explicit_attr = (Integer)explicit_attrs.get(i).get("id");
 			
 			/* 分为generalized_types | named_types | simple_types   */
-			List<GeneralizedInstance> tmpInstance = getSimpleDataTypeInstance( explicit_attr );
-			//TODO
-			tmpInstance.addAll(getGeneralizedTypeInstance(explicit_attr));
-			//TODO
-//			tmpInstance.addAll(getNamedTypeInstance(explicit_attr));
+			List<GeneralizedInstance> tmpInstance = new ArrayList<GeneralizedInstance>();
 			
-			if( getIdByName(explicit_attr,"OPTIONAL").size() != 0 )
+			tmpInstance.addAll(getSimpleDataTypeInstance(explicit_attr));
+			//TODO   2种情况
+			tmpInstance.addAll(getGeneralizedTypeInstance(explicit_attr));
+			//TODO  getNamedType()里，实体很有问题 type_ref
+			tmpInstance.addAll(getNamedTypeInstance(explicit_attr));
+			
+			if( hasDirectChild(explicit_attr,"OPTIONAL")  )
 				for (int j = 0; j < tmpInstance.size() ; j++) {
 					List<String> tmpStr = new ArrayList<String>();
 					tmpStr.add(OPTIONAL);
@@ -141,8 +181,6 @@ public class ExpressEntityDao extends BaseDao {
 		return instances;
 	}
 	
-	
-
 	public static void main(String[] args) {
 		ExpressEntityDao ins = new ExpressEntityDao();
 		
@@ -154,10 +192,14 @@ public class ExpressEntityDao extends BaseDao {
 //		System.out.println(ins.getAllExpressEntity());
 //		System.out.println(ins.getExpressRealInstance());
 		
-		List<ExpressEntity> list = ins.getAllExpressEntity();
-		for (int i = 0; i < list.size(); i++) {
-			System.out.println(list.get(i));
-		}
+//		List<ExpressEntity> list = ins.getAllExpressEntity();
+//		for (int i = 0; i < list.size(); i++) {
+//			System.out.println(list.get(i));
+//		}
+		
+//		System.out.println(ins.getExpressEntity(104)); 
+		System.out.println(ins.getAllExpressEntity());
+		
 		
 //		System.out.println(ins.getSimpleDataTypeInstance(149));
 //		System.out.println(ins.getVariables(149));

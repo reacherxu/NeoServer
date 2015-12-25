@@ -46,9 +46,7 @@ public class ExpressRealDao extends BaseDao {
 		if( getDirectChildrenNum(real_type) == REAL_TYPE ) {
 			Integer precision_spec = getIdByName(real_type, "precision_spec").get(0);
 			
-			String sql = "start n=node({1}) match (n:Node)-[r:Related_to*0..]->(m:Node) return m.name as name";
-			List<Map<String, Object>> precNodes = this.getNeoConn().queryList(sql,precision_spec);
-			precision = Integer.parseInt(precNodes.get(precNodes.size()-1).get("name").toString());
+			precision = Integer.parseInt(getLeaf(precision_spec));
 		}
 		expReal = new ExpressReal(real_type,precision);
 		

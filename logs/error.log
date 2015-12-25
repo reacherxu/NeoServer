@@ -1,171 +1,34 @@
-2015-12-15 15:18:58  [ main:18661 ] - [ ERROR ]  数据库操作异常
-java.sql.SQLException: Error executing query start n=node({1}) match n-[]->(m:Node) return ID(m) as id
- with params {1=12}
-	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:255)
-	at org.neo4j.jdbc.Neo4jPreparedStatement.executeQuery(Neo4jPreparedStatement.java:48)
-	at com.neo4j.connection.NeoConnection.query(NeoConnection.java:201)
-	at com.neo4j.dao.BaseDao.getDirectChildrenNum(BaseDao.java:295)
-	at com.neo4j.dao.BaseDao.main(BaseDao.java:75)
-Caused by: java.lang.RuntimeException: Error executing cypher statement(s) [{code=Neo.ClientError.Statement.EntityNotFound, message=Node with id 12}]
-	at org.neo4j.jdbc.rest.StreamingParser.handleErrors(StreamingParser.java:246)
-	at org.neo4j.jdbc.rest.StreamingParser.skipTo(StreamingParser.java:223)
-	at org.neo4j.jdbc.rest.StreamingParser.nextResult(StreamingParser.java:96)
-	at org.neo4j.jdbc.rest.StreamingParser$2.hasNext(StreamingParser.java:187)
-	at org.neo4j.jdbc.rest.StreamingParser$2$1.endReached(StreamingParser.java:189)
-	at org.neo4j.jdbc.rest.StreamingParser$1.hasNext(StreamingParser.java:139)
-	at org.neo4j.jdbc.IteratorResultSet.<init>(IteratorResultSet.java:49)
-	at org.neo4j.jdbc.Neo4jConnection.toResultSet(Neo4jConnection.java:297)
-	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:251)
-	... 4 more
-2015-12-15 15:22:16  [ main:18663 ] - [ ERROR ]  数据库操作异常
-java.sql.SQLException: Error executing query start n=node({1}) match n-[]->(m:Node) return ID(m) as id
- with params {1=12}
-	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:255)
-	at org.neo4j.jdbc.Neo4jPreparedStatement.executeQuery(Neo4jPreparedStatement.java:48)
-	at com.neo4j.connection.NeoConnection.query(NeoConnection.java:201)
-	at com.neo4j.dao.BaseDao.getDirectChildrenNum(BaseDao.java:291)
-	at com.neo4j.dao.BaseDao.main(BaseDao.java:71)
-Caused by: java.lang.RuntimeException: Error executing cypher statement(s) [{code=Neo.ClientError.Statement.EntityNotFound, message=Node with id 12}]
-	at org.neo4j.jdbc.rest.StreamingParser.handleErrors(StreamingParser.java:246)
-	at org.neo4j.jdbc.rest.StreamingParser.skipTo(StreamingParser.java:223)
-	at org.neo4j.jdbc.rest.StreamingParser.nextResult(StreamingParser.java:96)
-	at org.neo4j.jdbc.rest.StreamingParser$2.hasNext(StreamingParser.java:187)
-	at org.neo4j.jdbc.rest.StreamingParser$2$1.endReached(StreamingParser.java:189)
-	at org.neo4j.jdbc.rest.StreamingParser$1.hasNext(StreamingParser.java:139)
-	at org.neo4j.jdbc.IteratorResultSet.<init>(IteratorResultSet.java:49)
-	at org.neo4j.jdbc.Neo4jConnection.toResultSet(Neo4jConnection.java:297)
-	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:251)
-	... 4 more
-2015-12-15 17:02:25  [ main:18663 ] - [ ERROR ]  数据库操作异常
-java.sql.SQLException: Error executing query start n=node({1}) match n-[]->(m:Node) return ID(m) as id
- with params {1=12}
-	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:255)
-	at org.neo4j.jdbc.Neo4jPreparedStatement.executeQuery(Neo4jPreparedStatement.java:48)
-	at com.neo4j.connection.NeoConnection.queryList(NeoConnection.java:167)
-	at com.neo4j.dao.BaseDao.getDirectChildrenNum(BaseDao.java:281)
-	at com.neo4j.dao.BaseDao.main(BaseDao.java:61)
-Caused by: java.lang.RuntimeException: Error executing cypher statement(s) [{code=Neo.ClientError.Statement.EntityNotFound, message=Node with id 12}]
-	at org.neo4j.jdbc.rest.StreamingParser.handleErrors(StreamingParser.java:246)
-	at org.neo4j.jdbc.rest.StreamingParser.skipTo(StreamingParser.java:223)
-	at org.neo4j.jdbc.rest.StreamingParser.nextResult(StreamingParser.java:96)
-	at org.neo4j.jdbc.rest.StreamingParser$2.hasNext(StreamingParser.java:187)
-	at org.neo4j.jdbc.rest.StreamingParser$2$1.endReached(StreamingParser.java:189)
-	at org.neo4j.jdbc.rest.StreamingParser$1.hasNext(StreamingParser.java:139)
-	at org.neo4j.jdbc.IteratorResultSet.<init>(IteratorResultSet.java:49)
-	at org.neo4j.jdbc.Neo4jConnection.toResultSet(Neo4jConnection.java:297)
-	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:251)
-	... 4 more
-2015-12-15 17:03:11  [ main:1114 ] - [ ERROR ]  数据库操作异常
-java.sql.SQLException: Error executing query start n=node({1}) match n-[]->(m:Node) return ID(m) as id
- with params {1=12}
-	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:255)
-	at org.neo4j.jdbc.Neo4jPreparedStatement.executeQuery(Neo4jPreparedStatement.java:48)
-	at com.neo4j.connection.NeoConnection.queryList(NeoConnection.java:167)
-	at com.neo4j.dao.BaseDao.getDirectChildrenNum(BaseDao.java:281)
-	at com.neo4j.dao.BaseDao.main(BaseDao.java:61)
-Caused by: java.lang.RuntimeException: Error executing cypher statement(s) [{code=Neo.ClientError.Statement.EntityNotFound, message=Node with id 12}]
-	at org.neo4j.jdbc.rest.StreamingParser.handleErrors(StreamingParser.java:246)
-	at org.neo4j.jdbc.rest.StreamingParser.skipTo(StreamingParser.java:223)
-	at org.neo4j.jdbc.rest.StreamingParser.nextResult(StreamingParser.java:96)
-	at org.neo4j.jdbc.rest.StreamingParser$2.hasNext(StreamingParser.java:187)
-	at org.neo4j.jdbc.rest.StreamingParser$2$1.endReached(StreamingParser.java:189)
-	at org.neo4j.jdbc.rest.StreamingParser$1.hasNext(StreamingParser.java:139)
-	at org.neo4j.jdbc.IteratorResultSet.<init>(IteratorResultSet.java:49)
-	at org.neo4j.jdbc.Neo4jConnection.toResultSet(Neo4jConnection.java:297)
-	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:251)
-	... 4 more
-2015-12-15 17:04:00  [ main:598 ] - [ ERROR ]  数据库操作异常
-java.sql.SQLException: Error executing query start n=node({1}) match n-[]->(m:Node) return ID(m) as id
- with params {1=12}
-	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:255)
-	at org.neo4j.jdbc.Neo4jPreparedStatement.executeQuery(Neo4jPreparedStatement.java:48)
-	at com.neo4j.connection.NeoConnection.queryList(NeoConnection.java:167)
-	at com.neo4j.dao.BaseDao.getDirectChildrenNum(BaseDao.java:281)
-	at com.neo4j.dao.BaseDao.main(BaseDao.java:61)
-Caused by: java.lang.RuntimeException: Error executing cypher statement(s) [{code=Neo.ClientError.Statement.EntityNotFound, message=Node with id 12}]
-	at org.neo4j.jdbc.rest.StreamingParser.handleErrors(StreamingParser.java:246)
-	at org.neo4j.jdbc.rest.StreamingParser.skipTo(StreamingParser.java:223)
-	at org.neo4j.jdbc.rest.StreamingParser.nextResult(StreamingParser.java:96)
-	at org.neo4j.jdbc.rest.StreamingParser$2.hasNext(StreamingParser.java:187)
-	at org.neo4j.jdbc.rest.StreamingParser$2$1.endReached(StreamingParser.java:189)
-	at org.neo4j.jdbc.rest.StreamingParser$1.hasNext(StreamingParser.java:139)
-	at org.neo4j.jdbc.IteratorResultSet.<init>(IteratorResultSet.java:49)
-	at org.neo4j.jdbc.Neo4jConnection.toResultSet(Neo4jConnection.java:297)
-	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:251)
-	... 4 more
-2015-12-15 17:05:51  [ main:24702 ] - [ ERROR ]  数据库操作异常
-java.sql.SQLException: Error executing query start n=node({1}) match n-[]->(m:Node) return ID(m) as id
- with params {1=12}
-	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:255)
-	at org.neo4j.jdbc.Neo4jPreparedStatement.executeQuery(Neo4jPreparedStatement.java:48)
-	at com.neo4j.connection.NeoConnection.queryList(NeoConnection.java:167)
-	at com.neo4j.dao.BaseDao.getDirectChildrenNum(BaseDao.java:281)
-	at com.neo4j.dao.BaseDao.main(BaseDao.java:61)
-Caused by: java.lang.RuntimeException: Error executing cypher statement(s) [{code=Neo.ClientError.Statement.EntityNotFound, message=Node with id 12}]
-	at org.neo4j.jdbc.rest.StreamingParser.handleErrors(StreamingParser.java:246)
-	at org.neo4j.jdbc.rest.StreamingParser.skipTo(StreamingParser.java:223)
-	at org.neo4j.jdbc.rest.StreamingParser.nextResult(StreamingParser.java:96)
-	at org.neo4j.jdbc.rest.StreamingParser$2.hasNext(StreamingParser.java:187)
-	at org.neo4j.jdbc.rest.StreamingParser$2$1.endReached(StreamingParser.java:189)
-	at org.neo4j.jdbc.rest.StreamingParser$1.hasNext(StreamingParser.java:139)
-	at org.neo4j.jdbc.IteratorResultSet.<init>(IteratorResultSet.java:49)
-	at org.neo4j.jdbc.Neo4jConnection.toResultSet(Neo4jConnection.java:297)
-	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:251)
-	... 4 more
-2015-12-15 17:16:00  [ main:606 ] - [ ERROR ]  数据库操作异常
-java.sql.SQLException: Error executing query start n=node({1}) match n-[]->(m:Node) return ID(m) as id
- with params {1=12}
-	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:255)
-	at org.neo4j.jdbc.Neo4jPreparedStatement.executeQuery(Neo4jPreparedStatement.java:48)
-	at com.neo4j.connection.NeoConnection.queryList(NeoConnection.java:160)
-	at com.neo4j.dao.BaseDao.getDirectChildrenNum(BaseDao.java:281)
-	at com.neo4j.dao.BaseDao.main(BaseDao.java:61)
-Caused by: java.lang.RuntimeException: Error executing cypher statement(s) [{code=Neo.ClientError.Statement.EntityNotFound, message=Node with id 12}]
-	at org.neo4j.jdbc.rest.StreamingParser.handleErrors(StreamingParser.java:246)
-	at org.neo4j.jdbc.rest.StreamingParser.skipTo(StreamingParser.java:223)
-	at org.neo4j.jdbc.rest.StreamingParser.nextResult(StreamingParser.java:96)
-	at org.neo4j.jdbc.rest.StreamingParser$2.hasNext(StreamingParser.java:187)
-	at org.neo4j.jdbc.rest.StreamingParser$2$1.endReached(StreamingParser.java:189)
-	at org.neo4j.jdbc.rest.StreamingParser$1.hasNext(StreamingParser.java:139)
-	at org.neo4j.jdbc.IteratorResultSet.<init>(IteratorResultSet.java:49)
-	at org.neo4j.jdbc.Neo4jConnection.toResultSet(Neo4jConnection.java:297)
-	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:251)
-	... 4 more
-2015-12-15 17:18:00  [ main:18668 ] - [ ERROR ]  数据库操作异常
-java.sql.SQLException: Error executing query start n=node({1}) match n-[]->(m:Node) return ID(m) as id
- with params {1=12}
-	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:255)
-	at org.neo4j.jdbc.Neo4jPreparedStatement.executeQuery(Neo4jPreparedStatement.java:48)
-	at com.neo4j.connection.NeoConnection.queryList(NeoConnection.java:166)
-	at com.neo4j.dao.BaseDao.getDirectChildrenNum(BaseDao.java:281)
-	at com.neo4j.dao.BaseDao.main(BaseDao.java:61)
-Caused by: java.lang.RuntimeException: Error executing cypher statement(s) [{code=Neo.ClientError.Statement.EntityNotFound, message=Node with id 12}]
-	at org.neo4j.jdbc.rest.StreamingParser.handleErrors(StreamingParser.java:246)
-	at org.neo4j.jdbc.rest.StreamingParser.skipTo(StreamingParser.java:223)
-	at org.neo4j.jdbc.rest.StreamingParser.nextResult(StreamingParser.java:96)
-	at org.neo4j.jdbc.rest.StreamingParser$2.hasNext(StreamingParser.java:187)
-	at org.neo4j.jdbc.rest.StreamingParser$2$1.endReached(StreamingParser.java:189)
-	at org.neo4j.jdbc.rest.StreamingParser$1.hasNext(StreamingParser.java:139)
-	at org.neo4j.jdbc.IteratorResultSet.<init>(IteratorResultSet.java:49)
-	at org.neo4j.jdbc.Neo4jConnection.toResultSet(Neo4jConnection.java:297)
-	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:251)
-	... 4 more
-2015-12-15 17:19:00  [ main:18630 ] - [ ERROR ]  数据库操作异常
-java.sql.SQLException: Error executing query start n=node({1}) match n-[]->(m:Node) return ID(m) as id
- with params {1=12}
+2015-12-25 19:49:01  [ main:748 ] - [ ERROR ]  数据库操作异常
+java.sql.SQLException: Error executing query start n=node({1}) match (n:Node)-[r*0..]->(m:Node) where m.name={2} return ID(m) as id order by ID(m)
+ with params {2=entity_head, 1=104}
 	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:255)
 	at org.neo4j.jdbc.Neo4jPreparedStatement.executeQuery(Neo4jPreparedStatement.java:48)
 	at com.neo4j.connection.NeoConnection.queryList(NeoConnection.java:156)
-	at com.neo4j.dao.BaseDao.getDirectChildrenNum(BaseDao.java:281)
-	at com.neo4j.dao.BaseDao.main(BaseDao.java:61)
-Caused by: java.lang.RuntimeException: Error executing cypher statement(s) [{code=Neo.ClientError.Statement.EntityNotFound, message=Node with id 12}]
+	at com.neo4j.dao.BaseDao.getIdByName(BaseDao.java:674)
+	at com.neo4j.dao.ExpressEntityDao.getExpressEntity(ExpressEntityDao.java:60)
+	at com.neo4j.dao.ExpressEntityDao.main(ExpressEntityDao.java:169)
+Caused by: java.lang.RuntimeException: Error executing cypher statement(s) [{code=Neo.ClientError.Statement.EntityNotFound, message=Node with id 104}]
 	at org.neo4j.jdbc.rest.StreamingParser.handleErrors(StreamingParser.java:246)
 	at org.neo4j.jdbc.rest.StreamingParser.skipTo(StreamingParser.java:223)
 	at org.neo4j.jdbc.rest.StreamingParser.nextResult(StreamingParser.java:96)
 	at org.neo4j.jdbc.rest.StreamingParser$2.hasNext(StreamingParser.java:187)
-	at org.neo4j.jdbc.rest.StreamingParser$2$1.endReached(StreamingParser.java:189)
-	at org.neo4j.jdbc.rest.StreamingParser$1.hasNext(StreamingParser.java:139)
-	at org.neo4j.jdbc.IteratorResultSet.<init>(IteratorResultSet.java:49)
-	at org.neo4j.jdbc.Neo4jConnection.toResultSet(Neo4jConnection.java:297)
-	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:251)
-	... 4 more
+	at org.neo4j.jdbc.rest.TransactionalQueryExecutor.executeQuery(TransactionalQueryExecutor.java:178)
+	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:250)
+	... 5 more
+2015-12-25 23:07:24  [ main:894 ] - [ ERROR ]  数据库操作异常
+java.sql.SQLException: Error executing query start n=node({1}) match (n:Node)-[r*0..]->(m:Node) where m.name={2} return ID(m) as id order by ID(m)
+ with params {2=entity_head, 1=104}
+	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:255)
+	at org.neo4j.jdbc.Neo4jPreparedStatement.executeQuery(Neo4jPreparedStatement.java:48)
+	at com.neo4j.connection.NeoConnection.queryList(NeoConnection.java:156)
+	at com.neo4j.dao.BaseDao.getIdByName(BaseDao.java:685)
+	at com.neo4j.dao.ExpressEntityDao.getExpressEntity(ExpressEntityDao.java:89)
+	at com.neo4j.dao.ExpressEntityDao.main(ExpressEntityDao.java:200)
+Caused by: java.lang.RuntimeException: Error executing cypher statement(s) [{code=Neo.ClientError.Statement.EntityNotFound, message=Node with id 104}]
+	at org.neo4j.jdbc.rest.StreamingParser.handleErrors(StreamingParser.java:246)
+	at org.neo4j.jdbc.rest.StreamingParser.skipTo(StreamingParser.java:223)
+	at org.neo4j.jdbc.rest.StreamingParser.nextResult(StreamingParser.java:96)
+	at org.neo4j.jdbc.rest.StreamingParser$2.hasNext(StreamingParser.java:187)
+	at org.neo4j.jdbc.rest.TransactionalQueryExecutor.executeQuery(TransactionalQueryExecutor.java:178)
+	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:250)
+	... 5 more

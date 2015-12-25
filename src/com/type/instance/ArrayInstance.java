@@ -144,7 +144,7 @@ public class ArrayInstance<T extends GeneralizedInstance, E extends ExpressGener
 		System.out.println(array);*/
 	}
 
-	@Override
+	/*@Override
 	public String toString() {
 		String result = this.getClass().getSimpleName() + " " + getName() + ":\n";
 		for (T t : getList()) {
@@ -152,7 +152,7 @@ public class ArrayInstance<T extends GeneralizedInstance, E extends ExpressGener
 		}
 
 		return result.endsWith(",\n") ? result.substring(0, result.length() - 2) + "\n" : result;
-	}
+	}*/
 
 	@Override
 	protected ExpressGeneralizedDataType getElementDataType() {

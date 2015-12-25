@@ -60,9 +60,7 @@ public class ExpressBinaryDao extends BaseDao {
 			int width = getIdByName(width_spec,"width").get(0);
 
 			/* 寻找width的叶子节点 ,添加数值属性 */
-			String sql = "start n=node({1}) match (n:Node)-[r:Related_to*0..]->(m:Node) return m.name as name";
-			List<Map<String, Object>> widthNodes = this.getNeoConn().queryList(sql,width);
-			val = Integer.parseInt(widthNodes.get(widthNodes.size()-1).get("name").toString());
+			val = Integer.parseInt(getLeaf(width));
 			
 		}
 		expBinary = new ExpressBinary(binary_type, val, fixed);

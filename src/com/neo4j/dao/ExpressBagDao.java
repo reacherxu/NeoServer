@@ -1,10 +1,7 @@
 package com.neo4j.dao;
 
-import java.util.List;
-import java.util.Map;
-
-import com.type.datatype.ExpressGeneralizedDataType;
 import com.type.datatype.ExpressBag;
+import com.type.datatype.ExpressGeneralizedDataType;
 
 public class ExpressBagDao extends BaseDao {
 	private static final int GENERAL_BAG_TYPE = 4;
@@ -30,12 +27,9 @@ public class ExpressBagDao extends BaseDao {
 			int bound_2 = getIdByName(bound_spec, "bound_2").get(0);
 
 			/* 寻找bound_1,bound_2的叶子节点 ,添加数值属性 */
-			String sql = "start n=node({1}) match (n:Node)-[r:Related_to*0..]->(m:Node) return m.name as name";
-			List<Map<String, Object>> bound1Nodes = this.getNeoConn().queryList(sql,bound_1);
-			bound1 = Integer.parseInt(bound1Nodes.get(bound1Nodes.size()-1).get("name").toString());
+			bound1 = Integer.parseInt(getLeaf(bound_1));
 			
-			List<Map<String, Object>> bound2Nodes = this.getNeoConn().queryList(sql,bound_2);
-			String tmpBound = bound2Nodes.get(bound2Nodes.size()-1).get("name").toString();
+			String tmpBound = getLeaf(bound_2);
 			bound2 = tmpBound.equals("?") ? null : Integer.parseInt(tmpBound);
 			
 			/* 寻找set类型的叶子节点 ,添加属性 parameter_type : generalized_types | named_types | simple_types; */
