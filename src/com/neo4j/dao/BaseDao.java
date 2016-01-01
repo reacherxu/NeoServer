@@ -1,7 +1,6 @@
 package com.neo4j.dao;
 
 import java.awt.Point;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -340,12 +339,11 @@ public class BaseDao {
 	}
 	
 	/**
-	 *  寻找id的叶子节点 ,添加数值属性 
+	 *  寻找id的叶子节点 ,添加属性 
 	 * @param id
 	 * @return
 	 */
 	public String getLeaf(Integer id) {
-		
 		String sql = "start n=node({1}) match (n:Node)-[r:Related_to*0..]->(m:Node) return m.name as name";
 		List<Map<String, Object>> nodes = this.getNeoConn().queryList(sql,id);
 		return nodes.get(nodes.size()-1).get("name").toString();
@@ -610,18 +608,22 @@ public class BaseDao {
 		
 		String type_name = (String) getDirectChildren(named_types).get(0).get("name");
 		if(type_name.equals("entity_ref")) {
-			String sql = "start n=node({1}) match (n:Node)-[r:Related_to*0..]->(m:Node) return m.name as name";
-			List<Map<String, Object>> names = this.getNeoConn().queryList(sql,named_types);
-			String entityName = names.get(names.size()-1).get("name").toString();
-			
-			//TODO 暂时出现实体引用，则new一个id为-1的
-			dataType = new ExpressEntity(-1, entityName);
+			dataType = getEntityRef(named_types);
 		} else {
 			//TODO　　type_ref
 		}
 		
 		return dataType;
 	}
+	
+	protected ExpressGeneralizedDataType getEntityRef(Integer named_types) {
+		String entityName = getLeaf(named_types);
+		
+		/* 暂时出现实体引用，则new一个id为-1的*/
+		return new ExpressEntity(-1, entityName);
+	}
+
+
 	/**
 	 * 获得 某个explicit_attr下的named_type实例
 	 * @param explicit_attr
@@ -656,7 +658,7 @@ public class BaseDao {
 	 * @param explicit_attr
 	 * @return
 	 */
-	private List<Map<String,Object>> getVariables(Integer explicit_attr) {
+	protected List<Map<String,Object>> getVariables(Integer explicit_attr) {
 		List<Map<String,Object>> variableNames = new ArrayList<Map<String,Object>>();
 		
 		/* 可能有多个attribute_decl */

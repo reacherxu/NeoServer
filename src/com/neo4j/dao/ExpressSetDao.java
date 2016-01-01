@@ -3,7 +3,7 @@ package com.neo4j.dao;
 import com.type.datatype.ExpressGeneralizedDataType;
 import com.type.datatype.ExpressSet;
 
-public class ExpressSetDao extends BaseDao {
+public class ExpressSetDao extends ExpressSADao {
 	private static final int GENERAL_SET_TYPE = 4;
 	
 	/**
@@ -12,8 +12,7 @@ public class ExpressSetDao extends BaseDao {
 	 * @return
 	 */
 	public ExpressSet<ExpressGeneralizedDataType> getExpressSet(Integer general_set_type) {
-		Integer bound1 = 0;
-		Integer bound2 = null;
+		Integer bounds[] = {0,null};
 		ExpressSet<ExpressGeneralizedDataType> expSet = null;
 		ExpressGeneralizedDataType dataType = null;
 		
@@ -23,15 +22,8 @@ public class ExpressSetDao extends BaseDao {
 			int bound_spec = getIdByName(general_set_type,"bound_spec").get(0);
 			int parameter_type = getIdByName(general_set_type, "parameter_type").get(0);
 			
-			int bound_1 = getIdByName(bound_spec, "bound_1").get(0);
-			int bound_2 = getIdByName(bound_spec, "bound_2").get(0);
-
-			/* 寻找bound_1,bound_2的叶子节点 ,添加数值属性 */
-			bound1 = Integer.parseInt(getLeaf(bound_1));
-			
-			String tmpBound = getLeaf(bound_2);
-			bound2 = tmpBound.equals("?") ? null : Integer.parseInt(tmpBound);
-			
+			bounds = getBound(bound_spec);
+		
 			/* 寻找set类型的叶子节点 ,添加属性  */
 			String type = (String) getDirectChildren(parameter_type).get(0).get("name");
 			Integer type_id = (Integer) getDirectChildren(parameter_type).get(0).get("id");
@@ -43,14 +35,15 @@ public class ExpressSetDao extends BaseDao {
 			else if(type.equals("named_types"))
 				dataType = getNamedType(type_id);
 		}
-		expSet = new ExpressSet<ExpressGeneralizedDataType>(general_set_type, bound1, bound2, dataType);
+		expSet = new ExpressSet<ExpressGeneralizedDataType>(general_set_type, bounds[0], bounds[1], dataType);
 		
 		return expSet;
 	}
 	
+
 	public static void main(String[] args) {
 		ExpressSetDao setDao = new ExpressSetDao();
-		System.out.println(setDao.getExpressSet(314));
+		System.out.println(setDao.getExpressSet(330));
 	}
 
 }
