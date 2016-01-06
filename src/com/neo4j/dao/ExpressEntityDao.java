@@ -120,6 +120,7 @@ public class ExpressEntityDao extends BaseDao {
 		expressEntity = new ExpressEntity(entity_decl, name, null);
 		expressEntity.setSuperTypes(baseList);
 		expressEntity.setMap(entityBody);
+		expressEntity.setInstanceList();
 		expressEntity.setUniqueList(uniqueList);
 
 		return expressEntity;
@@ -141,8 +142,10 @@ public class ExpressEntityDao extends BaseDao {
 			List<GeneralizedInstance> tmpInstance = new ArrayList<GeneralizedInstance>();
 
 			tmpInstance.addAll(getSimpleDataTypeInstance(explicit_attr));
-			//TODO   2种情况
+			
+			/* inverse里另外写了，entity外的也另外写*/
 			tmpInstance.addAll(getGeneralizedTypeInstance(explicit_attr));
+			
 			//TODO  getNamedType()里，实体很有问题 type_ref
 			tmpInstance.addAll(getNamedTypeInstance(explicit_attr));
 

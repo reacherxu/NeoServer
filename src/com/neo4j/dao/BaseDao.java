@@ -543,7 +543,7 @@ public class BaseDao {
 			if( getDirectChildren(generalized_types).get(0).get("name").equals("general_aggregation_types") ) {
 				Integer general_aggregation_types = getIdByName(generalized_types, "general_aggregation_types").get(0);
 				
-				//TODO general_array_type | general_bag_type | general_list_type | general_set_type;
+				/* general_array_type | general_bag_type | general_list_type | general_set_type */
 				if( getDirectChildren(general_aggregation_types).get(0).get("name").equals("general_set_type")) {
 					Integer general_set_type = getIdByName(general_aggregation_types,"general_set_type").get(0);
 
@@ -619,7 +619,7 @@ public class BaseDao {
 	protected ExpressGeneralizedDataType getEntityRef(Integer named_types) {
 		String entityName = getLeaf(named_types);
 		
-		/* 暂时出现实体引用，则new一个id为-1的*/
+		//TODO　 暂时出现实体引用，则new一个id为-1的
 		return new ExpressEntity(-1, entityName);
 	}
 

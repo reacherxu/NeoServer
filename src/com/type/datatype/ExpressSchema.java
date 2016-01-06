@@ -68,7 +68,7 @@ public class ExpressSchema extends ExpressGeneralizedDataType {
 	
 	@Override
 	public String toString() {
-		return "ExpressSchema [" + entities.toString() + "]";
+		return "ExpressSchema [name=" + name + ", body=" + entities.toString() + "]";
 	}
 
 }

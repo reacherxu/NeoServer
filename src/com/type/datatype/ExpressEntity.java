@@ -14,7 +14,9 @@ public class ExpressEntity extends ExpressGeneralizedDataType {
 	List<String> superTypes = new ArrayList<String>();
 	
 	private Map<GeneralizedInstance,List<String>> map = new HashMap<GeneralizedInstance,List<String>>();
+	protected List<GeneralizedInstance> instanceList = new ArrayList<GeneralizedInstance>();
 	
+
 	/**
 	 * store unique rule name,and instances' names
 	 */
@@ -34,6 +36,26 @@ public class ExpressEntity extends ExpressGeneralizedDataType {
 		}
 	}
 
+	
+	public List<GeneralizedInstance> getInstanceList() {
+		return instanceList;
+	}
+
+
+	public void setInstanceList() {
+		this.instanceList.addAll(map.keySet());
+	}
+
+	// if it is necessary
+	public void addAttribute(GeneralizedInstance instance, List<String> info) {
+		map.put(instance, info);
+		instanceList.add(instance);
+	}
+	
+	public void addAttribute(Map<GeneralizedInstance,List<String>> map) {
+		this.map.putAll(map);
+		instanceList.addAll(map.keySet());
+	}
 	
 	public List<String> getSuperTypes() {
 		return superTypes;
