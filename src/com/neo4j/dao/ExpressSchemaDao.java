@@ -57,7 +57,10 @@ public class ExpressSchemaDao extends BaseDao {
 					schema.getEntities().add(entityDao.getExpressEntity(entity_decl));
 				}
 				else if("type_decl".equals(member.get(0).get("name").toString()) ) {
-					//TODO　defined name type
+					Integer type_decl = (Integer) member.get(0).get("id");
+					
+					ExpressDefinedDao definedDao = new ExpressDefinedDao();
+					schema.getDefinedDataType().add( definedDao.getExpressDefined(type_decl));
 				}
 				else if("function_decl".equals(member.get(0).get("name").toString())) {
 					//TODO function_decl
@@ -77,7 +80,7 @@ public class ExpressSchemaDao extends BaseDao {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println(new ExpressSchemaDao().getAllExpressSchema());
+		System.out.println(new ExpressSchemaDao().getExpressSchema(2));
 		
 	}
 

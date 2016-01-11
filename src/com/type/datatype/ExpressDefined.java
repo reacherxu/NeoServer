@@ -32,5 +32,9 @@ public class ExpressDefined extends ExpressGeneralizedDataType {
 		this.dataTypeName = dataTypeName;
 	}
 	
+	@Override
+	public String toString() {
+		return "ExpressDefined " + dataType;
+	}
 
 }

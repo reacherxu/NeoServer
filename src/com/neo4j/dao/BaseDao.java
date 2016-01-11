@@ -11,6 +11,7 @@ import com.type.datatype.ExpressArray;
 import com.type.datatype.ExpressBag;
 import com.type.datatype.ExpressBinary;
 import com.type.datatype.ExpressBoolean;
+import com.type.datatype.ExpressDefined;
 import com.type.datatype.ExpressEntity;
 import com.type.datatype.ExpressGeneralizedDataType;
 import com.type.datatype.ExpressInteger;
@@ -24,6 +25,7 @@ import com.type.instance.ArrayInstance;
 import com.type.instance.BagInstance;
 import com.type.instance.BinaryInstance;
 import com.type.instance.BooleanInstance;
+import com.type.instance.DefinedInstance;
 import com.type.instance.EntityInstance;
 import com.type.instance.GeneralizedInstance;
 import com.type.instance.IntegerInstance;
@@ -63,7 +65,6 @@ public class BaseDao {
 		neoConn = NeoConnection.getNeoConnection();
 	}
 	
-
 	public String getVERSION() {
 		return VERSION;
 	}
@@ -619,7 +620,7 @@ public class BaseDao {
 	protected ExpressGeneralizedDataType getEntityRef(Integer named_types) {
 		String entityName = getLeaf(named_types);
 		
-		//TODO　 暂时出现实体引用，则new一个id为-1的
+		//XXX: 暂时出现实体引用，则new一个id为-1的
 		return new ExpressEntity(-1, entityName);
 	}
 
@@ -631,7 +632,6 @@ public class BaseDao {
 	 */
 	public List<GeneralizedInstance> getNamedTypeInstance(Integer explicit_attr) {
 		List<GeneralizedInstance> namedIns = new ArrayList<GeneralizedInstance>();
-		String refName = null;
 		
 		int parameter_type = getIdByName(explicit_attr, "parameter_type").get(0);
 		
@@ -640,11 +640,15 @@ public class BaseDao {
 			int named_types = (Integer) getDirectChildren(parameter_type).get(0).get("id");
 			ExpressGeneralizedDataType dataType = getNamedType(named_types);
 
-			//TODO  不知道是否是entity
 			List<Map<String,Object>> tmpIns = getVariables(explicit_attr);
 			/* 可以申明多个实例 */
 			for (int i = 0; i < tmpIns.size(); i++) {
-				namedIns.add(  new EntityInstance( (Integer)tmpIns.get(i).get("id"), (String)tmpIns.get(i).get("name"), (ExpressEntity) dataType) );
+				if( dataType instanceof ExpressEntity )
+					namedIns.add(  new EntityInstance( (Integer)tmpIns.get(i).get("id"), 
+							(String)tmpIns.get(i).get("name"), (ExpressEntity) dataType) );
+				else
+					namedIns.add(  new DefinedInstance( (Integer)tmpIns.get(i).get("id"), 
+							(String)tmpIns.get(i).get("name"), (ExpressDefined) dataType) );
 			}
 
 		}

@@ -138,15 +138,17 @@ public class ExpressEntityDao extends BaseDao {
 		for (int i = 0; i < explicit_attrs.size(); i++) {
 			Integer explicit_attr = (Integer)explicit_attrs.get(i).get("id");
 
-			/* 分为generalized_types | named_types | simple_types   */
+			/* 
+			 * 分为generalized_types | named_types | simple_types  
+			 */
 			List<GeneralizedInstance> tmpInstance = new ArrayList<GeneralizedInstance>();
 
 			tmpInstance.addAll(getSimpleDataTypeInstance(explicit_attr));
 			
-			/* inverse里另外写了，entity外的也另外写*/
+			/* inverse里另外写了，entity外的也另外写 */
 			tmpInstance.addAll(getGeneralizedTypeInstance(explicit_attr));
 			
-			//TODO  getNamedType()里，实体很有问题 type_ref
+			//TODO:type_ref
 			tmpInstance.addAll(getNamedTypeInstance(explicit_attr));
 
 			if( hasDirectChild(explicit_attr,"OPTIONAL")  )
@@ -183,7 +185,7 @@ public class ExpressEntityDao extends BaseDao {
 
 				/* 分为generalized_types | named_types | simple_types   */
 				List<GeneralizedInstance> tmpInstance = new ArrayList<GeneralizedInstance>();
-				//TODO   默认是基本数据类型
+				//XXX :默认是基本数据类型
 				tmpInstance.addAll(getSimpleDataTypeInstance(derived_attr));
 
 				for (int k = 0; k < tmpInstance.size(); k++) 

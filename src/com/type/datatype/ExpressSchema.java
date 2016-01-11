@@ -6,8 +6,10 @@ import java.util.List;
 public class ExpressSchema extends ExpressGeneralizedDataType {
 
 	private String name;
-	public List<ExpressGeneralizedDataType> definedDataType = new ArrayList<ExpressGeneralizedDataType>();
+	public List<ExpressDefined> definedDataType = new ArrayList<ExpressDefined>();
 	protected List<ExpressEntity> entities = new ArrayList<ExpressEntity>();
+	
+	//XXX if it is necessary
 	protected List<ExpressGeneralizedDataType> simpleDataType = new ArrayList<ExpressGeneralizedDataType>();
 
 	public ExpressSchema(Integer id) {
@@ -20,7 +22,7 @@ public class ExpressSchema extends ExpressGeneralizedDataType {
 	}
 
 	// 向Schema里添加数据类型及Entity均使用这个方法
-	public void addDataType(ExpressGeneralizedDataType dataType) {
+	public void addDataType(ExpressDefined dataType) {
 		definedDataType.add(dataType);
 	}
 
@@ -46,7 +48,7 @@ public class ExpressSchema extends ExpressGeneralizedDataType {
 
 	
 
-	public void setDefinedDataType(List<ExpressGeneralizedDataType> definedDataType) {
+	public void setDefinedDataType(List<ExpressDefined> definedDataType) {
 		this.definedDataType = definedDataType;
 	}
 
@@ -54,7 +56,7 @@ public class ExpressSchema extends ExpressGeneralizedDataType {
 		this.entities = entities;
 	}
 
-	public List<ExpressGeneralizedDataType> getDefinedDataType() {
+	public List<ExpressDefined> getDefinedDataType() {
 		return definedDataType;
 	}
 
@@ -68,7 +70,8 @@ public class ExpressSchema extends ExpressGeneralizedDataType {
 	
 	@Override
 	public String toString() {
-		return "ExpressSchema [name=" + name + ", body=" + entities.toString() + "]";
+		return "ExpressSchema [name=" + name + ", body=" + entities.toString() + 
+				"\n definedDataType= " + definedDataType + "]";
 	}
 
 }
