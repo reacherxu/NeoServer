@@ -9,6 +9,7 @@ import com.type.datatype.ExpressGeneralizedDataType;
 
 public class ExpressDefinedDao extends BaseDao {
 
+
 	/**
 	 * 获取ExpressDefined
 	 * @param type_decl
@@ -38,7 +39,7 @@ public class ExpressDefinedDao extends BaseDao {
 	 * concrete_types: aggregation_types | simple_types | type_ref
 	 * @param concrete_types
 	 */
-	private ExpressGeneralizedDataType getConcreteTypes(Integer concrete_types) {
+	protected ExpressGeneralizedDataType getConcreteTypes(Integer concrete_types) {
 		Map<String,Object> concreteType = getDirectChildren(concrete_types).get(0);
 		
 		if( "aggregation_types".equals((String)concreteType.get("name")))
@@ -50,13 +51,31 @@ public class ExpressDefinedDao extends BaseDao {
 			return null;
 	}
 
-	private ExpressGeneralizedDataType getAgregationType(Integer integer) {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * aggregation_types : array_type | bag_type | list_type | set_type;
+	 * @param aggregation_types
+	 * @return
+	 */
+	private ExpressGeneralizedDataType getAgregationType(Integer aggregation_types) {
+		Map<String, Object> collectionType = getDirectChildren(aggregation_types).get(0);
+		Integer type = (Integer) collectionType.get("id");
+		
+		if( "array_type".equals( (String)collectionType.get("name")) ) {
+			return new ExpressDefinedArrayDao().getExpressArray(type);
+		} 
+		else if( "list_type".equals( (String)collectionType.get("name"))) {
+			return new ExpressDefinedListDao().getExpressList(type);
+		} 
+		else if( "set_type".equals( (String)collectionType.get("name"))) {
+			return new ExpressDefinedSetDao().getExpressSet(type);
+		} 
+		else {
+			return new ExpressDefinedBagDao().getExpressBag(type);
+		}
 	}
 	
 	public static void main(String[] args) {
-		System.out.println(new ExpressDefinedDao().getExpressDefined(72));
+		System.out.println(new ExpressDefinedDao().getExpressDefined(180));
 	}
 
 }

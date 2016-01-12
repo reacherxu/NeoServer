@@ -4,7 +4,6 @@ import com.type.datatype.ExpressGeneralizedDataType;
 import com.type.datatype.ExpressSet;
 
 public class ExpressSetDao extends ExpressSADao {
-	private static final int GENERAL_SET_TYPE = 4;
 	
 	/**
 	 * 根据指定的general_set_type节点，解析set
@@ -17,7 +16,7 @@ public class ExpressSetDao extends ExpressSADao {
 		ExpressGeneralizedDataType dataType = null;
 		
 		/* 判断 bound属性是否存在 */
-		if( getDirectChildrenNum(general_set_type) == GENERAL_SET_TYPE ) {
+		if( hasDirectChild(general_set_type,"bound_spec") ) {
 
 			int bound_spec = getIdByName(general_set_type,"bound_spec").get(0);
 			int parameter_type = getIdByName(general_set_type, "parameter_type").get(0);
