@@ -1,10 +1,13 @@
 package com.neo4j.dao;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import com.type.datatype.ExpressConstructedDataType;
 import com.type.datatype.ExpressDefined;
+import com.type.datatype.ExpressEnumeration;
 import com.type.datatype.ExpressGeneralizedDataType;
+import com.type.datatype.ExpressSelect;
 
 
 public class ExpressDefinedDao extends BaseDao {
@@ -22,19 +25,116 @@ public class ExpressDefinedDao extends BaseDao {
 		/* underlying_type : concrete_types | constructed_types */
 		Map<String,Object> child =  getDirectChildren(underlying_type).get(0);
 		
-		if( "constructed_types".equals(child.get("name")) )
-			expressDefined.setDataType(getConstructTypes((Integer)child.get("id")));
+		if( "constructed_types".equals(child.get("name")) )  //由getConstructTypes()设置数据类型
+			getConstructTypes(expressDefined,(Integer)child.get("id"));
 		else 
 			expressDefined.setDataType(getConcreteTypes((Integer)child.get("id")));
 		
 		return expressDefined;
 	}
 
-	private ExpressConstructedDataType getConstructTypes(Integer constructed_types) {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * constructed_types : enumeration_type | select_type;
+	 * @param constructed_types
+	 * @return
+	 */
+	private void getConstructTypes(ExpressDefined expressDefined,Integer constructed_types) {
+		
+		Map<String,Object> child =  getDirectChildren(constructed_types).get(0);
+		if( "enumeration_type".equals(child.get("name")) )
+			expressDefined.setDataType(getExpressEnumeration((Integer)child.get("id")));
+		else 
+			expressDefined.setDataType(getExpressSelect((Integer)child.get("id")));
+		
 	}
 	
+	/**
+	 *  解析select
+	 * select_type : ( EXTENSIBLE ( GENERIC_ENTITY )? )? SELECT ( select_list | select_extension )?;
+	 * @param select_type
+	 * @return
+	 */
+	private ExpressSelect getExpressSelect(Integer select_type) {
+		ExpressSelect expSelect = new ExpressSelect(select_type);
+		
+		if( hasDirectChild(select_type, "EXTENSIBLE")) {
+			//TODO 是否是GENERIC_ENTITY
+			expSelect.setIsExtensible(true);
+		}
+		
+		//select_list : '(' named_types ( ',' named_types )* ')';
+		if(  hasDirectChild(select_type, "select_list")) {
+			getSelectList(expSelect,select_type);
+		}
+		
+		//select_extension : BASED_ON type_ref ( WITH select_list )?;
+		if(hasDirectChild(select_type, "select_extension")) {
+			Integer select_extension = getIdByName(select_type, "select_extension").get(0);
+			
+			if(  hasDirectChild(select_type, "select_list")) {
+				getSelectList(expSelect,select_type);
+			}
+			
+			Integer type_ref = getIdByName(select_extension, "type_ref").get(0);
+			expSelect.setExtension(new ExpressSelect(-1,getLeaf(type_ref)));
+			
+		}
+		return expSelect;
+	}
+
+	/**
+	 * 获取select type中 的list
+	 * @param expSelect
+	 * @param select_type
+	 */
+	private void getSelectList(ExpressSelect expSelect, Integer select_type) {
+		Integer select_list = getIdByName(select_type, "select_list").get(0);
+		
+		List<ExpressGeneralizedDataType> list = new ArrayList<ExpressGeneralizedDataType>();
+		List<Integer> named_types_ = getIdByName(select_list, "named_types");
+		for (int i = 0; i < named_types_.size(); i++) {
+			Integer named_types = named_types_.get(i);
+			list.add(getNamedType(named_types));
+		}
+		expSelect.setList(list);
+	}
+
+	/**
+	 * 解析enumeration
+	 * enumeration_type :
+	 *  ( EXTENSIBLE )? ENUMERATION ( ( OF enumeration_items ) | enumeration_extension )?;
+	 * @param integer
+	 * @return
+	 */
+	private ExpressEnumeration getExpressEnumeration(Integer enumeration_type) {
+		ExpressEnumeration expEnum = new ExpressEnumeration(enumeration_type);
+		
+		if( hasDirectChild(enumeration_type, "EXTENSIBLE"))
+			expEnum.setIsExtensible(true);
+		
+		//enumeration_extension	: BASED_ON type_ref ( WITH enumeration_items )?;
+		if(  hasDirectChild(enumeration_type, "enumeration_extension")) {
+			Integer enumeration_extension = getIdByName(enumeration_type, "enumeration_extension").get(0);
+			Integer type_ref = getIdByName(enumeration_extension, "type_ref").get(0);
+			
+			//enumeration_items	: '(' enumeration_id ( ',' enumeration_id )* ')';
+			if( hasDirectChild(enumeration_extension,"enumeration_items")) {
+				Integer enumeration_items = getIdByName(enumeration_extension,"enumeration_items").get(0);
+				
+				List<String> items = new ArrayList<String>();
+				List<Integer> enumeration_ids = getIdByName(enumeration_items, "enumeration_id");
+				for (int i = 0; i < enumeration_ids.size(); i++) {
+					Integer enumeration_id = enumeration_ids.get(i);
+					items.add(getLeaf(enumeration_id));
+				}
+				expEnum.setItems(items);
+			}
+			expEnum.setExtension(new ExpressEnumeration(-1,getLeaf(type_ref)));
+		}
+		
+		return expEnum;
+	}
+
 	/**
 	 * concrete_types: aggregation_types | simple_types | type_ref
 	 * @param concrete_types
@@ -75,7 +175,11 @@ public class ExpressDefinedDao extends BaseDao {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println(new ExpressDefinedDao().getExpressDefined(180));
+//		System.out.println(new ExpressDefinedDao().getExpressDefined(180));
+		ExpressDefinedDao expDef = new ExpressDefinedDao();
+//		ExpressEnumeration expEnum = expDef.getExpressEnumeration(370);
+		ExpressSelect expSelect =  expDef.getExpressSelect(476);
+		System.out.println(expSelect);
 	}
 
 }
