@@ -28,9 +28,13 @@ public class ExpressBagDao extends ExpressSADao {
 			String type = (String) getDirectChildren(parameter_type).get(0).get("name");
 			Integer type_id = (Integer) getDirectChildren(parameter_type).get(0).get("id");
 			
-			//TODO  named_types : entity_ref | type_ref;
 			if(type.equals("simple_types")) 
 				dataType = getSimpleDataType(type_id);
+			else if(type.equals("named_types"))
+				dataType = getNamedType(type_id);
+			else {
+				dataType = getGeneralizedType(general_bag_type);
+			}
 		}
 		expBag = new ExpressBag<ExpressGeneralizedDataType>(general_bag_type, bounds[0], bounds[1], dataType);
 		

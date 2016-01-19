@@ -21,6 +21,9 @@ public class ExpressDefinedDao extends BaseDao {
 	public ExpressDefined getExpressDefined(Integer type_decl) {
 		ExpressDefined expressDefined = new ExpressDefined(type_decl);
 		
+		Integer type_id = getIdByName(type_decl, "type_id").get(0);
+		expressDefined.setDataTypeName(getLeaf(type_id)); 
+		
 		Integer underlying_type = getIdByName(type_decl, "underlying_type").get(0);
 		/* underlying_type : concrete_types | constructed_types */
 		Map<String,Object> child =  getDirectChildren(underlying_type).get(0);
@@ -71,7 +74,7 @@ public class ExpressDefinedDao extends BaseDao {
 		if(hasDirectChild(select_type, "select_extension")) {
 			Integer select_extension = getIdByName(select_type, "select_extension").get(0);
 			
-			if(  hasDirectChild(select_type, "select_list")) {
+			if(  hasDirectChild(select_extension, "select_list")) {
 				getSelectList(expSelect,select_type);
 			}
 			

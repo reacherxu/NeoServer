@@ -303,7 +303,9 @@ public class ExpressEntityDao extends BaseDao {
 				ruleName = (String) getDirectChildren(rule_label_id).get(0).get("name");
 
 				List<Integer> referenced_attributes = getIdByName(unique_rule, "referenced_attribute");
+				
 				//TODO  qualified_attribute;
+				//referenced_attribute : attribute_ref | qualified_attribute;
 				for (int k = 0; k < referenced_attributes.size(); k++) {
 					Integer referenced_attribute = referenced_attributes.get(k);
 					ruleVal.add(getLeaf(referenced_attribute));

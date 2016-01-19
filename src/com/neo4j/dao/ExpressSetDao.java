@@ -27,12 +27,13 @@ public class ExpressSetDao extends ExpressSADao {
 			String type = (String) getDirectChildren(parameter_type).get(0).get("name");
 			Integer type_id = (Integer) getDirectChildren(parameter_type).get(0).get("id");
 			
-			//TODO parameter_type : generalized_types | named_types | simple_types;
 			if(type.equals("simple_types")) 
 				dataType = getSimpleDataType(type_id);
-			//TODO  named_types : entity_ref | type_ref;
 			else if(type.equals("named_types"))
 				dataType = getNamedType(type_id);
+			else {
+				dataType = getGeneralizedType(general_set_type);
+			}
 		}
 		expSet = new ExpressSet<ExpressGeneralizedDataType>(general_set_type, bounds[0], bounds[1], dataType);
 		

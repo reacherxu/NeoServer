@@ -526,6 +526,59 @@ public class BaseDao {
 		return simpleIns;
 	}
 	
+	
+	/**
+	 * 获得 某个explicit_attr下的generalized_type
+	 * @param explicit_attr
+	 * @return
+	 */
+	public ExpressGeneralizedDataType getGeneralizedType(Integer explicit_attr) {
+		ExpressGeneralizedDataType dataType = null;
+		
+		int parameter_type = getIdByName(explicit_attr, "parameter_type").get(0);
+		
+		/* generalized_types | named_types | simple_types */
+		if( getDirectChildren(parameter_type).get(0).get("name").equals("generalized_types")) {
+			Integer generalized_types = getIdByName(parameter_type, "generalized_types").get(0);
+			
+			/* aggregate_type | general_aggregation_types | generic_entity_type | generic_type */
+			if( getDirectChildren(generalized_types).get(0).get("name").equals("general_aggregation_types") ) {
+				Integer general_aggregation_types = getIdByName(generalized_types, "general_aggregation_types").get(0);
+				
+				/* general_array_type | general_bag_type | general_list_type | general_set_type */
+				if( getDirectChildren(general_aggregation_types).get(0).get("name").equals("general_set_type")) {
+					Integer general_set_type = getIdByName(general_aggregation_types,"general_set_type").get(0);
+
+					ExpressSetDao setDao = new ExpressSetDao();
+					dataType = setDao.getExpressSet(general_set_type);
+					
+				} 
+				else if(getDirectChildren(general_aggregation_types).get(0).get("name").equals("general_bag_type")) {
+					Integer general_bag_type = getIdByName(general_aggregation_types,"general_bag_type").get(0);
+
+					ExpressBagDao bagDao = new ExpressBagDao();
+					dataType = bagDao.getExpressBag(general_bag_type);
+					
+				}
+				else if(getDirectChildren(general_aggregation_types).get(0).get("name").equals("general_array_type")) {
+					Integer general_array_type = getIdByName(general_aggregation_types,"general_array_type").get(0);
+
+					ExpressArrayDao arrayDao = new ExpressArrayDao();
+					dataType = arrayDao.getExpressArray(general_array_type);
+					
+				}
+				else {
+					Integer general_list_type = getIdByName(general_aggregation_types,"general_list_type").get(0);
+
+					ExpressListDao listDao = new ExpressListDao();
+					dataType = listDao.getExpressList(general_list_type);
+					
+				}
+			}
+		}
+		
+		return dataType;
+	}
 	/**
 	 * 获得 某个explicit_attr下的generalized_type实例
 	 * @param explicit_attr
@@ -635,6 +688,7 @@ public class BaseDao {
 		
 		int parameter_type = getIdByName(explicit_attr, "parameter_type").get(0);
 		
+		//named_types : entity_ref | type_ref;
 		if( getDirectChildren(parameter_type).get(0).get("name").equals("named_types") ) {
 			/* 寻找named_types的叶子节点 ,添加属性 */
 			int named_types = (Integer) getDirectChildren(parameter_type).get(0).get("id");
