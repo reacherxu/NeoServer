@@ -9,6 +9,10 @@ public class ExpressDefined extends ExpressGeneralizedDataType {
 	public ExpressDefined(Integer id) {
 		super(id);
 	}
+	public ExpressDefined(Integer id,String dataTypeName) {
+		super(id);
+		this.dataTypeName = dataTypeName;
+	}
 	
 	public ExpressDefined(Integer id,ExpressGeneralizedDataType dataType,String dataTypeName) {
 		super(id);
@@ -34,7 +38,7 @@ public class ExpressDefined extends ExpressGeneralizedDataType {
 	
 	@Override
 	public String toString() {
-		return "ExpressDefined " + dataType;
+		return "ExpressDefined " + dataType + ",name= " + dataTypeName;
 	}
 
 }

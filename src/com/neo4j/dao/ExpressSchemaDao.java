@@ -80,7 +80,7 @@ public class ExpressSchemaDao extends BaseDao {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println(new ExpressSchemaDao().getExpressSchema(2));
+		System.out.println(new ExpressSchemaDao().getExpressSchema(762));
 		
 	}
 

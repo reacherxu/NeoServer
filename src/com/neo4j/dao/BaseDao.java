@@ -664,16 +664,24 @@ public class BaseDao {
 		if(type_name.equals("entity_ref")) {
 			dataType = getEntityRef(named_types);
 		} else {
-			//TODO　　type_ref
+			Integer type_ref = (Integer) getDirectChildren(named_types).get(0).get("id");
+			dataType = getTypeRef(type_ref);
 		}
 		
 		return dataType;
 	}
 	
+	protected ExpressGeneralizedDataType getTypeRef(Integer type_ref) {
+		String definedName = getLeaf(type_ref);
+
+		//XXX: 暂时出现defined data type引用，则new一个id为-1的defined data type
+		return new ExpressDefined(-1, definedName);
+	}
+
 	protected ExpressGeneralizedDataType getEntityRef(Integer named_types) {
 		String entityName = getLeaf(named_types);
 		
-		//XXX: 暂时出现实体引用，则new一个id为-1的
+		//XXX: 暂时出现实体引用，则new一个id为-1的entity
 		return new ExpressEntity(-1, entityName);
 	}
 
@@ -690,6 +698,7 @@ public class BaseDao {
 		
 		//named_types : entity_ref | type_ref;
 		if( getDirectChildren(parameter_type).get(0).get("name").equals("named_types") ) {
+			
 			/* 寻找named_types的叶子节点 ,添加属性 */
 			int named_types = (Integer) getDirectChildren(parameter_type).get(0).get("id");
 			ExpressGeneralizedDataType dataType = getNamedType(named_types);

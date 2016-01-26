@@ -150,8 +150,7 @@ public class ExpressDefinedDao extends BaseDao {
 		else if ( "simple_types".equals((String)concreteType.get("name")))
 			return getSimpleDataType((Integer)concreteType.get("id"));
 		else
-			//FIXME  type_ref 记得修改
-			return null;
+			return getTypeRef((Integer)concreteType.get("id"));
 	}
 
 	/**

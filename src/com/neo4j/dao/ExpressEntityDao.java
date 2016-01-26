@@ -148,7 +148,9 @@ public class ExpressEntityDao extends BaseDao {
 			/* inverse里另外写了，entity外的也另外写 */
 			tmpInstance.addAll(getGeneralizedTypeInstance(explicit_attr));
 			
-			//TODO:type_ref
+			/* 
+			 * 分为entity_ref | type_ref  
+			 */
 			tmpInstance.addAll(getNamedTypeInstance(explicit_attr));
 
 			if( hasDirectChild(explicit_attr,"OPTIONAL")  )
