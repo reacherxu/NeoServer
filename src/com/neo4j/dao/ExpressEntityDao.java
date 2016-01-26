@@ -15,13 +15,8 @@ import com.type.instance.SetInstance;
 
 public class ExpressEntityDao extends BaseDao {
 	private String OPTIONAL = "OPTIONAL:true";
-	private static List<String> DERIVE = null;
+	private List<String> DERIVE = null;
 	
-	static {
-		DERIVE = new ArrayList<String>();
-		DERIVE.add("DERIVE:expression");
-	}
-
 	/**
 	 * 遍历图，返回图中所有的entity
 	 * @return
@@ -189,10 +184,15 @@ public class ExpressEntityDao extends BaseDao {
 				List<GeneralizedInstance> tmpInstance = new ArrayList<GeneralizedInstance>();
 				//XXX :默认是基本数据类型
 				tmpInstance.addAll(getSimpleDataTypeInstance(derived_attr));
-
-				for (int k = 0; k < tmpInstance.size(); k++) 
+				/* 获取expression */
+				Integer expression = getIdByName(derived_attr,"expression").get(0);
+				String simple_expression = (String) getDirectChildren(expression).get(0).get("name");
+				
+				DERIVE = new ArrayList<String>();
+				for (int k = 0; k < tmpInstance.size(); k++) {
+					DERIVE.add("DERIVE:" + simple_expression.split(":")[1]);
 					instances.put( tmpInstance.get(k) , DERIVE);
-					
+				}
 			}
 		}
 
