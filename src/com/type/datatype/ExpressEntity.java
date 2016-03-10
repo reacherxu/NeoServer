@@ -2,6 +2,7 @@ package com.type.datatype;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,8 +14,8 @@ public class ExpressEntity extends ExpressGeneralizedDataType {
 	private Boolean isAbstract;
 	List<String> superTypes = new ArrayList<String>();
 	
-	private Map<GeneralizedInstance,List<String>> map = new HashMap<GeneralizedInstance,List<String>>();
-	protected List<GeneralizedInstance> instanceList = new ArrayList<GeneralizedInstance>();
+	private Map<GeneralizedInstance,List<String>> map = new LinkedHashMap<GeneralizedInstance,List<String>>();
+//	protected List<GeneralizedInstance> instanceList = new ArrayList<GeneralizedInstance>();
 	
 
 	/**
@@ -37,25 +38,25 @@ public class ExpressEntity extends ExpressGeneralizedDataType {
 	}
 
 	
-	public List<GeneralizedInstance> getInstanceList() {
-		return instanceList;
-	}
-
-
-	public void setInstanceList() {
-		this.instanceList.addAll(map.keySet());
-	}
-
-	// if it is necessary
-	public void addAttribute(GeneralizedInstance instance, List<String> info) {
-		map.put(instance, info);
-		instanceList.add(instance);
-	}
-	
-	public void addAttribute(Map<GeneralizedInstance,List<String>> map) {
-		this.map.putAll(map);
-		instanceList.addAll(map.keySet());
-	}
+//	public List<GeneralizedInstance> getInstanceList() {
+//		return instanceList;
+//	}
+//
+//
+//	public void setInstanceList() {
+//		this.instanceList.addAll(map.keySet());
+//	}
+//
+//	// if it is necessary
+//	public void addAttribute(GeneralizedInstance instance, List<String> info) {
+//		map.put(instance, info);
+//		instanceList.add(instance);
+//	}
+//	
+//	public void addAttribute(Map<GeneralizedInstance,List<String>> map) {
+//		this.map.putAll(map);
+//		instanceList.addAll(map.keySet());
+//	}
 	
 	public List<String> getSuperTypes() {
 		return superTypes;

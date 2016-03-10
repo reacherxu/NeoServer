@@ -115,7 +115,7 @@ public class ExpressEntityDao extends BaseDao {
 		expressEntity = new ExpressEntity(entity_decl, name, null);
 		expressEntity.setSuperTypes(baseList);
 		expressEntity.setMap(entityBody);
-		expressEntity.setInstanceList();
+//		expressEntity.setInstanceList();
 		expressEntity.setUniqueList(uniqueList);
 
 		return expressEntity;

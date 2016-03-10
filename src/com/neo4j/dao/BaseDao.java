@@ -81,7 +81,7 @@ public class BaseDao {
 	public static void main(String[] args) {
 		//"114.212.83.134:7474"  "172.26.13.122:7474"
 		BaseDao ins = new BaseDao();
-		System.out.println(ins.getDirectChildrenNum(12));
+		System.out.println(ins.creatNode("\\", 0));
 		/*String sql = "MATCH (:Movie {title:{1}})<-[:ACTED_IN]-(a:Person) RETURN a.name as actor";
 			List<Map<String, Object>> list = ins.queryList(sql,"The Matrix");
 			System.out.println("------------------------");
@@ -163,6 +163,7 @@ public class BaseDao {
 		neoConn.update(sql, ip, time, operation);
 	}
 	
+	
 	/**
 	 * 创建节点
 	 * @param name	创建的节点名称
@@ -175,7 +176,7 @@ public class BaseDao {
 				+ "',ip:'" + Util.getIP() + "',name:{1},children_num:{2}}),(n2:" + Label.Log +" {name:{1}})," 
 				+ "(n)-[:Log_for]->(n2) return ID(n)";
 
-		Map<String, Object> rs = neoConn.query(sql,name,children_num);
+		Map<String, Object> rs = neoConn.query(sql, name,children_num);
 		int nodeID = (Integer) rs.get("ID(n)");
 				
 		writeLog(nodeID+1,Util.getIP(),Util.getCurrentTime()," created the node:" + name);

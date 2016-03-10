@@ -180,7 +180,7 @@ public class ExpressDefinedDao extends BaseDao {
 //		System.out.println(new ExpressDefinedDao().getExpressDefined(180));
 		ExpressDefinedDao expDef = new ExpressDefinedDao();
 //		ExpressEnumeration expEnum = expDef.getExpressEnumeration(370);
-		ExpressSelect expSelect =  expDef.getExpressSelect(476);
+		ExpressGeneralizedDataType expSelect =  expDef.getConcreteTypes(678);
 		System.out.println(expSelect);
 	}
 
