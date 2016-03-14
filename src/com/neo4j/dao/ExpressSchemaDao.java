@@ -45,6 +45,9 @@ public class ExpressSchemaDao extends BaseDao {
 		List<ExpressDefined> defs = tmpSchema.getDefinedDataType();
 		List<ExpressEntity> entities = tmpSchema.getEntities();
 		
+		/* 遍历每一个defined data type */
+		//TODO
+		
 		/* 遍历每一个entity */
 		for (int i = 0; i < entities.size(); i++) {
 			ExpressEntity tmpEntity = entities.get(i);
