@@ -1,6 +1,6 @@
 package com.type.datatype;
 
-public class ExpressArray<T extends ExpressGeneralizedDataType> extends ExpressAggregation<T> {
+public class ExpressArray extends ExpressAggregation {
 
 	protected Boolean isOptional = false;
 	protected Boolean isUnique = false;
@@ -11,7 +11,7 @@ public class ExpressArray<T extends ExpressGeneralizedDataType> extends ExpressA
 		bound2 = 0;
 	}
 
-	public ExpressArray(Integer id,Integer bound1, Integer bound2,T dataType) {
+	public ExpressArray(Integer id,Integer bound1, Integer bound2,ExpressGeneralizedDataType dataType) {
 		super(id);
 		setBound1(bound1);
 		setBound2(bound2);

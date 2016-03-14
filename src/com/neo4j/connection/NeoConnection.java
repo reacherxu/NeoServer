@@ -47,8 +47,8 @@ public class NeoConnection {
 		/* 注意：不管有多少个Dao,neoConnect操作只执行一次,不会出现多次连接数据库的操作 */
 		if( instance == null ) {
 			instance = new NeoConnection();
-			instance.neoConnect();
 		}
+		instance.neoConnect();
 		return instance;
 	}
 	

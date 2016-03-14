@@ -2,22 +2,21 @@ package com.type.instance;
 
 import java.util.ArrayList;
 
-import com.type.datatype.ExpressArray;
+import com.type.datatype.ExpressAggregation;
 import com.type.datatype.ExpressGeneralizedDataType;
 
-public class ArrayInstance<T extends GeneralizedInstance, E extends ExpressGeneralizedDataType> extends IndexedCollectionInstance<T, E> {
+public class ArrayInstance extends IndexedCollectionInstance {
 
-	@SuppressWarnings("unchecked")
-	private final ExpressArray<E> dataType = (ExpressArray<E>) super.dataType;
+	private final ExpressAggregation dataType = (ExpressAggregation) super.dataType;
 
-	public ArrayInstance(Integer id, String name, ExpressArray<E> dataType) {
+	public ArrayInstance(Integer id, String name, ExpressGeneralizedDataType dataType) {
 		super(id, name, dataType);
-		value = new ArrayList<T>();
+		value = new ArrayList<GeneralizedInstance>();
 		index = this.dataType.getBound1() - 1;
 	}
 
 	@Override
-	public T get(Integer i) {
+	public GeneralizedInstance get(Integer i) {
 
 		if (isIndexLegal(i)) {
 			return getList().get(this.indexModify(i));
@@ -26,50 +25,10 @@ public class ArrayInstance<T extends GeneralizedInstance, E extends ExpressGener
 		return null;
 	}
 
-	@Override
-	public Boolean add(T element) {
-		if (!isFull()) {
-			if (dataType.getIsUnique() && isExist(element)) {
-				return false;
-			}
-
-			if (dataType.getIsOptional() && element == null) {
-				return false;
-			}
-
-			getList().add(element);
-			index++;
-			return true;
-		}
-
-		return false;
-	}
+	
 
 	@Override
-	public Boolean add(Integer i, T element) {
-		if (!isFull()) {
-			if (dataType.getIsUnique() && isExist(element)) {
-				return false;
-			}
-
-			if (!dataType.getIsOptional() && element == null) {
-				return false;
-			}
-
-			if (!isIndexLegal(i)) {
-				return false;
-			}
-
-			getList().add(element);
-			index++;
-			return true;
-		}
-
-		return false;
-	}
-
-	@Override
-	public Boolean remove(T object) {
+	public Boolean remove(GeneralizedInstance object) {
 
 		if (getList().remove(object)) {
 			index--;
@@ -162,5 +121,17 @@ public class ArrayInstance<T extends GeneralizedInstance, E extends ExpressGener
 	@Override
 	public Integer getSize() {
 		return index - dataType.getBound1() + 1;
+	}
+
+	@Override
+	public Boolean add(GeneralizedInstance element) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Boolean add(Integer index, GeneralizedInstance element) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

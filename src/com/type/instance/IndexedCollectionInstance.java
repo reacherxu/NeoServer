@@ -2,7 +2,7 @@ package com.type.instance;
 
 import com.type.datatype.ExpressGeneralizedDataType;
 
-public abstract class IndexedCollectionInstance<T extends GeneralizedInstance, E extends ExpressGeneralizedDataType> extends AggregationInstance<T, E> {
+public abstract class IndexedCollectionInstance extends AggregationInstance {
 
 	protected Integer index = 0;
 
@@ -10,11 +10,11 @@ public abstract class IndexedCollectionInstance<T extends GeneralizedInstance, E
 		super(id, name, dataType);
 	}
 
-	public abstract T get(Integer index);
+	public abstract GeneralizedInstance get(Integer index);
 
-	public abstract Boolean add(T element);
+	public abstract Boolean add(GeneralizedInstance element);
 
-	public abstract Boolean add(Integer index, T element);
+	public abstract Boolean add(Integer index, GeneralizedInstance element);
 
 	public abstract Boolean remove(int index);
 

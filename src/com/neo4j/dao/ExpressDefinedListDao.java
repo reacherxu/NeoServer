@@ -12,10 +12,10 @@ public class ExpressDefinedListDao extends ExpressDefinedDao {
 	 * @param list_type
 	 * @return
 	 */
-	public ExpressList<ExpressGeneralizedDataType> getExpressList(Integer list_type) {
+	public ExpressList getExpressList(Integer list_type) {
 		Integer bound1 = 0;
 		Integer bound2 = null;
-		ExpressList<ExpressGeneralizedDataType> expList = null ;
+		ExpressList expList = null ;
 		ExpressGeneralizedDataType dataType = null;
 		
 		/* 判断 bound属性是否存在 */
@@ -42,7 +42,7 @@ public class ExpressDefinedListDao extends ExpressDefinedDao {
 				dataType = getEntityRef(type_id);
 
 		}
-		expList = new ExpressList<ExpressGeneralizedDataType>(list_type, bound1, bound2, dataType);
+		expList = new ExpressList(list_type, bound1, bound2, dataType);
 		
 		/* 判断是否有unique属性 */
 		if(hasDirectChild(list_type,"UNIQUE"))

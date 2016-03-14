@@ -70,6 +70,9 @@ public class BaseDao {
 	}
 
 	public NeoConnection getNeoConn() {
+		if( this.neoConn == null ) {
+			neoConn = NeoConnection.getNeoConnection();
+		}
 		return neoConn;
 	}
 
@@ -603,7 +606,7 @@ public class BaseDao {
 					Integer general_set_type = getIdByName(general_aggregation_types,"general_set_type").get(0);
 
 					ExpressSetDao setDao = new ExpressSetDao();
-					ExpressSet<ExpressGeneralizedDataType> tmpSet = setDao.getExpressSet(general_set_type);
+					ExpressSet tmpSet = setDao.getExpressSet(general_set_type);
 					
 					List<Map<String,Object>> tmpVars = getVariables(explicit_attr);
 					/* 可以申明多个实例 */
@@ -615,7 +618,7 @@ public class BaseDao {
 					Integer general_bag_type = getIdByName(general_aggregation_types,"general_bag_type").get(0);
 
 					ExpressBagDao bagDao = new ExpressBagDao();
-					ExpressBag<ExpressGeneralizedDataType> tmpBag = bagDao.getExpressBag(general_bag_type);
+					ExpressBag tmpBag = bagDao.getExpressBag(general_bag_type);
 					
 					List<Map<String,Object>> tmpVars = getVariables(explicit_attr);
 					/* 可以申明多个实例 */
@@ -627,7 +630,7 @@ public class BaseDao {
 					Integer general_array_type = getIdByName(general_aggregation_types,"general_array_type").get(0);
 
 					ExpressArrayDao arrayDao = new ExpressArrayDao();
-					ExpressArray<ExpressGeneralizedDataType> tmpArray = arrayDao.getExpressArray(general_array_type);
+					ExpressArray tmpArray = arrayDao.getExpressArray(general_array_type);
 					
 					List<Map<String,Object>> tmpVars = getVariables(explicit_attr);
 					/* 可以申明多个实例 */
@@ -639,7 +642,7 @@ public class BaseDao {
 					Integer general_list_type = getIdByName(general_aggregation_types,"general_list_type").get(0);
 
 					ExpressListDao listDao = new ExpressListDao();
-					ExpressList<ExpressGeneralizedDataType> tmpList = listDao.getExpressList(general_list_type);
+					ExpressList tmpList = listDao.getExpressList(general_list_type);
 					
 					List<Map<String,Object>> tmpVars = getVariables(explicit_attr);
 					/* 可以申明多个实例 */

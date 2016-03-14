@@ -11,10 +11,10 @@ public class ExpressDefinedBagDao extends ExpressDefinedDao {
 	 * @param bag_type
 	 * @return
 	 */
-	public ExpressBag<ExpressGeneralizedDataType> getExpressBag(Integer bag_type) {
+	public ExpressBag getExpressBag(Integer bag_type) {
 		Integer bound1 = 0;
 		Integer bound2 = null;
-		ExpressBag<ExpressGeneralizedDataType> expBag = null ;
+		ExpressBag expBag = null ;
 		ExpressGeneralizedDataType dataType = null;
 		
 		if( hasDirectChild(bag_type,"bound_spec") ) {
@@ -41,7 +41,7 @@ public class ExpressDefinedBagDao extends ExpressDefinedDao {
 
 		}
 
-		expBag = new ExpressBag<ExpressGeneralizedDataType>(bag_type, bound1, bound2, dataType);
+		expBag = new ExpressBag(bag_type, bound1, bound2, dataType);
 		
 		return expBag;
 	}

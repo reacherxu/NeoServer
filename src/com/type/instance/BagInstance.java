@@ -3,21 +3,20 @@ package com.type.instance;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.type.datatype.ExpressBag;
+import com.type.datatype.ExpressAggregation;
 import com.type.datatype.ExpressGeneralizedDataType;
 
-public class BagInstance<T extends GeneralizedInstance, E extends ExpressGeneralizedDataType> extends NoIndexedCollectionInstance<T, E> {
+public class BagInstance extends NoIndexedCollectionInstance {
 
-	@SuppressWarnings("unchecked")
-	private final ExpressBag<E> dataType = (ExpressBag<E>) super.dataType;
+	private final ExpressAggregation dataType = (ExpressAggregation) super.dataType;
 
-	public BagInstance(Integer id, String name, ExpressBag<E> dataType) {
+	public BagInstance(Integer id, String name, ExpressAggregation dataType) {
 		super(id, name, dataType);
-		value = new ArrayList<T>();
+		value = new ArrayList<GeneralizedInstance>();
 	}
 
 	@Override
-	public Boolean add(T element) {
+	public Boolean add(GeneralizedInstance element) {
 		if (!isFull()) {
 
 			getList().add(element);
@@ -29,7 +28,7 @@ public class BagInstance<T extends GeneralizedInstance, E extends ExpressGeneral
 	}
 
 	@Override
-	public Boolean remove(T object) {
+	public Boolean remove(GeneralizedInstance object) {
 
 		if (getList().remove(object)) {
 			size--;
@@ -90,12 +89,12 @@ public class BagInstance<T extends GeneralizedInstance, E extends ExpressGeneral
 	}
 
 	@Override
-	public ExpressBag<E> getDataType() {
+	public ExpressAggregation getDataType() {
 		return dataType;
 	}
 
 	@Override
-	public Boolean setCollection(List<T> list) {
+	public Boolean setCollection(List<GeneralizedInstance> list) {
 		if (list.size() >= dataType.getBound1() && list.size() <= dataType.getBound2()) {
 			value = list;
 
@@ -105,7 +104,7 @@ public class BagInstance<T extends GeneralizedInstance, E extends ExpressGeneral
 	}
 
 	@Override
-	public Boolean setCollection(Integer bound1, Integer bound2, List<T> list) {
+	public Boolean setCollection(Integer bound1, Integer bound2, List<GeneralizedInstance> list) {
 		dataType.setBound1(bound1);
 		dataType.setBound2(bound2);
 

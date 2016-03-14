@@ -1,36 +1,32 @@
-2016-03-07 19:22:18  [ main:3477 ] - [ ERROR ]  数据库操作异常
-java.sql.SQLException: Error executing query start n=node({1}) match n-[]->(m:Node) return ID(m) as id
- with params {1=12}
-	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:255)
+2016-03-14 19:48:34  [ main:10374 ] - [ ERROR ]  数据库操作异常
+java.sql.SQLException: execute called on closed connection.
+	at org.neo4j.jdbc.Neo4jConnection.checkClosed(Neo4jConnection.java:260)
+	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:246)
 	at org.neo4j.jdbc.Neo4jPreparedStatement.executeQuery(Neo4jPreparedStatement.java:48)
 	at com.neo4j.connection.NeoConnection.queryList(NeoConnection.java:156)
-	at com.neo4j.dao.BaseDao.getDirectChildrenNum(BaseDao.java:315)
-	at com.neo4j.dao.BaseDao.main(BaseDao.java:84)
-Caused by: java.lang.RuntimeException: Error executing cypher statement(s) [{code=Neo.ClientError.Statement.EntityNotFound, message=Node with id 12}]
-	at org.neo4j.jdbc.rest.StreamingParser.handleErrors(StreamingParser.java:246)
-	at org.neo4j.jdbc.rest.StreamingParser.skipTo(StreamingParser.java:223)
-	at org.neo4j.jdbc.rest.StreamingParser.nextResult(StreamingParser.java:96)
-	at org.neo4j.jdbc.rest.StreamingParser$2.hasNext(StreamingParser.java:187)
-	at org.neo4j.jdbc.rest.StreamingParser$2$1.endReached(StreamingParser.java:189)
-	at org.neo4j.jdbc.rest.StreamingParser$1.hasNext(StreamingParser.java:139)
-	at org.neo4j.jdbc.IteratorResultSet.<init>(IteratorResultSet.java:49)
-	at org.neo4j.jdbc.Neo4jConnection.toResultSet(Neo4jConnection.java:297)
-	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:251)
-	... 4 more
-2016-03-07 20:55:28  [ main:953 ] - [ ERROR ]  数据库操作异常
-java.sql.SQLException: Error executing query start n=node({1}) match (n:Node)-[r*0..]->(m:Node) where m.name={2} return ID(m) as id order by ID(m)
- with params {2=schema_id, 1=2}
-	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:255)
+	at com.neo4j.dao.ExpressSchemaDao.getAllExpressSchema(ExpressSchemaDao.java:28)
+	at com.neo4j.dao.ExpressSchemaDao.main(ExpressSchemaDao.java:153)
+2016-03-14 19:48:34  [ main:10382 ] - [ ERROR ]  关闭Connection失败
+java.sql.SQLException: close called on closed connection.
+	at org.neo4j.jdbc.Neo4jConnection.checkClosed(Neo4jConnection.java:260)
+	at org.neo4j.jdbc.Neo4jConnection.close(Neo4jConnection.java:156)
+	at com.neo4j.connection.NeoConnection.close(NeoConnection.java:120)
+	at com.neo4j.connection.NeoConnection.logout(NeoConnection.java:133)
+	at com.neo4j.dao.BaseDao.logout(BaseDao.java:149)
+	at com.neo4j.dao.ExpressSchemaDao.main(ExpressSchemaDao.java:155)
+2016-03-14 19:52:44  [ main:6714 ] - [ ERROR ]  数据库操作异常
+java.sql.SQLException: execute called on closed connection.
+	at org.neo4j.jdbc.Neo4jConnection.checkClosed(Neo4jConnection.java:260)
+	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:246)
 	at org.neo4j.jdbc.Neo4jPreparedStatement.executeQuery(Neo4jPreparedStatement.java:48)
 	at com.neo4j.connection.NeoConnection.queryList(NeoConnection.java:156)
-	at com.neo4j.dao.BaseDao.getIdByName(BaseDao.java:755)
-	at com.neo4j.dao.ExpressSchemaDao.getExpressSchema(ExpressSchemaDao.java:38)
-	at com.neo4j.dao.ExpressSchemaDao.main(ExpressSchemaDao.java:83)
-Caused by: java.lang.RuntimeException: Error executing cypher statement(s) [{code=Neo.ClientError.Statement.EntityNotFound, message=Node with id 2}]
-	at org.neo4j.jdbc.rest.StreamingParser.handleErrors(StreamingParser.java:246)
-	at org.neo4j.jdbc.rest.StreamingParser.skipTo(StreamingParser.java:223)
-	at org.neo4j.jdbc.rest.StreamingParser.nextResult(StreamingParser.java:96)
-	at org.neo4j.jdbc.rest.StreamingParser$2.hasNext(StreamingParser.java:187)
-	at org.neo4j.jdbc.rest.TransactionalQueryExecutor.executeQuery(TransactionalQueryExecutor.java:178)
-	at org.neo4j.jdbc.Neo4jConnection.executeQuery(Neo4jConnection.java:250)
-	... 5 more
+	at com.neo4j.dao.ExpressSchemaDao.getAllExpressSchema(ExpressSchemaDao.java:28)
+	at com.neo4j.dao.ExpressSchemaDao.main(ExpressSchemaDao.java:154)
+2016-03-14 19:52:44  [ main:6716 ] - [ ERROR ]  关闭Connection失败
+java.sql.SQLException: close called on closed connection.
+	at org.neo4j.jdbc.Neo4jConnection.checkClosed(Neo4jConnection.java:260)
+	at org.neo4j.jdbc.Neo4jConnection.close(Neo4jConnection.java:156)
+	at com.neo4j.connection.NeoConnection.close(NeoConnection.java:120)
+	at com.neo4j.connection.NeoConnection.logout(NeoConnection.java:133)
+	at com.neo4j.dao.BaseDao.logout(BaseDao.java:152)
+	at com.neo4j.dao.ExpressSchemaDao.main(ExpressSchemaDao.java:156)

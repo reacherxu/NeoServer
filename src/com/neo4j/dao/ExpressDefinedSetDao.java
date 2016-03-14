@@ -11,10 +11,10 @@ public class ExpressDefinedSetDao extends ExpressDefinedDao {
 	 * @param set_type
 	 * @return
 	 */
-	public ExpressSet<ExpressGeneralizedDataType> getExpressSet(Integer set_type) {
+	public ExpressSet getExpressSet(Integer set_type) {
 		Integer bound1 = 0;
 		Integer bound2 = null;
-		ExpressSet<ExpressGeneralizedDataType> expSet = null ;
+		ExpressSet expSet = null ;
 		ExpressGeneralizedDataType dataType = null;
 		
 		if( hasDirectChild(set_type,"bound_spec") ) {
@@ -41,7 +41,7 @@ public class ExpressDefinedSetDao extends ExpressDefinedDao {
 
 		}
 
-		expSet = new ExpressSet<ExpressGeneralizedDataType>(set_type, bound1, bound2, dataType);
+		expSet = new ExpressSet(set_type, bound1, bound2, dataType);
 		
 		return expSet;
 	}

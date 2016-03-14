@@ -1,16 +1,16 @@
 package com.type.datatype;
 
-public class ExpressBag<T extends ExpressGeneralizedDataType> extends ExpressAggregation<T> {
+public class ExpressBag extends ExpressAggregation {
 
 
-	public ExpressBag(Integer id,T dataType) {
+	public ExpressBag(Integer id,ExpressGeneralizedDataType dataType) {
 		super(id);
 		bound1 = 0;
 		bound2 = null;
 		setDataType(dataType);
 	}
 
-	public ExpressBag(Integer id,Integer bound1,Integer bound2,T dataType) {
+	public ExpressBag(Integer id,Integer bound1,Integer bound2,ExpressGeneralizedDataType dataType) {
 		super(id);
 		setBound1(bound1);
 		setBound2(bound2);

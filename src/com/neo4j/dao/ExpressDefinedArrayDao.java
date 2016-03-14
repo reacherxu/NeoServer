@@ -11,10 +11,10 @@ public class ExpressDefinedArrayDao extends ExpressDefinedDao {
 	 * @param array_type
 	 * @return
 	 */
-	public ExpressArray<ExpressGeneralizedDataType> getExpressArray(Integer array_type) {
+	public ExpressArray getExpressArray(Integer array_type) {
 		Integer bound1 = 0;
 		Integer bound2 = null;
-		ExpressArray<ExpressGeneralizedDataType> expArray = null ;
+		ExpressArray expArray = null ;
 		ExpressGeneralizedDataType dataType = null;
 		
 		/*-------- 解析属性  --------*/
@@ -41,7 +41,7 @@ public class ExpressDefinedArrayDao extends ExpressDefinedDao {
 		
 		/*-------- 结束解析属性  --------*/
 
-		expArray = new ExpressArray<ExpressGeneralizedDataType>(array_type, bound1, bound2, dataType);
+		expArray = new ExpressArray(array_type, bound1, bound2, dataType);
 		
 		/* 判断是否有optional unique属性 */
 		if(hasDirectChild(array_type,"OPTIONAL"))

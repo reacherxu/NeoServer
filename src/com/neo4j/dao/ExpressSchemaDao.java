@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.type.datatype.ExpressAggregation;
 import com.type.datatype.ExpressDefined;
 import com.type.datatype.ExpressEntity;
 import com.type.datatype.ExpressEnumeration;
@@ -65,14 +66,20 @@ public class ExpressSchemaDao extends BaseDao {
 				if( ins.dataType instanceof ExpressSelect) {
 					ExpressSelect tmpSelect = (ExpressSelect)ins.dataType;
 					ins.setDataType( getDefinedType(defs, tmpSelect.getName()) );
-				}
+				} 
 				
 				/* 数组中的类型 */
 				//TODO　数组是范型的，得不到名字
-				/*if(ins.dataType instanceof ExpressSet) {
-					ExpressSet tmp = (ExpressSet)ins.dataType;
-					tmp.setDataType( getDefinedType(defs, tmp.ge) );
-				}*/
+				if(ins.dataType instanceof ExpressAggregation) {
+					/* aggregation level*/
+					ExpressAggregation aggType = (ExpressAggregation)ins.dataType;
+					/* into aggregation level*/
+					ExpressGeneralizedDataType intoAggType = aggType.getDataType();
+					if(intoAggType instanceof ExpressDefined) {
+						ExpressDefined ed = (ExpressDefined)intoAggType;
+						((ExpressDefined) intoAggType).setDataType(getDefinedType(defs, ed.getDataTypeName() ));
+					}
+				}
 			}
 		}
 		return tmpSchema;
@@ -144,8 +151,11 @@ public class ExpressSchemaDao extends BaseDao {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		List<ExpressSchema> tmpSchema = new ExpressSchemaDao().getAllExpressSchema();
+		ExpressSchemaDao es = new ExpressSchemaDao();
+		List<ExpressSchema> tmpSchema = es.getAllExpressSchema();
 		System.out.println(tmpSchema);
+		es.logout();
+		
 		
 	}
 

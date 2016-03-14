@@ -53,7 +53,7 @@ public class ExpressEnumeration extends ExpressConstructedDataType {
 
 	@Override
 	public String toString() {
-		return "EpxressEnumeration [name=" + name + ", isExtensible=" + isExtensible + ", items=" + items + ", extension=" + extension + "]";
+		return "ExpressEnumeration [name=" + name + ", isExtensible=" + isExtensible + ", items=" + items + ", extension=" + extension + "]";
 	}
 
 }

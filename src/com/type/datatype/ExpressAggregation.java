@@ -1,11 +1,11 @@
 package com.type.datatype;
 
-public abstract class ExpressAggregation<T extends ExpressGeneralizedDataType> extends ExpressGeneralizedDataType {
+public abstract class ExpressAggregation extends ExpressGeneralizedDataType {
 
 
 	protected Integer bound1 = null;
 	protected Integer bound2 = null;
-	protected T dataType = null;
+	protected ExpressGeneralizedDataType dataType = null;
 
 	public ExpressAggregation(Integer id) {
 		super(id);
@@ -31,7 +31,7 @@ public abstract class ExpressAggregation<T extends ExpressGeneralizedDataType> e
 		return dataType;
 	}
 
-	public void setDataType(T dataType) {
+	public void setDataType(ExpressGeneralizedDataType dataType) {
 		this.dataType = dataType;
 	}
 

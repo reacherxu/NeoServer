@@ -11,32 +11,34 @@ public class ExpressBagDao extends ExpressSADao {
 	 * @param general_bag_type
 	 * @return
 	 */
-	public ExpressBag<ExpressGeneralizedDataType> getExpressBag(Integer general_bag_type) {
+	public ExpressBag getExpressBag(Integer general_bag_type) {
 		Integer bounds[] = {0,null};
-		ExpressBag<ExpressGeneralizedDataType> expBag = null;
+		ExpressBag expBag = null;
 		ExpressGeneralizedDataType dataType = null;
+		
+		int parameter_type = getIdByName(general_bag_type, "parameter_type").get(0);
+		/* 寻找set类型的叶子节点 ,添加属性 parameter_type : generalized_types | named_types | simple_types; */
+		String type = (String) getDirectChildren(parameter_type).get(0).get("name");
+		Integer type_id = (Integer) getDirectChildren(parameter_type).get(0).get("id");
+		
+		if(type.equals("simple_types")) 
+			dataType = getSimpleDataType(type_id);
+		else if(type.equals("named_types"))
+			dataType = getNamedType(type_id);
+		else {
+			dataType = getGeneralizedType(general_bag_type);
+		}
+		
 		
 		/* 判断 bound属性是否存在 */
 		if( getDirectChildrenNum(general_bag_type) == GENERAL_BAG_TYPE ) {
 
 			int bound_spec = getIdByName(general_bag_type,"bound_spec").get(0);
-			int parameter_type = getIdByName(general_bag_type, "parameter_type").get(0);
+			
 			
 			bounds = getBound(bound_spec);
-			
-			/* 寻找set类型的叶子节点 ,添加属性 parameter_type : generalized_types | named_types | simple_types; */
-			String type = (String) getDirectChildren(parameter_type).get(0).get("name");
-			Integer type_id = (Integer) getDirectChildren(parameter_type).get(0).get("id");
-			
-			if(type.equals("simple_types")) 
-				dataType = getSimpleDataType(type_id);
-			else if(type.equals("named_types"))
-				dataType = getNamedType(type_id);
-			else {
-				dataType = getGeneralizedType(general_bag_type);
-			}
 		}
-		expBag = new ExpressBag<ExpressGeneralizedDataType>(general_bag_type, bounds[0], bounds[1], dataType);
+		expBag = new ExpressBag(general_bag_type, bounds[0], bounds[1], dataType);
 		
 		return expBag;
 	}

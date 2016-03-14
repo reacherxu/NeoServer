@@ -10,32 +10,31 @@ public class ExpressSetDao extends ExpressSADao {
 	 * @param general_set_type
 	 * @return
 	 */
-	public ExpressSet<ExpressGeneralizedDataType> getExpressSet(Integer general_set_type) {
+	public ExpressSet getExpressSet(Integer general_set_type) {
 		Integer bounds[] = {0,null};
-		ExpressSet<ExpressGeneralizedDataType> expSet = null;
+		ExpressSet expSet = null;
 		ExpressGeneralizedDataType dataType = null;
 		
 		/* 判断 bound属性是否存在 */
+		int parameter_type = getIdByName(general_set_type, "parameter_type").get(0);
+		/* 寻找set类型的叶子节点 ,添加属性  */
+		String type = (String) getDirectChildren(parameter_type).get(0).get("name");
+		Integer type_id = (Integer) getDirectChildren(parameter_type).get(0).get("id");
+		
+		if(type.equals("simple_types")) 
+			dataType = getSimpleDataType(type_id);
+		else if(type.equals("named_types"))
+			dataType = getNamedType(type_id);
+		else {
+			dataType = getGeneralizedType(general_set_type);
+		}
+		
 		if( hasDirectChild(general_set_type,"bound_spec") ) {
-
 			int bound_spec = getIdByName(general_set_type,"bound_spec").get(0);
-			int parameter_type = getIdByName(general_set_type, "parameter_type").get(0);
 			
 			bounds = getBound(bound_spec);
-		
-			/* 寻找set类型的叶子节点 ,添加属性  */
-			String type = (String) getDirectChildren(parameter_type).get(0).get("name");
-			Integer type_id = (Integer) getDirectChildren(parameter_type).get(0).get("id");
-			
-			if(type.equals("simple_types")) 
-				dataType = getSimpleDataType(type_id);
-			else if(type.equals("named_types"))
-				dataType = getNamedType(type_id);
-			else {
-				dataType = getGeneralizedType(general_set_type);
-			}
 		}
-		expSet = new ExpressSet<ExpressGeneralizedDataType>(general_set_type, bounds[0], bounds[1], dataType);
+		expSet = new ExpressSet(general_set_type, bounds[0], bounds[1], dataType);
 		
 		return expSet;
 	}

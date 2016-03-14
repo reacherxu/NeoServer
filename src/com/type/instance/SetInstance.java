@@ -3,22 +3,20 @@ package com.type.instance;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.type.datatype.ExpressAggregation;
 import com.type.datatype.ExpressGeneralizedDataType;
-import com.type.datatype.ExpressSet;
-import com.type.datatype.ExpressString;
 
-public class SetInstance<T extends GeneralizedInstance, E extends ExpressGeneralizedDataType> extends NoIndexedCollectionInstance<T, E> {
+public class SetInstance extends NoIndexedCollectionInstance {
 
-	@SuppressWarnings("unchecked")
-	private final ExpressSet<E> dataType = (ExpressSet<E>) super.dataType;
+	private final ExpressAggregation dataType =  (ExpressAggregation)super.dataType;
 
-	public SetInstance(Integer id, String name, ExpressSet<E> dataType) {
+	public SetInstance(Integer id, String name, ExpressAggregation dataType) {
 		super(id, name, dataType);
-		value = new ArrayList<T>();
+		value = new ArrayList<GeneralizedInstance>();
 	}
 
 	@Override
-	public Boolean add(T element) {
+	public Boolean add(GeneralizedInstance element) {
 		if (!isFull() && !isExist(element)) {
 
 			getList().add(element);
@@ -30,7 +28,7 @@ public class SetInstance<T extends GeneralizedInstance, E extends ExpressGeneral
 	}
 
 	@Override
-	public Boolean remove(T object) {
+	public Boolean remove(GeneralizedInstance object) {
 
 		if (getList().remove(object)) {
 			size--;
@@ -66,15 +64,6 @@ public class SetInstance<T extends GeneralizedInstance, E extends ExpressGeneral
 	}
 
 	public static void main(String args[]) {
-		ExpressString string = new ExpressString(5);
-		ExpressSet<ExpressString> dataType = new ExpressSet<ExpressString>(15,0, 10, string);
-		SetInstance<StringInstance, ExpressString> bag = new SetInstance<StringInstance, ExpressString>(null, "array", dataType);
-		bag.add(new StringInstance(null, "a", (ExpressString) bag.getElementDataType(), "a"));
-		bag.add(new StringInstance(null, "b", (ExpressString) bag.getElementDataType(), "b"));
-		bag.add(new StringInstance(null, "c", (ExpressString) bag.getElementDataType(), "c"));
-		bag.add(new StringInstance(null, "d", (ExpressString) bag.getElementDataType(), "d"));
-
-		System.out.println(bag);
 	}
 
 	/*@Override
@@ -93,14 +82,14 @@ public class SetInstance<T extends GeneralizedInstance, E extends ExpressGeneral
 	}
 
 	@Override
-	public ExpressSet<E> getDataType() {
+	public ExpressAggregation getDataType() {
 		return dataType;
 	}
 
 	@Override
-	public Boolean setCollection(List<T> list) {
+	public Boolean setCollection(List<GeneralizedInstance> list) {
 		if (list.size() >= dataType.getBound1() && list.size() <= dataType.getBound2()) {
-			for (T element : list) {
+			for (GeneralizedInstance element : list) {
 				this.add(element);
 			}
 			return true;
@@ -109,7 +98,7 @@ public class SetInstance<T extends GeneralizedInstance, E extends ExpressGeneral
 	}
 
 	@Override
-	public Boolean setCollection(Integer bound1, Integer bound2, List<T> list) {
+	public Boolean setCollection(Integer bound1, Integer bound2, List<GeneralizedInstance> list) {
 		dataType.setBound1(bound1);
 		dataType.setBound2(bound2);
 
