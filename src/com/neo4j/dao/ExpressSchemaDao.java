@@ -45,8 +45,36 @@ public class ExpressSchemaDao extends BaseDao {
 		List<ExpressDefined> defs = tmpSchema.getDefinedDataType();
 		List<ExpressEntity> entities = tmpSchema.getEntities();
 		
-		/* 遍历每一个defined data type */
-		//TODO
+		/* 遍历每一个defined data type,处理defined datatype 嵌套defined datatype*/
+		for (int i = 0; i < defs.size(); i++) {
+			ExpressDefined def = defs.get(i);
+			
+			 ExpressGeneralizedDataType defDataType = def.getDataType();
+			 /* 若是数组类型 */
+			 if(defDataType instanceof ExpressAggregation) {
+				 /* aggregation level*/
+				 ExpressAggregation aggType = (ExpressAggregation)defDataType;
+				 /* into aggregation level*/
+				 ExpressGeneralizedDataType intoAggType = aggType.getDataType();
+				 if(intoAggType instanceof ExpressDefined) {
+					 ExpressDefined ed = (ExpressDefined)intoAggType;
+					 ((ExpressDefined) intoAggType).setDataType(getDefinedType(defs, ed.getDataTypeName() ));
+				 }
+			 }
+			 
+			 /* 若是select当中嵌套 */
+			 if(defDataType instanceof ExpressSelect) {
+				 ExpressSelect selectType = (ExpressSelect)defDataType;
+
+				 /* 遍历select当中的成员列表 */
+				 List<ExpressGeneralizedDataType> list = selectType.getList();
+				 for (int j = 0; j < list.size(); j++) {
+					 ExpressDefined member = (ExpressDefined)list.get(j);
+					 member.setDataType(getDefinedType(defs, member.getDataTypeName() ));
+				 }
+
+			 }
+		}
 		
 		/* 遍历每一个entity */
 		for (int i = 0; i < entities.size(); i++) {
@@ -72,7 +100,6 @@ public class ExpressSchemaDao extends BaseDao {
 				} 
 				
 				/* 数组中的类型 */
-				//TODO　数组是范型的，得不到名字
 				if(ins.dataType instanceof ExpressAggregation) {
 					/* aggregation level*/
 					ExpressAggregation aggType = (ExpressAggregation)ins.dataType;
