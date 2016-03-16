@@ -11,6 +11,9 @@ public abstract class GeneralizedInstance {
 	private final Integer id;
 	/* Each line's position */
 	protected List<Point> points;
+	
+	//TODO　schema
+	protected String schemaName;
 
 	public String name = null;
 	public ExpressGeneralizedDataType dataType = null;

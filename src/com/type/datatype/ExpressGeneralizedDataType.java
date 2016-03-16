@@ -12,6 +12,9 @@ public abstract class ExpressGeneralizedDataType implements IRectangleCoordinate
 	/* Each node's position*/
 	protected Point p1,p2;
 	
+	//TODO  schema
+	protected String schemaName;
+	
 	public ExpressGeneralizedDataType(Integer id) {
 		this.id = id;
 	}
