@@ -22,7 +22,9 @@ public class NeoConnection {
 	// 使用log4j记录日志
 	private static Logger logger = Logger.getLogger(BaseDao.class);
 	// XXX： 连接路径,如何不指定且能保证在一个connection中      114.212.83.134
-	private static final String URL = "jdbc:neo4j://114.212.83.4:7474";
+	private static final String URL = "jdbc:neo4j://";
+	
+	private String ip = "114.212.83.4:7474";
 	// neo4j用户名
 	private static final String USERNAME = "neo4j";
 	// neo4j密码
@@ -37,16 +39,18 @@ public class NeoConnection {
 	/* 单例模式 */
 	private static NeoConnection instance = null;
 	
-	private NeoConnection() {}
+	private NeoConnection(String ip) {
+		this.ip = ip;
+	}
 	
 	/**
 	 * 一个NeoConnection只对应一个连接
 	 * @return
 	 */
-	public static NeoConnection getNeoConnection() {
+	public static NeoConnection getNeoConnection(String ip) {
 		/* 注意：不管有多少个Dao,neoConnect操作只执行一次,不会出现多次连接数据库的操作 */
 		if( instance == null ) {
-			instance = new NeoConnection();
+			instance = new NeoConnection(ip);
 		}
 		instance.neoConnect();
 		return instance;
@@ -62,9 +66,6 @@ public class NeoConnection {
 	
 
 	public static void main(String[] args) {
-		NeoConnection connection = NeoConnection.getNeoConnection();
-		connection.neoConnect();
-		connection.logout();
 	}
 	
 	/**
@@ -80,8 +81,10 @@ public class NeoConnection {
 
 		logger.debug("开始连接数据库");
 		try {
-			conn = driver.connect(URL, props);
-		} catch (SQLException e) {
+			conn = driver.connect(URL+ip, props);
+		} catch (IllegalStateException e) {
+			logger.debug("A recoverable error was detected (1002), attempting again in 2000 ms！", e);
+		}catch (SQLException e) {
 			e.printStackTrace();
 			logger.error("数据库连接失败！", e);
 		}

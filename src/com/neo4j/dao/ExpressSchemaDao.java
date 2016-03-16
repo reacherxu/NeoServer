@@ -16,6 +16,11 @@ import com.type.datatype.ExpressSelect;
 import com.type.instance.GeneralizedInstance;
 
 public class ExpressSchemaDao extends BaseDao {
+	public ExpressSchemaDao() {}
+	
+	public ExpressSchemaDao(String ip) {
+		super(ip);
+	}
 
 	/**
 	 * 遍历图，返回图中所有的schema
@@ -183,11 +188,10 @@ public class ExpressSchemaDao extends BaseDao {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		ExpressSchemaDao es = new ExpressSchemaDao();
-		List<ExpressSchema> tmpSchema = es.getAllExpressSchema();
-		System.out.println(tmpSchema);
-		es.logout();
-
+			ExpressSchemaDao es = new ExpressSchemaDao();
+			List<ExpressSchema> tmpSchema = es.getAllExpressSchema();
+			System.out.println(tmpSchema);
+			es.logout();
 
 	}
 

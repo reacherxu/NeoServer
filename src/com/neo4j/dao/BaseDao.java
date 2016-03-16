@@ -43,6 +43,8 @@ public class BaseDao {
 	//数据的版本信息
 	private final String VERSION = "0.1-SNAPSHOT";
 	
+	private String ip = "114.212.83.4:7474";
+	
 	public enum Label {
 		/**
 		 * 正常的树节点
@@ -62,7 +64,12 @@ public class BaseDao {
 	 * 构造函数
 	 */
 	public BaseDao() {
-		neoConn = NeoConnection.getNeoConnection();
+		neoConn = NeoConnection.getNeoConnection(ip);
+	}
+	
+	public BaseDao(String ip) {
+		this.ip = ip;
+		neoConn = NeoConnection.getNeoConnection(ip);
 	}
 	
 	public String getVERSION() {
@@ -71,7 +78,7 @@ public class BaseDao {
 
 	public NeoConnection getNeoConn() {
 		if( this.neoConn == null ) {
-			neoConn = NeoConnection.getNeoConnection();
+			neoConn = NeoConnection.getNeoConnection(ip);
 		}
 		return neoConn;
 	}
@@ -84,7 +91,7 @@ public class BaseDao {
 	public static void main(String[] args) {
 		//"114.212.83.134:7474"  "172.26.13.122:7474"
 		BaseDao ins = new BaseDao();
-		System.out.println(ins.creatNode("\\", 0));
+		System.out.println(ins.getRoot());
 		/*String sql = "MATCH (:Movie {title:{1}})<-[:ACTED_IN]-(a:Person) RETURN a.name as actor";
 			List<Map<String, Object>> list = ins.queryList(sql,"The Matrix");
 			System.out.println("------------------------");
