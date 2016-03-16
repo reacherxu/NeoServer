@@ -20,6 +20,19 @@ public abstract class ExpressGeneralizedDataType implements IRectangleCoordinate
 	}
 
 	
+	
+	public String getSchemaName() {
+		return schemaName;
+	}
+
+
+
+	public void setSchemaName(String schemaName) {
+		this.schemaName = schemaName;
+	}
+
+
+
 	public Integer getId() {
 		return id;
 	}

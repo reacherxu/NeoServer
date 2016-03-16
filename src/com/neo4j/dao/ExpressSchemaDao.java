@@ -47,12 +47,18 @@ public class ExpressSchemaDao extends BaseDao {
 	 * @return
 	 */
 	private ExpressSchema addDefinedRef(ExpressSchema tmpSchema) {
+		/* 用于设置所有元素的名字 */
+		String schemaName = tmpSchema.getName();
+		
 		List<ExpressDefined> defs = tmpSchema.getDefinedDataType();
 		List<ExpressEntity> entities = tmpSchema.getEntities();
 
 		/* 遍历每一个defined data type,处理defined datatype 嵌套defined datatype*/
 		for (int i = 0; i < defs.size(); i++) {
 			ExpressDefined def = defs.get(i);
+			
+			/* 设置所有defined data type的名字 */
+			def.setSchemaName(schemaName);
 
 			ExpressGeneralizedDataType defDataType = def.getDataType();
 			/* 若是数组类型 */
@@ -78,6 +84,8 @@ public class ExpressSchemaDao extends BaseDao {
 						ExpressDefined member = (ExpressDefined)list.get(j);
 						member.setDataType(getDefinedType(defs, member.getDataTypeName() ));
 					}
+					
+					//TODO select当中entity是没有schemaName的
 				}
 
 			}
@@ -86,12 +94,19 @@ public class ExpressSchemaDao extends BaseDao {
 		/* 遍历每一个entity */
 		for (int i = 0; i < entities.size(); i++) {
 			ExpressEntity tmpEntity = entities.get(i);
+			
+			/* 设置所有entity的名字 */
+			tmpEntity.setSchemaName(schemaName);
+			
 			Set<GeneralizedInstance> set = tmpEntity.getMap().keySet();
 
 			/* 遍历entity中的每个instance */
 			Iterator<GeneralizedInstance> it=set.iterator();
 			while ( it.hasNext() ) {
 				GeneralizedInstance ins = it.next();
+				
+				/* 设置所有entity当中属性的名字 */
+				ins.setSchemaName(schemaName);
 
 				if( ins.dataType instanceof ExpressDefined) {
 					ExpressDefined def = (ExpressDefined)ins.dataType;

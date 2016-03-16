@@ -53,6 +53,14 @@ public abstract class GeneralizedInstance {
 		this.setIsValueAssigned(true);
 	}
 
+	public String getSchemaName() {
+		return schemaName;
+	}
+
+	public void setSchemaName(String schemaName) {
+		this.schemaName = schemaName;
+	}
+
 	public Integer getId() {
 		return id;
 	}
