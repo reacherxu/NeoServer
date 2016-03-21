@@ -15,7 +15,6 @@ public class ExpressEntity extends ExpressGeneralizedDataType {
 	List<String> superTypes = new ArrayList<String>();
 	
 	private Map<GeneralizedInstance,List<String>> map = new LinkedHashMap<GeneralizedInstance,List<String>>();
-//	protected List<GeneralizedInstance> instanceList = new ArrayList<GeneralizedInstance>();
 	
 
 	/**

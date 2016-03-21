@@ -771,6 +771,26 @@ public class BaseDao {
 		return names;
 	}
 	
+	/**
+	 * 返回某节点 名字为name的直接子节点id
+	 * @param id
+	 * @param name
+	 * @return
+	 */
+	//TODO 可能要区分使用getIdByName的地方
+	public List<Integer> getDirectIdByName(int id,String name) {
+		/* order by 确保得到的子节点是最近的 */
+		String sql = "start n=node({1}) match (n:Node)-[r*0..1]->(m:Node) where m.name={2} return ID(m) as id order by ID(m)";
+		
+		List<Map<String, Object>> nameList = neoConn.queryList(sql,id,name);
+		
+		List<Integer> names = new ArrayList<Integer>();
+		for (int i = 0; i < nameList.size(); i++) 
+			names.add( (Integer)nameList.get(i).get("id") );
+		
+		return names;
+	}
+	
 	
 	
 }

@@ -9,8 +9,8 @@ public class ExpressSchema extends ExpressGeneralizedDataType {
 	public List<ExpressDefined> definedDataType = new ArrayList<ExpressDefined>();
 	protected List<ExpressEntity> entities = new ArrayList<ExpressEntity>();
 	
-	//XXX if it is necessary
 	protected List<ExpressGeneralizedDataType> simpleDataType = new ArrayList<ExpressGeneralizedDataType>();
+	protected List<ExpressReference> refenences = new ArrayList<ExpressReference>();
 
 	public ExpressSchema(Integer id) {
 		super(id);
@@ -36,6 +36,14 @@ public class ExpressSchema extends ExpressGeneralizedDataType {
 				simpleDataType.add(dataType);
 			}
 		}
+	}
+
+	public List<ExpressReference> getRefenences() {
+		return refenences;
+	}
+
+	public void setRefenences(List<ExpressReference> refenences) {
+		this.refenences = refenences;
 	}
 
 	public String getName() {

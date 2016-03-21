@@ -11,6 +11,7 @@ import com.type.datatype.ExpressDefined;
 import com.type.datatype.ExpressEntity;
 import com.type.datatype.ExpressEnumeration;
 import com.type.datatype.ExpressGeneralizedDataType;
+import com.type.datatype.ExpressReference;
 import com.type.datatype.ExpressSchema;
 import com.type.datatype.ExpressSelect;
 import com.type.instance.GeneralizedInstance;
@@ -38,6 +39,7 @@ public class ExpressSchemaDao extends BaseDao {
 			schemaList.add( addDefinedRef(tmpSchema) );
 		}
 
+		addDefinedRef(schemaList);
 		return schemaList;
 	}
 
@@ -52,6 +54,13 @@ public class ExpressSchemaDao extends BaseDao {
 		
 		List<ExpressDefined> defs = tmpSchema.getDefinedDataType();
 		List<ExpressEntity> entities = tmpSchema.getEntities();
+		List<ExpressReference> refs = tmpSchema.getRefenences();
+		
+		/* 遍历每一个reference,设置schema name*/
+		for (int i = 0; i < refs.size(); i++) {
+			ExpressReference ref = refs.get(i);
+			ref.setSchemaName(schemaName);
+		}
 
 		/* 遍历每一个defined data type,处理defined datatype 嵌套defined datatype*/
 		for (int i = 0; i < defs.size(); i++) {
@@ -136,14 +145,68 @@ public class ExpressSchemaDao extends BaseDao {
 		}
 		return tmpSchema;
 	}
+	
+	/**
+	 * 解决schema中的引用
+	 * @param schemaList
+	 */
+	private void addDefinedRef(List<ExpressSchema> schemaList) {
+		for (int i = 0; i < schemaList.size(); i++) {
+			ExpressSchema schema = schemaList.get(i);
+			
+			//TODO foreign schema situation
+	/*		List<ExpressDefined> defs = schema.getDefinedDataType();
+			 遍历每一个defined data type,处理defined datatype 嵌套defined datatype
+			for (int j = 0; j < defs.size(); j++) {
+				ExpressDefined def = defs.get(j);
+				
+				ExpressGeneralizedDataType defDataType = def.getDataType();
+				 若是数组类型 
+				if(defDataType instanceof ExpressAggregation) {
+					 aggregation level
+					ExpressAggregation aggType = (ExpressAggregation)defDataType;
+					 into aggregation level
+					ExpressGeneralizedDataType intoAggType = aggType.getDataType();
+					if(intoAggType instanceof ExpressDefined) {
+						ExpressDefined ed = (ExpressDefined)intoAggType;
+						ed.setDataType(getDefinedType(defs, ed.getDataTypeName() ));
+					}
+				}
+
+				 若是select当中嵌套 
+				if(defDataType instanceof ExpressSelect) {
+					ExpressSelect selectType = (ExpressSelect)defDataType;
+
+					 遍历select当中的成员列表 
+					List<ExpressGeneralizedDataType> list = selectType.getList();
+					for (int k = 0; k < list.size(); k++) {
+						if(list.get(k) instanceof ExpressDefined) {
+							ExpressDefined member = (ExpressDefined)list.get(k);
+							member.setDataType(getDefinedType(defs, member.getDataTypeName() ));
+						}
+						
+						//TODO select当中entity是没有schemaName的
+					}
+
+				}
+			}*/
+		}
+	}
 
 
+	/**
+	 * 先从defined data type中找，若没有，则是reference
+	 * @param defs
+	 * @param dataTypeName
+	 * @return
+	 */
 	private ExpressGeneralizedDataType getDefinedType(
 			List<ExpressDefined> defs, String dataTypeName) {
 		for (int i = 0; i < defs.size(); i++) {
 			if(defs.get(i).getDataTypeName().equals(dataTypeName))
 				return defs.get(i);
 		}
+		
 		return null;
 	}
 
@@ -162,7 +225,7 @@ public class ExpressSchemaDao extends BaseDao {
 		/* 为schema设置其他属性 */
 		Integer schema_body = getIdByName(schema_decl, "schema_body").get(0);
 
-		//( interface_specification )* ( constant_decl )? ( declaration | rule_decl )*;
+		//schema_body :( interface_specification )* ( constant_decl )? ( declaration | rule_decl )*;
 		if( hasDirectChild(schema_body, "declaration") ) {
 			List<Integer> declarations =  getIdByName(schema_body,"declaration");
 			for (int i = 0; i < declarations.size(); i++) {
@@ -196,6 +259,26 @@ public class ExpressSchemaDao extends BaseDao {
 				}
 			}
 
+		} 
+		if(hasDirectChild(schema_body, "rule_decl")) {
+			//TODO　rule_decl
+		} 
+		if( hasDirectChild(schema_body, "interface_specification") ) {
+			
+			List<Integer> interface_specifications = getIdByName(schema_body,"interface_specification");
+			
+			List<ExpressReference> refs = new ArrayList<ExpressReference>();
+			for (int i = 0; i < interface_specifications.size(); i++) {
+				Integer interface_specification = interface_specifications.get(i);
+				
+				ExpressReferenceDao refDao = new ExpressReferenceDao();
+				refs.addAll(refDao.getExpressReference(interface_specification));
+			}
+			
+			schema.setRefenences(refs);
+		} 
+		if(hasDirectChild(schema_body, "constant_decl")){
+			//TODO　constant_decl
 		}
 		return schema;
 	}
@@ -206,6 +289,7 @@ public class ExpressSchemaDao extends BaseDao {
 			ExpressSchemaDao es = new ExpressSchemaDao();
 			List<ExpressSchema> tmpSchema = es.getAllExpressSchema();
 			System.out.println(tmpSchema);
+//			System.out.println(es.hasDirectChild(6068, "interface_specification"));
 			es.logout();
 
 	}
