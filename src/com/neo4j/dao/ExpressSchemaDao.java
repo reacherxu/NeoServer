@@ -35,6 +35,7 @@ public class ExpressSchemaDao extends BaseDao {
 		List<Map<String, Object>> schemas = this.getNeoConn().queryList(sql);
 		
 		/* schema本身先自身刷新 */
+		//TODO  defined data type 的id要不要更新
 		for (int i = 0; i < schemas.size(); i++) {
 			ExpressSchema tmpSchema = getExpressSchema((Integer)schemas.get(i).get("id"));
 			schemaList.add( addDefinedRef(tmpSchema) );
@@ -157,6 +158,7 @@ public class ExpressSchemaDao extends BaseDao {
 	
 	/**
 	 * 解决schema中的引用
+	 * 包括schema引用和entity引用
 	 * @param schemaList
 	 */
 	private void addDefinedRef(List<ExpressSchema> schemaList) {
@@ -178,6 +180,16 @@ public class ExpressSchemaDao extends BaseDao {
 					if( ed.getDataType() == null )
 						ed.setDataType( getReference(schemaList, schema, ed.getDataTypeName()));
 				}
+				
+				/* 若是其他schema中的entity */
+				if(defDataType instanceof ExpressEntity) {
+					ExpressEntity ee = (ExpressEntity)defDataType;
+					if( !hasEntity(entities, ee.getName()) ) {
+						defDataType = getReference(schemaList, schema, ee.getName());
+					}
+				}
+				
+				
 				/* 若是数组类型 */
 				if(defDataType instanceof ExpressAggregation) {
 					/* aggregation level*/
@@ -188,6 +200,13 @@ public class ExpressSchemaDao extends BaseDao {
 						ExpressDefined ed = (ExpressDefined)intoAggType;
 						if( ed.getDataType() == null )
 							ed.setDataType(getReference(schemaList, schema, ed.getDataTypeName()));
+					}
+					
+					if(intoAggType instanceof ExpressEntity) {
+						ExpressEntity ee = (ExpressEntity)intoAggType;
+						if( !hasEntity(entities, ee.getName()) ) {
+							intoAggType = getReference(schemaList, schema, ee.getName());
+						}
 					}
 				}
 
@@ -202,6 +221,13 @@ public class ExpressSchemaDao extends BaseDao {
 							ExpressDefined member = (ExpressDefined)list.get(k);
 							if( member.getDataType() == null )
 								member.setDataType(getReference(schemaList, schema, member.getDataTypeName()));
+						}
+						
+						if(list.get(k) instanceof ExpressEntity) {
+							ExpressEntity ee = (ExpressEntity)list.get(k);
+							if( !hasEntity(entities, ee.getName()) ) {
+								list.set(k, getReference(schemaList, schema, ee.getName()));
+							}
 						}
 					}
 				}
@@ -223,6 +249,12 @@ public class ExpressSchemaDao extends BaseDao {
 						if(def.getDataType() == null)
 							ins.setDataType( getReference(schemaList, schema, def.getDataTypeName()) );
 					}
+					if(ins.dataType instanceof ExpressEntity) {
+						ExpressEntity ee = (ExpressEntity)ins.dataType;
+						if( !hasEntity(entities, ee.getName()) ) {
+							ins.dataType = getReference(schemaList, schema, ee.getName());
+						}
+					}
 
 					/* 数组中的类型 */
 					if(ins.dataType instanceof ExpressAggregation) {
@@ -235,12 +267,33 @@ public class ExpressSchemaDao extends BaseDao {
 							if(ed.getDataType() == null)
 								ed.setDataType(getReference(schemaList, schema, ed.getDataTypeName()));
 						}
+						
+						if(intoAggType instanceof ExpressEntity) {
+							ExpressEntity ee = (ExpressEntity)intoAggType;
+							if( !hasEntity(entities, ee.getName()) ) {
+								intoAggType = getReference(schemaList, schema, ee.getName());
+							}
+						}
 					}
 				}
 			}
 		}
 	}
 
+
+	/**
+	 * 判断当前schema中是否含有entity,有则true
+	 * @param schema
+	 * @param name
+	 * @return
+	 */
+	private boolean hasEntity(List<ExpressEntity> entities, String name) {
+		for (int i = 0; i < entities.size(); i++) {
+			if(entities.get(i).getName().equals(name))
+				return true;
+		}
+		return false;
+	}
 
 	/**
 	 * 在schemaList中查找来自哪个schema
