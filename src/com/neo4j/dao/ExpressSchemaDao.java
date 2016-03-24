@@ -33,13 +33,15 @@ public class ExpressSchemaDao extends BaseDao {
 		/* 返回schema_decl对应的id */
 		String sql = "start n=node(*) match (n:Node) where n.name='schema_decl' return ID(n) as id";
 		List<Map<String, Object>> schemas = this.getNeoConn().queryList(sql);
-
+		
+		/* schema本身先自身刷新 */
 		for (int i = 0; i < schemas.size(); i++) {
 			ExpressSchema tmpSchema = getExpressSchema((Integer)schemas.get(i).get("id"));
 			schemaList.add( addDefinedRef(tmpSchema) );
 		}
-
+		/* 刷新schema中的外部引用  */
 		addDefinedRef(schemaList);
+		
 		return schemaList;
 	}
 
@@ -70,6 +72,13 @@ public class ExpressSchemaDao extends BaseDao {
 			def.setSchemaName(schemaName);
 
 			ExpressGeneralizedDataType defDataType = def.getDataType();
+			
+			/* 若defined data type 起其他名字 */
+			if(defDataType instanceof ExpressDefined) {
+				ExpressDefined ed = (ExpressDefined)defDataType;
+				ed.setDataType(getDefinedType(defs, ed.getDataTypeName() ));
+			}
+			
 			/* 若是数组类型 */
 			if(defDataType instanceof ExpressAggregation) {
 				/* aggregation level*/
@@ -154,45 +163,143 @@ public class ExpressSchemaDao extends BaseDao {
 		for (int i = 0; i < schemaList.size(); i++) {
 			ExpressSchema schema = schemaList.get(i);
 			
-			//TODO foreign schema situation
-	/*		List<ExpressDefined> defs = schema.getDefinedDataType();
-			 遍历每一个defined data type,处理defined datatype 嵌套defined datatype
+			List<ExpressDefined> defs = schema.getDefinedDataType();
+			List<ExpressEntity> entities = schema.getEntities();
+			
+			/* 遍历每一个defined data type,处理defined datatype 嵌套defined datatype */
 			for (int j = 0; j < defs.size(); j++) {
 				ExpressDefined def = defs.get(j);
 				
 				ExpressGeneralizedDataType defDataType = def.getDataType();
-				 若是数组类型 
+				
+				/* 若defined data type 起其他名字 */
+				if(defDataType instanceof ExpressDefined ) {
+					ExpressDefined ed = (ExpressDefined)defDataType;
+					if( ed.getDataType() == null )
+						ed.setDataType( getReference(schemaList, schema, ed.getDataTypeName()));
+				}
+				/* 若是数组类型 */
 				if(defDataType instanceof ExpressAggregation) {
-					 aggregation level
+					/* aggregation level*/
 					ExpressAggregation aggType = (ExpressAggregation)defDataType;
-					 into aggregation level
+					/* into aggregation level*/
 					ExpressGeneralizedDataType intoAggType = aggType.getDataType();
 					if(intoAggType instanceof ExpressDefined) {
 						ExpressDefined ed = (ExpressDefined)intoAggType;
-						ed.setDataType(getDefinedType(defs, ed.getDataTypeName() ));
+						if( ed.getDataType() == null )
+							ed.setDataType(getReference(schemaList, schema, ed.getDataTypeName()));
 					}
 				}
 
-				 若是select当中嵌套 
+				/* 若是select当中嵌套 */
 				if(defDataType instanceof ExpressSelect) {
 					ExpressSelect selectType = (ExpressSelect)defDataType;
 
-					 遍历select当中的成员列表 
+					/* 遍历select当中的成员列表 */
 					List<ExpressGeneralizedDataType> list = selectType.getList();
 					for (int k = 0; k < list.size(); k++) {
 						if(list.get(k) instanceof ExpressDefined) {
 							ExpressDefined member = (ExpressDefined)list.get(k);
-							member.setDataType(getDefinedType(defs, member.getDataTypeName() ));
+							if( member.getDataType() == null )
+								member.setDataType(getReference(schemaList, schema, member.getDataTypeName()));
 						}
-						
-						//TODO select当中entity是没有schemaName的
+					}
+				}
+			}
+			
+			/* 遍历每一个entity */
+			for (int j = 0; j < entities.size(); j++) {
+				ExpressEntity tmpEntity = entities.get(j);
+				
+				Set<GeneralizedInstance> set = tmpEntity.getMap().keySet();
+
+				/* 遍历entity中的每个instance */
+				Iterator<GeneralizedInstance> it=set.iterator();
+				while ( it.hasNext() ) {
+					GeneralizedInstance ins = it.next();
+					
+					if( ins.dataType instanceof ExpressDefined) {
+						ExpressDefined def = (ExpressDefined)ins.dataType;
+						if(def.getDataType() == null)
+							ins.setDataType( getReference(schemaList, schema, def.getDataTypeName()) );
 					}
 
+					/* 数组中的类型 */
+					if(ins.dataType instanceof ExpressAggregation) {
+						/* aggregation level*/
+						ExpressAggregation aggType = (ExpressAggregation)ins.dataType;
+						/* into aggregation level*/
+						ExpressGeneralizedDataType intoAggType = aggType.getDataType();
+						if(intoAggType instanceof ExpressDefined) {
+							ExpressDefined ed = (ExpressDefined)intoAggType;
+							if(ed.getDataType() == null)
+								ed.setDataType(getReference(schemaList, schema, ed.getDataTypeName()));
+						}
+					}
 				}
-			}*/
+			}
 		}
 	}
 
+
+	/**
+	 * 在schemaList中查找来自哪个schema
+	 * @param schemaList
+	 * @param currentSchema
+	 * @param refName
+	 * @return
+	 */
+	private ExpressReference getReference(
+			List<ExpressSchema> schemaList,ExpressSchema currentSchema, String refName) {
+		//在当前schema中的references里面找
+		List<ExpressReference> curRefs = currentSchema.getRefenences();
+		for (int i = 0; i < curRefs.size(); i++) {
+			ExpressReference curRef = curRefs.get(i);
+			
+			//若是别名
+			if( refName.equals(curRef.getAlias()) )
+				return curRef;
+			
+			//否则，去schema中寻找
+			String schemaName = curRef.getSchemaFrom();
+			ExpressSchema schema = getSchemaByName(schemaList, schemaName);
+			if( hasSchema(schema, refName))
+				return new ExpressReference(-1, schemaName, refName, curRef.getType());
+		}
+		return null;
+	}
+
+	/**
+	 * 根据schema的名字寻找schema
+	 * @param schemaList
+	 * @param schemaName
+	 * @return
+	 */
+	private ExpressSchema getSchemaByName(List<ExpressSchema> schemaList,
+			String schemaName) {
+		for (int i = 0; i < schemaList.size(); i++) {
+			ExpressSchema schema = schemaList.get(i);
+			if(schema.getName().equals(schemaName))
+				return schema;
+		}
+		return null;
+	}
+
+	/**
+	 * 看schema中是否有refName
+	 * @param schema
+	 * @param refName
+	 * @return
+	 */
+	//TODO  entity 的 情况
+	private boolean hasSchema(ExpressSchema schema, String refName) {
+		List<ExpressDefined> defs = schema.getDefinedDataType();
+		for (int i = 0; i < defs.size(); i++) {
+			if(defs.get(i).getDataTypeName().equals(refName))
+				return true;
+		}
+		return false;
+	}
 
 	/**
 	 * 先从defined data type中找，若没有，则是reference

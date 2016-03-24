@@ -5,6 +5,13 @@ public class ExpressReference extends ExpressGeneralizedDataType {
 		super(id);
 	}
 	
+	public ExpressReference(Integer id, String schemaFrom, String dataName, String type) {
+		super(-1);
+		this.schemaFrom = schemaFrom;
+		this.dataName = dataName;
+		this.type = type;
+	}
+	
 	//TODO schema
 	protected String dataName;
 	protected String alias;
