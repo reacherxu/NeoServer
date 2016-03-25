@@ -81,13 +81,14 @@ public class ExpressSchemaDao extends BaseDao {
 			}
 			
 			/* 若是数组类型 */
+			//TODO   嵌套数组
 			if(defDataType instanceof ExpressAggregation) {
 				/* aggregation level*/
 				ExpressAggregation aggType = (ExpressAggregation)defDataType;
 				/* into aggregation level*/
-				ExpressGeneralizedDataType intoAggType = aggType.getDataType();
-				if(intoAggType instanceof ExpressDefined) {
-					ExpressDefined ed = (ExpressDefined)intoAggType;
+				ExpressGeneralizedDataType basicType = resolveBasicType(aggType);
+				if(basicType instanceof ExpressDefined) {
+					ExpressDefined ed = (ExpressDefined)basicType;
 					ed.setDataType(getDefinedType(defs, ed.getDataTypeName() ));
 				}
 			}
@@ -142,12 +143,14 @@ public class ExpressSchemaDao extends BaseDao {
 
 				/* 数组中的类型 */
 				if(ins.dataType instanceof ExpressAggregation) {
+					
 					/* aggregation level*/
 					ExpressAggregation aggType = (ExpressAggregation)ins.dataType;
+					
 					/* into aggregation level*/
-					ExpressGeneralizedDataType intoAggType = aggType.getDataType();
-					if(intoAggType instanceof ExpressDefined) {
-						ExpressDefined ed = (ExpressDefined)intoAggType;
+					ExpressGeneralizedDataType basicType = resolveBasicType(aggType);
+					if(basicType instanceof ExpressDefined) {
+						ExpressDefined ed = (ExpressDefined)basicType;
 						ed.setDataType(getDefinedType(defs, ed.getDataTypeName() ));
 					}
 				}
@@ -156,6 +159,17 @@ public class ExpressSchemaDao extends BaseDao {
 		return tmpSchema;
 	}
 	
+	/**
+	 * 解析到数组当中的basic type
+	 * @param aggType
+	 */
+	private ExpressGeneralizedDataType resolveBasicType(ExpressAggregation aggType) {
+		ExpressAggregation dataType = aggType;
+		while( dataType.getDataType() instanceof ExpressAggregation)
+			dataType = (ExpressAggregation) dataType.getDataType();
+		return dataType.getDataType();
+	}
+
 	/**
 	 * 解决schema中的引用
 	 * 包括schema引用和entity引用
@@ -195,17 +209,17 @@ public class ExpressSchemaDao extends BaseDao {
 					/* aggregation level*/
 					ExpressAggregation aggType = (ExpressAggregation)defDataType;
 					/* into aggregation level*/
-					ExpressGeneralizedDataType intoAggType = aggType.getDataType();
-					if(intoAggType instanceof ExpressDefined) {
-						ExpressDefined ed = (ExpressDefined)intoAggType;
+					ExpressGeneralizedDataType basicType = resolveBasicType(aggType);
+					if(basicType instanceof ExpressDefined) {
+						ExpressDefined ed = (ExpressDefined)basicType;
 						if( ed.getDataType() == null )
 							ed.setDataType(getReference(schemaList, schema, ed.getDataTypeName()));
 					}
 					
-					if(intoAggType instanceof ExpressEntity) {
-						ExpressEntity ee = (ExpressEntity)intoAggType;
+					if(basicType instanceof ExpressEntity) {
+						ExpressEntity ee = (ExpressEntity)basicType;
 						if( !hasEntity(entities, ee.getName()) ) {
-							intoAggType = getReference(schemaList, schema, ee.getName());
+							basicType = getReference(schemaList, schema, ee.getName());
 						}
 					}
 				}
@@ -261,17 +275,17 @@ public class ExpressSchemaDao extends BaseDao {
 						/* aggregation level*/
 						ExpressAggregation aggType = (ExpressAggregation)ins.dataType;
 						/* into aggregation level*/
-						ExpressGeneralizedDataType intoAggType = aggType.getDataType();
-						if(intoAggType instanceof ExpressDefined) {
-							ExpressDefined ed = (ExpressDefined)intoAggType;
+						ExpressGeneralizedDataType basicType = resolveBasicType(aggType);
+						if(basicType instanceof ExpressDefined) {
+							ExpressDefined ed = (ExpressDefined)basicType;
 							if(ed.getDataType() == null)
 								ed.setDataType(getReference(schemaList, schema, ed.getDataTypeName()));
 						}
 						
-						if(intoAggType instanceof ExpressEntity) {
-							ExpressEntity ee = (ExpressEntity)intoAggType;
+						if(basicType instanceof ExpressEntity) {
+							ExpressEntity ee = (ExpressEntity)basicType;
 							if( !hasEntity(entities, ee.getName()) ) {
-								intoAggType = getReference(schemaList, schema, ee.getName());
+								basicType = getReference(schemaList, schema, ee.getName());
 							}
 						}
 					}
