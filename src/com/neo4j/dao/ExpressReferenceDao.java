@@ -9,6 +9,12 @@ public class ExpressReferenceDao extends BaseDao {
 	protected final String REFERENCE = "REFERENCE";
 	protected final String USE = "USE";
 	
+	protected final String ENTITY = "ENTITY";
+	protected final String TYPE = "TYPE";
+	protected final String CONSTANT = "CONSTANT";
+	protected final String FUNCTION = "FUNCTION";
+	protected final String PROCEDURE = "PROCEDURE";
+	
 	public List<ExpressReference> getExpressReference(Integer interface_specification) {
 		List<ExpressReference> listRefs = new ArrayList<ExpressReference>();
 		
@@ -30,6 +36,9 @@ public class ExpressReferenceDao extends BaseDao {
 
 					//resource_or_rename : resource_ref ( AS rename_id )?;
 					Integer resource_ref = getIdByName(resource_or_rename,"resource_ref").get(0);
+					//resource_ref : constant_ref | entity_ref | function_ref | procedure_ref | type_ref;
+					String refType = (String) getDirectChildren(resource_ref).get(0).get("name");
+					
 					Integer rename_id = null;
 					if( hasDirectChild(resource_or_rename, "AS")) {
 						rename_id = getDirectIdByName(resource_or_rename,"rename_id").get(0);
@@ -41,6 +50,16 @@ public class ExpressReferenceDao extends BaseDao {
 					expRef.setDataName(getLeaf(resource_ref));
 					if( rename_id != null ) 
 						expRef.setAlias(getLeaf(rename_id));
+					if( refType.equals("entity_ref"))
+						expRef.setReferenceType(ENTITY);
+					else if(refType.equals("type_ref"))
+						expRef.setReferenceType(TYPE);
+					else if(refType.equals("constant_ref"))
+						expRef.setReferenceType(CONSTANT);
+					else if(refType.equals("function_ref"))
+						expRef.setReferenceType(FUNCTION);
+					else
+						expRef.setReferenceType(PROCEDURE);
 					
 					listRefs.add(expRef);
 				}
@@ -65,6 +84,9 @@ public class ExpressReferenceDao extends BaseDao {
 					
 					//named_type_or_rename : named_types ( AS ( entity_id | type_id ) )?;
 					Integer named_types = getIdByName(named_type_or_rename,"named_types").get(0);
+					//named_types : entity_ref | type_ref;
+					String refType = (String) getDirectChildren(named_types).get(0).get("name");
+					
 					Integer alias = null;
 					if( hasDirectChild(named_type_or_rename, "entity_id"))
 						alias = getDirectIdByName(named_type_or_rename,"entity_id").get(0);
@@ -77,6 +99,10 @@ public class ExpressReferenceDao extends BaseDao {
 					expRef.setDataName(getLeaf(named_types));
 					if( alias != null ) 
 						expRef.setAlias(getLeaf(alias));
+					if( refType.equals("entity_ref"))
+						expRef.setReferenceType(ENTITY);
+					else 
+						expRef.setReferenceType(TYPE);
 					
 					listRefs.add(expRef);
 				}

@@ -12,11 +12,20 @@ public class ExpressReference extends ExpressGeneralizedDataType {
 		this.type = type;
 	}
 	
+	public ExpressReference(Integer id, String schemaFrom, String dataName, String type, String referenceType) {
+		super(-1);
+		this.schemaFrom = schemaFrom;
+		this.dataName = dataName;
+		this.type = type;
+		this.referenceType = referenceType;
+	}
+	
 	//TODO schema
 	protected String dataName;
 	protected String alias;
 	protected String type;
 	protected String schemaFrom;
+	protected String referenceType;
 	
 	public String getDataName() {
 		return dataName;
@@ -43,6 +52,14 @@ public class ExpressReference extends ExpressGeneralizedDataType {
 		this.schemaFrom = schemaFrom;
 	}
 	
+	public String getReferenceType() {
+		return referenceType;
+	}
+
+	public void setReferenceType(String referenceType) {
+		this.referenceType = referenceType;
+	}
+
 	@Override
 	public String toString() {
 		return "ExpressReference [type:" + type +
