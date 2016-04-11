@@ -76,15 +76,19 @@ public class ExpressSchemaDao extends BaseDao {
 			/* 设置所有defined data type的名字 */
 			def.setSchemaName(schemaName);
 
+			/* 设置所有 data type的名字 */
 			ExpressGeneralizedDataType defDataType = def.getDataType();
+			defDataType.setSchemaName(schemaName);
 			
 			/* 若defined data type 起其他名字 */
 			if(defDataType instanceof ExpressDefined) {
 				ExpressDefined ed = (ExpressDefined)defDataType;
 				
 				ExpressGeneralizedDataType dt = getDefinedType(defs, ed.getDataTypeName() );
-				if(null != dt)
+				if(null != dt) {
 					ed.setDataType(dt);
+					ed.getDataType().setSchemaName(schemaName);
+				}
 			}
 			
 			/* 若是数组类型 */
@@ -96,10 +100,11 @@ public class ExpressSchemaDao extends BaseDao {
 				if(basicType instanceof ExpressDefined) {
 					ExpressDefined ed = (ExpressDefined)basicType;
 
-
 					ExpressGeneralizedDataType dt = getDefinedType(defs, ed.getDataTypeName() );
-					if(null != dt)
+					if(null != dt) {
 						ed.setDataType(dt);
+						ed.getDataType().setSchemaName(schemaName);
+					}
 				}
 			}
 
@@ -114,8 +119,10 @@ public class ExpressSchemaDao extends BaseDao {
 						ExpressDefined member = (ExpressDefined)list.get(j);
 						
 						ExpressGeneralizedDataType dt = getDefinedType(defs, member.getDataTypeName() );
-						if(null != dt)
+						if(null != dt) {
 							member.setDataType(dt);
+							member.getDataType().setSchemaName(schemaName);
+						}
 					}
 					
 					//TODO select当中entity是没有schemaName的
@@ -140,21 +147,27 @@ public class ExpressSchemaDao extends BaseDao {
 				
 				/* 设置所有entity当中属性的名字 */
 				ins.setSchemaName(schemaName);
+				/* 设置所有entity当中data type的名字 */
+				ins.getDataType().setSchemaName(schemaName);
 
 				if( ins.dataType instanceof ExpressDefined) {
 					ExpressDefined def = (ExpressDefined)ins.dataType;
 					
 					ExpressGeneralizedDataType dt = getDefinedType(defs, def.getDataTypeName() );
-					if(null != dt)
+					if(null != dt) {
 						def.setDataType(dt);
+						def.getDataType().setSchemaName(schemaName);
+					}
 				}
 				if( ins.dataType instanceof ExpressEnumeration) {
 					ExpressEnumeration tmpEnum = (ExpressEnumeration)ins.dataType;
 					ins.setDataType( getDefinedType(defs, tmpEnum.getName()) );
+					ins.getDataType().setSchemaName(schemaName);
 				}
 				if( ins.dataType instanceof ExpressSelect) {
 					ExpressSelect tmpSelect = (ExpressSelect)ins.dataType;
 					ins.setDataType( getDefinedType(defs, tmpSelect.getName()) );
+					ins.getDataType().setSchemaName(schemaName);
 				} 
 
 				/* 数组中的类型 */
@@ -169,8 +182,10 @@ public class ExpressSchemaDao extends BaseDao {
 						ExpressDefined ed = (ExpressDefined)basicType;
 						
 						ExpressGeneralizedDataType dt = getDefinedType(defs, ed.getDataTypeName() );
-						if(null != dt)
+						if(null != dt) {
 							ed.setDataType(dt);
+							ed.getDataType().setSchemaName(schemaName);
+						}
 					}
 				}
 			}
@@ -184,8 +199,12 @@ public class ExpressSchemaDao extends BaseDao {
 	 */
 	private ExpressGeneralizedDataType resolveBasicType(ExpressAggregation aggType) {
 		ExpressAggregation dataType = aggType;
-		while( dataType.getDataType() instanceof ExpressAggregation)
+		String schemaName = aggType.getSchemaName();
+		
+		while( dataType.getDataType() instanceof ExpressAggregation) {
 			dataType = (ExpressAggregation) dataType.getDataType();
+			dataType.setSchemaName(schemaName);
+		}
 		return dataType.getDataType();
 	}
 
@@ -210,8 +229,10 @@ public class ExpressSchemaDao extends BaseDao {
 				/* 若defined data type 起其他名字 */
 				if(defDataType instanceof ExpressDefined ) {
 					ExpressDefined ed = (ExpressDefined)defDataType;
-					if( ed.getDataType() == null )
+					if( ed.getDataType() == null ) {
 						ed.setDataType( getReference(schemaList, schema, ed.getDataTypeName(), TYPE));
+						ed.getDataType().setSchemaName(schema.getName());
+					}
 				}
 				
 				/* 若是其他schema中的entity */
@@ -219,6 +240,7 @@ public class ExpressSchemaDao extends BaseDao {
 					ExpressEntity ee = (ExpressEntity)defDataType;
 					if( !hasEntity(entities, ee.getName()) ) {
 						defDataType = getReference(schemaList, schema, ee.getName(), ENTITY);
+						defDataType.setSchemaName(schema.getName());
 					}
 				}
 				
@@ -231,14 +253,17 @@ public class ExpressSchemaDao extends BaseDao {
 					ExpressGeneralizedDataType basicType = resolveBasicType(aggType);
 					if(basicType instanceof ExpressDefined) {
 						ExpressDefined ed = (ExpressDefined)basicType;
-						if( ed.getDataType() == null )
+						if( ed.getDataType() == null ) {
 							ed.setDataType(getReference(schemaList, schema, ed.getDataTypeName(), TYPE));
+							ed.getDataType().setSchemaName(schema.getName());
+						}
 					}
 					
 					if(basicType instanceof ExpressEntity) {
 						ExpressEntity ee = (ExpressEntity)basicType;
 						if( !hasEntity(entities, ee.getName()) ) {
 							basicType = getReference(schemaList, schema, ee.getName(), ENTITY);
+							basicType.setSchemaName(schema.getName());
 						}
 					}
 				}
@@ -252,12 +277,16 @@ public class ExpressSchemaDao extends BaseDao {
 					for (int k = 0; k < list.size(); k++) {
 						if(list.get(k) instanceof ExpressDefined) {
 							ExpressDefined member = (ExpressDefined)list.get(k);
-							if( member.getDataType() == null )
+							if( member.getDataType() == null ) {
 								member.setDataType(getReference(schemaList, schema, member.getDataTypeName(), TYPE));
+								member.getDataType().setSchemaName(schema.getName());
+							}
 						}
 						
 						if(list.get(k) instanceof ExpressEntity) {
 							ExpressEntity ee = (ExpressEntity)list.get(k);
+							ee.setSchemaName(schema.getName());
+							
 							if( !hasEntity(entities, ee.getName()) ) {
 								list.set(k, getReference(schemaList, schema, ee.getName(), ENTITY));
 							}
@@ -282,13 +311,16 @@ public class ExpressSchemaDao extends BaseDao {
 //					}
 					if( ins.dataType instanceof ExpressDefined) {
 						ExpressDefined def = (ExpressDefined)ins.dataType;
-						if(def.getDataType() == null)
+						if(def.getDataType() == null) {
 							ins.setDataType( getReference(schemaList, schema, def.getDataTypeName(), TYPE) );
+							ins.getDataType().setSchemaName(schema.getName());
+						}
 					}
 					if(ins.dataType instanceof ExpressEntity) {
 						ExpressEntity ee = (ExpressEntity)ins.dataType;
 						if( !hasEntity(entities, ee.getName()) ) {
 							ins.dataType = getReference(schemaList, schema, ee.getName(), ENTITY);
+							ins.dataType.setSchemaName(schema.getName());
 						}
 					}
 
@@ -300,14 +332,17 @@ public class ExpressSchemaDao extends BaseDao {
 						ExpressGeneralizedDataType basicType = resolveBasicType(aggType);
 						if(basicType instanceof ExpressDefined) {
 							ExpressDefined ed = (ExpressDefined)basicType;
-							if(ed.getDataType() == null)
+							if(ed.getDataType() == null) {
 								ed.setDataType(getReference(schemaList, schema, ed.getDataTypeName(), TYPE));
+								ed.getDataType().setSchemaName(schema.getName());
+							}
 						}
 						
 						if(basicType instanceof ExpressEntity) {
 							ExpressEntity ee = (ExpressEntity)basicType;
 							if( !hasEntity(entities, ee.getName()) ) {
 								basicType = getReference(schemaList, schema, ee.getName(), ENTITY);
+								basicType.setSchemaName(schema.getName());
 							}
 						}
 					}
@@ -346,6 +381,9 @@ public class ExpressSchemaDao extends BaseDao {
 		List<ExpressReference> curRefs = currentSchema.getRefenences();
 		for (int i = 0; i < curRefs.size(); i++) {
 			ExpressReference curRef = curRefs.get(i);
+			
+			/* 为外部引用添加schemaName */
+			curRef.setSchemaName(currentSchema.getName());
 			
 			//若是别名
 			if( refName.equals(curRef.getAlias()) ) {

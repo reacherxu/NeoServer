@@ -25,6 +25,7 @@ public class ExpressReference extends ExpressGeneralizedDataType {
 	protected String alias;
 	protected String type;
 	protected String schemaFrom;
+	
 	protected String referenceType;
 	
 	public String getDataName() {
