@@ -45,7 +45,7 @@ public class ExpressSchemaDao extends BaseDao {
 			schemaList.add( addDefinedRef(tmpSchema) );
 		}
 		/* 刷新schema中的外部引用  */
-		addDefinedRef(schemaList);
+		addExternalRef(schemaList);
 		
 		return schemaList;
 	}
@@ -213,7 +213,7 @@ public class ExpressSchemaDao extends BaseDao {
 	 * 包括schema引用和entity引用
 	 * @param schemaList
 	 */
-	private void addDefinedRef(List<ExpressSchema> schemaList) {
+	private void addExternalRef(List<ExpressSchema> schemaList) {
 		for (int i = 0; i < schemaList.size(); i++) {
 			ExpressSchema schema = schemaList.get(i);
 			
@@ -225,13 +225,13 @@ public class ExpressSchemaDao extends BaseDao {
 				ExpressDefined def = defs.get(j);
 				
 				ExpressGeneralizedDataType defDataType = def.getDataType();
+				defDataType.setSchemaName(schema.getName());
 				
 				/* 若defined data type 起其他名字 */
 				if(defDataType instanceof ExpressDefined ) {
 					ExpressDefined ed = (ExpressDefined)defDataType;
 					if( ed.getDataType() == null ) {
-						ed.setDataType( getReference(schemaList, schema, ed.getDataTypeName(), TYPE));
-						ed.getDataType().setSchemaName(schema.getName());
+						defDataType = getReference(schemaList, schema, ed.getDataTypeName(), TYPE);
 					}
 				}
 				
@@ -254,8 +254,7 @@ public class ExpressSchemaDao extends BaseDao {
 					if(basicType instanceof ExpressDefined) {
 						ExpressDefined ed = (ExpressDefined)basicType;
 						if( ed.getDataType() == null ) {
-							ed.setDataType(getReference(schemaList, schema, ed.getDataTypeName(), TYPE));
-							ed.getDataType().setSchemaName(schema.getName());
+							changeDataType(aggType, getReference(schemaList, schema, ed.getDataTypeName(), TYPE));
 						}
 					}
 					
@@ -278,8 +277,9 @@ public class ExpressSchemaDao extends BaseDao {
 						if(list.get(k) instanceof ExpressDefined) {
 							ExpressDefined member = (ExpressDefined)list.get(k);
 							if( member.getDataType() == null ) {
-								member.setDataType(getReference(schemaList, schema, member.getDataTypeName(), TYPE));
-								member.getDataType().setSchemaName(schema.getName());
+								list.set(k, getReference(schemaList, schema, member.getDataTypeName(), TYPE));
+//								member.setDataType(getReference(schemaList, schema, member.getDataTypeName(), TYPE));
+//								member.getDataType().setSchemaName(schema.getName());
 							}
 						}
 						
@@ -312,7 +312,7 @@ public class ExpressSchemaDao extends BaseDao {
 					if( ins.dataType instanceof ExpressDefined) {
 						ExpressDefined def = (ExpressDefined)ins.dataType;
 						if(def.getDataType() == null) {
-							ins.setDataType( getReference(schemaList, schema, def.getDataTypeName(), TYPE) );
+							ins.dataType = getReference(schemaList, schema, def.getDataTypeName(), TYPE);
 							ins.getDataType().setSchemaName(schema.getName());
 						}
 					}
@@ -333,12 +333,9 @@ public class ExpressSchemaDao extends BaseDao {
 						if(basicType instanceof ExpressDefined) {
 							ExpressDefined ed = (ExpressDefined)basicType;
 							if(ed.getDataType() == null) {
-								ed.setDataType(getReference(schemaList, schema, ed.getDataTypeName(), TYPE));
-								ed.getDataType().setSchemaName(schema.getName());
+								changeDataType(aggType, getReference(schemaList, schema, ed.getDataTypeName(), TYPE));
 							}
-						}
-						
-						if(basicType instanceof ExpressEntity) {
+						} else if(basicType instanceof ExpressEntity) {
 							ExpressEntity ee = (ExpressEntity)basicType;
 							if( !hasEntity(entities, ee.getName()) ) {
 								basicType = getReference(schemaList, schema, ee.getName(), ENTITY);
@@ -351,6 +348,23 @@ public class ExpressSchemaDao extends BaseDao {
 		}
 	}
 
+
+	/**
+	 * 若数组中的底层数据类型是defined data type，且是外部引用，则直接赋值为ExpressReference
+	 * @param aggType
+	 * @param reference
+	 */
+	private void changeDataType(ExpressAggregation aggType,
+			ExpressReference reference) {
+		ExpressAggregation dataType = aggType;
+		String schemaName = aggType.getSchemaName();
+		
+		while( dataType.getDataType() instanceof ExpressAggregation) {
+			dataType = (ExpressAggregation) dataType.getDataType();
+			dataType.setSchemaName(schemaName);
+		}
+		dataType.setDataType(reference);
+	}
 
 	/**
 	 * 判断当前schema中是否含有entity,有则true
