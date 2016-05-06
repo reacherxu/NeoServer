@@ -462,7 +462,7 @@ public class ExpressSchemaDao extends BaseDao {
 			List<ExpressDefined> defs, String dataTypeName) {
 		for (int i = 0; i < defs.size(); i++) {
 			if(defs.get(i).getDataTypeName().equals(dataTypeName))
-				return defs.get(i);
+				return defs.get(i).getDataType();
 		}
 		
 		return null;
@@ -544,10 +544,10 @@ public class ExpressSchemaDao extends BaseDao {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		/*ExpressSchemaDao es = new ExpressSchemaDao("localhost:7474");
+		ExpressSchemaDao es = new ExpressSchemaDao("localhost:7474");
 		List<ExpressSchema> tmpSchema = es.getAllExpressSchema();
 		System.out.println(tmpSchema);
-		es.logout();*/
+		es.logout();
 
 		/*ExpressSchemaDao dao = new ExpressSchemaDao();
 		List<com.type.datatype.ExpressSchema> list = dao.getAllExpressSchema();
@@ -566,7 +566,7 @@ public class ExpressSchemaDao extends BaseDao {
 			}
 		}*/
 		
-		ExpressSchemaDao dao = new ExpressSchemaDao("localhost:7474");
+		/*ExpressSchemaDao dao = new ExpressSchemaDao("localhost:7474");
 		List<com.type.datatype.ExpressSchema> list = dao.getAllExpressSchema();
 		dao.logout();
 
@@ -583,7 +583,7 @@ public class ExpressSchemaDao extends BaseDao {
 										((com.type.datatype.ExpressSelect) e.getDataType()).getList());
 				}
 			}
-		}
+		}*/
 	}
 
 }
