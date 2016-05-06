@@ -544,12 +544,12 @@ public class ExpressSchemaDao extends BaseDao {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-//			ExpressSchemaDao es = new ExpressSchemaDao();
-//			List<ExpressSchema> tmpSchema = es.getAllExpressSchema();
-//			System.out.println(tmpSchema);
-//			es.logout();
+		/*ExpressSchemaDao es = new ExpressSchemaDao("localhost:7474");
+		List<ExpressSchema> tmpSchema = es.getAllExpressSchema();
+		System.out.println(tmpSchema);
+		es.logout();*/
 
-		ExpressSchemaDao dao = new ExpressSchemaDao();
+		/*ExpressSchemaDao dao = new ExpressSchemaDao();
 		List<com.type.datatype.ExpressSchema> list = dao.getAllExpressSchema();
 		dao.logout();
 
@@ -562,6 +562,25 @@ public class ExpressSchemaDao extends BaseDao {
 					System.out.println("\t\tInstance Name: " + (instance == null ? "NULL" : instance.getName()));
 					System.out.println("\t\tInstance DataType: " + (instance == null || instance.getDataType() == null ? "NULL" : instance.getDataType().getClass()));
 					System.out.println();
+				}
+			}
+		}*/
+		
+		ExpressSchemaDao dao = new ExpressSchemaDao("localhost:7474");
+		List<com.type.datatype.ExpressSchema> list = dao.getAllExpressSchema();
+		dao.logout();
+
+		System.out.println("\nschema test");
+		for (com.type.datatype.ExpressSchema schema : list) {
+			System.out.println("Schema Name: " + schema.getName());
+			for (com.type.datatype.ExpressDefined e : schema.getDefinedDataType()) {
+				if (e.getDataType() instanceof com.type.datatype.ExpressEnumeration) {
+					System.out.println("\tDefined name: " + e.getDataTypeName() + " enum " +
+										((com.type.datatype.ExpressEnumeration) e.getDataType()).getItems());
+				}
+				else if (e.getDataType() instanceof com.type.datatype.ExpressEnumeration) {
+					System.out.println("\tDefined name: " + e.getDataTypeName() + " select " +
+										((com.type.datatype.ExpressSelect) e.getDataType()).getList());
 				}
 			}
 		}

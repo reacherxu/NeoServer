@@ -135,6 +135,18 @@ public class ExpressDefinedDao extends BaseDao {
 			expEnum.setExtension(new ExpressEnumeration(-1,getLeaf(type_ref)));
 		}
 		
+		else if( hasDirectChild(enumeration_type,"OF")) {
+			Integer enumeration_items = getDirectIdByName(enumeration_type,"enumeration_items").get(0);
+			
+			List<String> items = new ArrayList<String>();
+			List<Integer> enumeration_ids = getIdByName(enumeration_items, "enumeration_id");
+			for (int i = 0; i < enumeration_ids.size(); i++) {
+				Integer enumeration_id = enumeration_ids.get(i);
+				items.add(getLeaf(enumeration_id));
+			}
+			expEnum.setItems(items);
+		}
+		
 		return expEnum;
 	}
 
